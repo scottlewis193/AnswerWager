@@ -1,0 +1,5 @@
+.lobby
+    ul(id='player-list' class='game-list' hx-trigger='every 2s' hx-get=`/games/${gameId}/playerlist`)
+    li(class='game-list-item') #{playerName}
+    button(id='ready-btn' class='menu-button') Ready
+    a(class='game-id') Game ID: #{gameId}

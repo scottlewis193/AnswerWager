@@ -1,0 +1,9 @@
+.main-menu  
+
+    input(class='playerid-desc' id='playerId' name='playerId' value=`${playerId}` readonly) 
+
+    button(id='host-game' class='menu-button' hx-get='/creategame' hx-target='body' hx-include="[name='playerId']") Host Game
+
+    a(class='input-desc') Game ID:
+    input(id='id-input' class='menu-input')
+    button(id='join-game' class='menu-button' hx-get='/joingame' hx-target='body' hx-include="") Join Game 

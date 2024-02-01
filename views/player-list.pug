@@ -1,0 +1,3 @@
+ul(id='player-list' class='game-list' hx-trigger='every 2s' hx-get=`/games/${gameId}/playerlist`)
+    each player in playerList
+        li(class='game-list-item') #{player}
