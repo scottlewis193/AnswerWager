@@ -22,7 +22,7 @@
 
   html,body {
     /* height:100%; */
-    font-size: 14px;
+    font-size: 16px;
     line-height:1.5em;
     /* color: #333; */
     color: var(--Text);
@@ -30,13 +30,59 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif !important;
 }
 
+button {
+    font-size: 16px;
+    padding: 5%;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    background-color: transparent;
+    color: var(--Blue);
+    border: 1px solid var(--Blue);
+    cursor: pointer;
+    border-radius: 8px;
+}
+button:hover {
+    background-color: var(--Surface0);
+}
+
+input {
+    
+    size: 50;
+    justify-self: left;
+    border: 1px solid var(--Surface0) ;
+    border-radius: 6px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif !important;
+    font-size: 16px;
+    color: var(--Text);
+    background-color: var(--Mantle);
+}
+
+
 .main-menu {
     display:grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-auto-flow: row;
+    row-gap: 5px;
     width: 80%;
     height: 200px;
     text-align: center;
+    align-items: center;
+    justify-items: center;
+}
+
+.start-page {
+    
+    display: grid;
+    row-gap: 5px;
+    column-gap: 5px;
+
+    .menu-input {
+        font-size: 36px;
+    }
+
+}
+
+.player-id {
+    display: none;
 }
 
 .center {
@@ -46,11 +92,5 @@
     height: 100vh;
   }
 
-#host-game {
-    grid-column: 1 / 3;
-}
 
-#join-game {
-    grid-column: 1 / 3;
-}
 

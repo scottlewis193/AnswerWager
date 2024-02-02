@@ -5,11 +5,10 @@ html(lang="en")
         link(rel="stylesheet" href="index.css")
     body 
     div(class='center') 
-        .main-menu  
+        .start-page  
             input(class='player-id' id='playerId' name='playerId' readonly)
-            a(class='input-desc' id='name-input') Name:
-             input(id='name-input' class='menu-input' name='playerName' value=playerName) 
-            button(id='connect' class='menu-button' hx-get='/connect' hx-target='body' hx-include="[name='playerName'],[name='playerId']") Connect
+            input(id='name-input' class='menu-input' name='playerName' value=playerName) 
+            button(id='connect' class='menu-button' hx-get='/connect' hx-target='.center' hx-include="[name='playerName'],[name='playerId']") Confirm
 
     script(src="/htmx.min.js")
     script(src="/socket.io/socket.io.js")

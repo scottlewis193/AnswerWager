@@ -4,6 +4,8 @@ const express = require('express');
 const { createServer } = require('node:http');
 const { join } = require('node:path');
 const { Server } = require('socket.io');
+const readlineSync = require("readline-sync");
+const fs = require('fs');
 
 //LIVE RELOAD SETUP
 
@@ -40,7 +42,6 @@ liveReloadServer.server.once("connection", () => {
 
 app.get('/', (req, res) => {
   res.render('start-page', {playerName: 'John'})
-  console.log('send pug')
 })
 
 app.get('/connect', (req,res) => {
@@ -48,7 +49,9 @@ app.get('/connect', (req,res) => {
   players[req.query.playerId].name = req.query.playerName
 })
 
-app.get('/creategame', (req,res) => {
+app.get('/games/create', (req,res) => {
+
+console.log(req.query.playerId)
 
 //create game and return id
 let newGameId = handleCreateGame(req.query.playerId)
@@ -58,17 +61,49 @@ res.render('pre-game-lobby', {playerId: req.query.playerId, gameId: newGameId, p
 
 })
 
-app.get('/joingame',(req,res) => {
+app.get('/games/join',(req,res) => {
 
+  let gameId = req.get('HX-Prompt')
 
+  handleJoinGame(gameId,req.query.playerId)
+
+//send game-lobby screen to client
+res.render('pre-game-lobby', {playerId: req.query.playerId, gameId: gameId, playerName: req.query.playerName})
 
 })
 
 app.get('/games/:gameId/playerlist', (req,res) => {
-  var gameId = req.params.gameId
 
-  res.render('player-list', {playerList: getPlayerlist(gameId)})
+  let playerList = getPlayerlist(req.params.gameId)
+
+  //if player list returns nothing assume game no longer exists and boot client back to main menu
+  if (playerList.length == 0) {
+    res.render('disconnect', {playerId: req.query.playerId})
+  } else {
+    //return and render player list
+    res.render('player-list', {playerList: playerList, gameId: req.params.gameId})
+  }
+
+ 
   
+})
+
+app.get('/games/disconnect', (req,res) => {
+
+//this is mainly for clients who get disconnected from a game when the host leaves
+//if this was handled through the get playerlist route, unwanted UI would be left over
+
+res.render('main-menu', {playerId: req.query.playerId, playerName: req.query.playerName})
+
+
+})
+
+app.get('/games/:gameId/leave', (req,res) => {
+
+handleLeaveGame(req.params.gameId,req.query.playerId)
+
+res.render('main-menu', {playerId: req.query.playerId, playerName: req.query.playerName})
+
 })
 
 
@@ -89,14 +124,14 @@ io.on('connection', (socket) => {
 //EXPRESS
 
 server.listen(3000, () => {
-  console.log('server running at http://localhost:3000');
+  drawDebug()
 });
 
 //VARS
 
 var games = {}
 var players = {}
-
+var exit = false
 
 
 //FUNCTIONS
@@ -105,7 +140,7 @@ function generateGameId() {
 
   let gameId = String(Math.floor(Math.random() * 10))
 
-    for (i = 0; i < 5; i++) {
+    for (let i = 0; i < 5; i++) {
       gameId += String(Math.floor(Math.random()* 10))
     }
 
@@ -115,17 +150,23 @@ function generateGameId() {
 
 function handleConnect(socketid) {
 
-  console.log(`${socketid} connected`);
+
 
   //add player to players obj
-  players[socketid] = {name: '', readyStatus: false, points: 0, exactCorrectAnswers: 0, correctAnswers: 0, mostPointsEarnedRound: 0, }
+  players[socketid] = {
+    name: '', 
+    readyStatus: false, 
+    points: 0, 
+    exactCorrectAnswers: 0, 
+    correctAnswers: 0, 
+    mostPointsEarnedRound: 0, 
+    highestOddsWon: ''
+};  
 
-
+drawDebug();
 }
 
 function handleDisconnect(socketid) {
-
-  console.log(`${socketid} disconnected`);
 
   //remove player from players object
   delete players[socketid]
@@ -145,6 +186,8 @@ function handleDisconnect(socketid) {
     }
 
   }
+
+  drawDebug();
   
 
 }
@@ -155,12 +198,15 @@ function handleCreateGame(playerId) {
   let newGameId = generateGameId()
 
   //add game info to games object
-  games[newGameId] = {hostPlayerId: playerId, playerIds: [], state: 'preGameLobby'}
+  games[newGameId] = {
+    hostPlayerId: playerId, 
+    playerIds: [], 
+    state: 'preGameLobby'
+  };
+
   games[newGameId].playerIds.push(playerId)
 
-  console.log(`${playerId} has started hosting a game (${newGameId})`);
-
-  console.log(games)
+  drawDebug();
 
   return newGameId
 
@@ -169,15 +215,64 @@ function handleCreateGame(playerId) {
 
 function handleJoinGame(gameId,playerId) {
 
+  games[gameId].playerIds.push(playerId)
+  drawDebug();
+
+}
+
+function handleLeaveGame(gameId,playerId) {
+
+  //check if player is hosting game and if so, remove game from obj
+  if (games[gameId].hostPlayerId == playerId) {
+    delete games[gameId]
+    drawDebug();
+    return
+  }
+
+  //remove player from array of playerids in game
+  games[gameId].playerIds.splice(games[gameId].playerIds.indexOf(playerId),1)
+  drawDebug();
 }
 
 function getPlayerlist(gameId) {
 
   var playerList = []
-  games[gameId].playerIds.forEach(id => {
-    playerList.push(players[id].name)
-  })
+
+//check if game is still available, if not boot client back to menu
+if (gameId in games) {
+  if (games[gameId].playerIds.length !== 0) {
   
-  return playerList
+    games[gameId].playerIds.forEach(id => {playerList.push(players[id].name)})
+
 }
 
+}
+
+
+return playerList
+
+}
+
+function getCurrentTime() {
+  var today = new Date();
+  return today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+}
+
+function drawDebug() {
+  console.clear()
+  console.log('░█▀█░█▀█░█▀▀░█░█░█▀▀░█▀▄░░░█░█░█▀█░█▀▀░█▀▀░█▀▄')
+  console.log('░█▀█░█░█░▀▀█░█▄█░█▀▀░█▀▄░░░█▄█░█▀█░█░█░█▀▀░█▀▄')
+  console.log('░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░░░▀░▀░▀░▀░▀▀▀░▀▀▀░▀░▀')
+  console.log('server running at http://localhost:3000');
+  console.log('')
+  console.log(`PLAYERS: ${Object.keys(players).length}`)
+  console.log(players)
+  console.log(`GAMES: ${Object.keys(games).length}`)
+  console.log(games)
+}
+
+
+
+
+ 
+  
