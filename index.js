@@ -106,6 +106,12 @@ res.render('main-menu', {playerId: req.query.playerId, playerName: req.query.pla
 
 })
 
+app.get('/game-rules', (req,res) => {
+
+res.render('game-rules', {playerId: req.query.playerId})
+
+})
+
 
 //SOCKET.IO
 

@@ -6,6 +6,7 @@ html(lang="en")
     body 
     div(class='center') 
         .start-page  
+            a(class='small-title-text') Enter Name
             input(class='player-id' id='playerId' name='playerId' readonly)
             input(id='name-input' class='menu-input' name='playerName' value=playerName) 
             button(id='connect' class='menu-button' hx-get='/connect' hx-target='.center' hx-include="[name='playerName'],[name='playerId']") Confirm

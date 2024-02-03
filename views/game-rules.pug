@@ -1,0 +1,18 @@
+.game-rules
+ h2 Objective
+ p Be the player with the most points at the end of the game by either guessing as close to the correct answer as possible or by betting on the closest answer in each round.
+ h3 Round Phases
+ p Each round is split into the answer phase, betting phase and cool off phase. Players will start off with a minimum of 2 points in each round even if they lost more at the end of the previous round and will use those points to bet with in each round.
+ h3 Answer Phase
+ p Players will be presented with the question and will have to enter what they think the answer is. Once everyone has entered their answer, the round moves onto the betting phase.
+ h3 Betting Phase
+ p All answers will now be put on the board with any duplicate answers removed. Each answer will have odds associated with it. Using the bet buttons underneath the answers, players can bet on a maximum of 2 answers using their points. They are allowed to use as many points as they have on the bets as long as it's on a maximum of 2 answers.
+ h3 Cool Off Phase
+ p The answer is now revealed and the points are worked out based on the players answers and what they bet on (see base scoring)
+ h3 Base Scoring
+ p Player with the closest answer without going over - +3 Points
+ p Players closest answer is also the exact answer - +3 Points
+ p Player betted on closest answer - Bet value x Odds
+ p Player who did not bet on the closest answer - Loses all points used on losing bets
+ button(id='back-btn' class='menu-button' hx-target='.center' hx-get='/connect') Back
+ input(class='player-id' id='playerId' name='playerId' value=`${playerId}` readonly)
