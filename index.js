@@ -186,7 +186,7 @@ function handleDisconnect(socketid) {
       break
     }
 
-    if (game.playerIds.find(socketid)) {
+    if (game.playerIds.indexOf(socketid) !== -1) {
       game.splice(game.playerIds.indexOf(socketid),1)
       break
     }
@@ -248,7 +248,9 @@ function getPlayerlist(gameId) {
 if (gameId in games) {
   if (games[gameId].playerIds.length !== 0) {
   
-    games[gameId].playerIds.forEach(id => {playerList.push(players[id].name)})
+    games[gameId].playerIds.forEach(id => {
+      //console.log(players[id])
+      playerList.push(players[id].name)})
 
 }
 

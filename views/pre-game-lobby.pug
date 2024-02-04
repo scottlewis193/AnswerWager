@@ -6,5 +6,6 @@
     input(class='player-id' name='playerId' value=`${playerId}` readonly)
     button(id='leave-btn' class='menu-btn' hx-get=`/games/${gameId}/leave` hx-target='.center' hx-include="[name='gameId'],[name='playerId']") Leave
     .spacer
-    a(class='input-desc') Game ID:
-    input(class='game-id' name='gameId' value=`${gameId}` readonly)
+    .sub-grid
+     a(class='input-desc') Game ID
+     input(class='game-id' name='gameId' value=`${gameId}` readonly)

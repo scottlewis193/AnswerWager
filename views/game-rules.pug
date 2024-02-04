@@ -10,9 +10,17 @@
  h3 Cool Off Phase
  p The answer is now revealed and the points are worked out based on the players answers and what they bet on (see base scoring)
  h3 Base Scoring
+ br 
  p Player with the closest answer without going over - +3 Points
- p Players closest answer is also the exact answer - +3 Points
- p Player betted on closest answer - Bet value x Odds
- p Player who did not bet on the closest answer - Loses all points used on losing bets
+  br
+  .
+   Players closest answer is also the exact answer - +3 Points
+  br
+  .
+   Player betted on closest answer - Bet value x Odds 
+  br
+  .
+   Player who did not bet on the closest answer - Loses all points used on losing bets
+
  button(id='back-btn' class='menu-button' hx-target='.center' hx-get='/connect') Back
  input(class='player-id' id='playerId' name='playerId' value=`${playerId}` readonly)
