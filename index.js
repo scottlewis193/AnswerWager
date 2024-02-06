@@ -51,7 +51,6 @@ app.get('/connect', (req,res) => {
 
 app.get('/games/create', (req,res) => {
 
-console.log(req.query.playerId)
 
 //create game and return id
 let newGameId = handleCreateGame(req.query.playerId)
@@ -76,8 +75,10 @@ app.get('/games/:gameId/playerlist', (req,res) => {
 
   let playerList = getPlayerlist(req.params.gameId)
 
+  console.log(playerList)
   //if player list returns nothing assume game no longer exists and boot client back to main menu
-  if (playerList.length == 0) {
+  if (Object.keys(playerList).length == 0) {
+
     res.render('disconnect', {playerId: req.query.playerId})
   } else {
     //return and render player list
@@ -108,10 +109,10 @@ res.render('main-menu', {playerId: req.query.playerId, playerName: req.query.pla
 
 app.get('/games/:gameId/readycheck', (req,res) => {
   updateAllPlayersReadyStatus()
-  console.log(req.params.gameId)
- console.log(games[req.params.gameId].playersReady)
+
     res.render('start-btn',{gameId: req.params.gameId, playersReady: games[req.params.gameId].playersReady})
 
+  drawDebug();
   
 })
 
@@ -327,7 +328,7 @@ function getPlayerlist(gameId) {
 //check if game is still available, if not boot client back to menu
 if (gameId in games) {
   if (games[gameId].playerIds.length !== 0) {
-  
+  console.log(games[gameId].playerIds)
     games[gameId].playerIds.forEach(id => {
       playerList[id] = players[id]})
 
