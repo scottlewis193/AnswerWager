@@ -1,3 +1,7 @@
-ul(id='player-list' class='game-list' hx-trigger='every 2s' hx-swap='outerHTML' hx-get=`/games/${gameId}/playerlist` hx-include="[name='playerId']")
-    each player in playerList
-        li(class='game-list-item') #{player}
+tr(class='player-columns')
+ th Player 
+ th Ready 
+ each player in playerList
+  tr(class='player-row')
+   td #{player.playerName}
+   td #{player.readyStatus}

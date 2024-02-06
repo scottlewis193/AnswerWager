@@ -59,8 +59,13 @@ button {
     cursor: pointer;
     border-radius: max(1vw,1.25vh);
 }
-button:hover {
+button:hover:not(:disabled) {
     background-color: var(--Surface0);
+}
+button:disabled {
+    cursor:default;
+    color: var(--Overlay0);
+    border: max(0.1vw,0.125vh) solid var(--Overlay0);
 }
 
 input {
@@ -73,8 +78,26 @@ input {
     background-color: var(--Mantle);
 }
 
-li {
-    list-style: none;
+table {
+
+    border-spacing: 0;
+    width: max(30vw,37.5vh);
+    text-align: center;
+
+    tr {
+        border: 0;
+    }
+
+    th {
+        padding: max(1vw,1.25vh);
+        border: max(0.1vw,0.125vh) solid var(--Surface0);
+        text-transform: uppercase;
+    }
+
+    td {
+        padding: max(1vw,1.25vh);
+        border: max(0.1vw,0.125vh) solid var(--Surface0);
+    }
 }
 
 div {

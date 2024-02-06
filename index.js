@@ -46,7 +46,7 @@ app.get('/', (req, res) => {
 
 app.get('/connect', (req,res) => {
   res.render('main-menu', {playerId: req.query.playerId, playerName: req.query.playerName})
-  players[req.query.playerId].name = req.query.playerName
+  players[req.query.playerId].playerName = req.query.playerName
 })
 
 app.get('/games/create', (req,res) => {
@@ -57,7 +57,7 @@ console.log(req.query.playerId)
 let newGameId = handleCreateGame(req.query.playerId)
 
 //send game-lobby screen to client
-res.render('pre-game-lobby', {playerId: req.query.playerId, gameId: newGameId, playerName: req.query.playerName})
+res.render('pre-game-lobby', {playerId: req.query.playerId, gameId: newGameId, playerName: req.query.playerName, isHost: true})
 
 })
 
@@ -68,7 +68,7 @@ app.get('/games/join',(req,res) => {
   handleJoinGame(gameId,req.query.playerId)
 
 //send game-lobby screen to client
-res.render('pre-game-lobby', {playerId: req.query.playerId, gameId: gameId, playerName: req.query.playerName})
+res.render('pre-game-lobby', {playerId: req.query.playerId, gameId: gameId, playerName: req.query.playerName, isHost: false})
 
 })
 
@@ -106,9 +106,39 @@ res.render('main-menu', {playerId: req.query.playerId, playerName: req.query.pla
 
 })
 
+app.get('/games/:gameId/readycheck', (req,res) => {
+  updateAllPlayersReadyStatus()
+  console.log(req.params.gameId)
+ console.log(games[req.params.gameId].playersReady)
+    res.render('start-btn',{gameId: req.params.gameId, playersReady: games[req.params.gameId].playersReady})
+
+  
+})
+
 app.get('/game-rules', (req,res) => {
 
 res.render('game-rules', {playerId: req.query.playerId})
+
+})
+
+app.get('/players/:playerId/update', (req,res) => {
+
+  var playerVars = req.query
+  playerVars.playerId = req.params.playerId
+
+  handleUpdatePlayer(req.params.playerId,req.query)
+
+
+  //ready/unready btn
+  if (req.query.hasOwnProperty('readyStatus')) {
+
+   
+    updateAllPlayersReadyStatus()
+
+    res.render('ready-btn',playerVars)
+  }
+
+ 
 
 })
 
@@ -160,7 +190,7 @@ function handleConnect(socketid) {
 
   //add player to players obj
   players[socketid] = {
-    name: '', 
+    playerName: '', 
     readyStatus: false, 
     points: 0, 
     exactCorrectAnswers: 0, 
@@ -206,8 +236,16 @@ function handleCreateGame(playerId) {
   //add game info to games object
   games[newGameId] = {
     hostPlayerId: playerId, 
-    playerIds: [], 
-    state: 'preGameLobby'
+    playerIds: [],
+    playersReady: false, 
+    state: 'preGameLobby',
+    questions: {
+      0: {
+        text: 'TEST QUESTION?',
+        type: 'integer'
+      }
+    },
+    questionIndex: 0
   };
 
   games[newGameId].playerIds.push(playerId)
@@ -240,21 +278,63 @@ function handleLeaveGame(gameId,playerId) {
   drawDebug();
 }
 
+function handleUpdatePlayer(playerId, playerObj) {
+
+  
+  //only update values that have been included in request
+  for (const playerKey in players[playerId]) {
+
+    for(const newPlayerKey in playerObj) {
+
+      //bools come in as string, this will convert them to true booleans prior to comparisions
+      playerObj[newPlayerKey] = boolConv(playerObj[newPlayerKey]);
+
+      if (playerKey == newPlayerKey) {
+
+        //if key exists, update value in players obj
+        players[playerId][playerKey] = playerObj[newPlayerKey]
+
+      }
+    }
+
+  }
+  drawDebug();
+
+}
+
+function updateAllPlayersReadyStatus() {
+
+  for (const gameId in games) {
+    games[gameId].playersReady = true
+    for (let i = 0; i < games[gameId].playerIds.length; i++) {
+
+      if (players[games[gameId].playerIds[i]].readyStatus == false) {
+    
+        games[gameId].playersReady = false; 
+        break;
+      }
+
+    }
+  }
+
+drawDebug()
+}
+
 function getPlayerlist(gameId) {
 
-  var playerList = []
+  var playerList = {}
 
 //check if game is still available, if not boot client back to menu
 if (gameId in games) {
   if (games[gameId].playerIds.length !== 0) {
   
     games[gameId].playerIds.forEach(id => {
-      //console.log(players[id])
-      playerList.push(players[id].name)})
+      playerList[id] = players[id]})
 
 }
 
 }
+
 
 
 return playerList
@@ -277,6 +357,12 @@ function drawDebug() {
   console.log(players)
   console.log(`GAMES: ${Object.keys(games).length}`)
   console.log(games)
+}
+
+function boolConv(boolStr) {
+  if (boolStr === "true") {return true}
+  if (boolStr === "false") {return false}
+  return boolStr
 }
 
 

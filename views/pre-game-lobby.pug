@@ -1,11 +1,16 @@
 .pre-game-lobby
     .spacer
-    ul(id='player-list' class='game-list' hx-trigger='every 2s' hx-swap='outerHTML' hx-get=`/games/${gameId}/playerlist`)
-     li(class='game-list-item') #{playerName}
-    button(id='ready-btn' class='menu-btn') Ready
-    input(class='player-id' name='playerId' value=`${playerId}` readonly)
+    table(id='player-list' class='game-list' hx-trigger='every 2s' hx-get=`/games/${gameId}/playerlist`)
+     tr(class='player-columns')
+      th Player 
+      th Ready 
+
+
+    button(id='ready-btn' class='menu-btn' hx-swap='outerHTML' hx-get=`/players/${playerId}/update` hx-vals='{"readyStatus": true}') Ready  
     button(id='leave-btn' class='menu-btn' hx-get=`/games/${gameId}/leave` hx-target='.center' hx-include="[name='gameId'],[name='playerId']") Leave
+    if isHost    
+     button(id='start-btn' class='menu-btn' hx-swap='outerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']" disabled) Start
     .spacer
     .sub-grid
      a(class='input-desc') Game ID
-     input(class='game-id' name='gameId' value=`${gameId}` readonly)
+     include ids.pug
