@@ -6,21 +6,16 @@ function connect(socketid) {
 
 
     //add player to players obj
-    aw.players[socketid] = {
-      playerName: '', 
-      readyStatus: false, 
-      points: 0, 
-      exactCorrectAnswers: 0, 
-      correctAnswers: 0, 
-      mostPointsEarnedRound: 0, 
-      highestOddsWon: ''
-  };  
+    aw.players[socketid] = utils.newPlayerObj();  
   
   utils.drawDebug();
   }
 
-  function connectRoute(playerId,playerName) {
-    aw.players[playerId].playerName = playerName
+  function connectRoute(req,res) {
+
+    res.render('main-menu', {playerId: req.query.playerId, playerName: req.query.playerName})
+
+    aw.players[req.query.playerId].playerName = req.query.playerName
 
     utils.drawDebug()
 
@@ -51,55 +46,54 @@ function connect(socketid) {
     
   
   }
+
+  function disconnectHostLeaves() {
+    res.render('main-menu', {playerId: req.query.playerId, playerName: req.query.playerName})
+  }
   
-  function createGame(playerId) {
+  function createGame(req,res) {
     
     //generateGameId
     let newGameId = utils.generateGameId()
   
     //add game info to games object
-    aw.games[newGameId] = {
-      hostPlayerId: playerId, 
-      playerIds: [],
-      playersReady: false, 
-      state: 'preGameLobby',
-      questions: {
-        0: {
-          text: 'TEST QUESTION?',
-          type: 'integer'
-        }
-      },
-      questionIndex: 0
-    };
+    aw.games[newGameId] = utils.newGameObj(req.query.playerId)
   
-    aw.games[newGameId].playerIds.push(playerId)
+    aw.games[newGameId].playerIds.push(req.query.playerId)
+
+   utils.drawDebug();
   
-  utils.drawDebug();
-  
-    return newGameId
+     //send game-lobby screen to client
+     res.render('pre-game-lobby', {playerId: req.query.playerId, gameId: newGameId, playerName: req.query.playerName, isHost: true})
   
     
   }
   
-  function joinGame(gameId,playerId) {
+  function joinGame(req,res) {
   
-    aw.games[gameId].playerIds.push(playerId)
+    aw.games[req.get('HX-Prompt')].playerIds.push(req.query.playerId)
     utils.drawDebug();
+
+    //send game-lobby screen to client
+    res.render('pre-game-lobby', {playerId: req.query.playerId, gameId: req.get('HX-Prompt'), playerName: req.query.playerName, isHost: false})
+
   
   }
   
-  function leaveGame(gameId,playerId) {
+  function leaveGame(req,res) {
   
     //check if player is hosting game and if so, remove game from obj
-    if (aw.games[gameId].hostPlayerId == playerId) {
-      delete aw.games[gameId]
+    if (aw.games[req.params.gameId].hostPlayerId == req.query.playerId) {
+      delete aw.games[req.params.gameId]
       utils.drawDebug();
       return
     }
   
     //remove player from array of playerids in game
-    aw.games[gameId].playerIds.splice(aw.games[gameId].playerIds.indexOf(playerId),1)
+    aw.games[req.params.gameId].playerIds.splice(aw.games[req.params.gameId].playerIds.indexOf(playerId),1)
     utils.drawDebug();
+
+    res.render('main-menu', {playerId: req.query.playerId, playerName: req.query.playerName})
   }
   
   function updatePlayer(playerId, playerObj) {
@@ -125,5 +119,75 @@ function connect(socketid) {
     utils.drawDebug();
   
   }
+
+  function getPlayerList(req,res) {
   
-  module.exports = {connect,connectRoute,disconnect,createGame,joinGame,leaveGame,updatePlayer}
+    var playerList = {}
+  
+    //check if game is still available, if not boot client back to menu
+    if (req.params.gameId in aw.games) {
+      if (aw.games[req.params.gameId].playerIds.length !== 0) {
+          
+        aw.games[req.params.gameId].playerIds.forEach(id => {
+          playerList[id] = aw.players[id]})
+    
+    }
+    
+    }
+    
+    //if player list returns nothing assume game no longer exists and boot client back to main menu
+    if (Object.keys(playerList).length == 0) {
+
+      res.render('disconnect', {playerId: req.query.playerId})
+    } else {
+      //return and render player list
+      res.render('player-list', {playerList: playerList, gameId: req.params.gameId})
+    }
+
+
+  
+  }
+
+
+  function checkReadyStatus(req,res) {
+    utils.updateAllPlayersReadyStatus()
+
+    res.render('start-btn',{gameId: req.params.gameId, playersReady: aw.games[req.params.gameId].playersReady})
+
+  utils.drawDebug();
+  }
+
+  function checkAnsweredStatus(req,res) {
+    utils.updateAllPlayersAnsweredStatus()
+
+
+  }
+
+  function getGameRules(req,res) {
+    res.render('game-rules', {playerId: req.query.playerId})
+  }
+
+  function updatePlayer(req,res) {
+
+    var playerVars = req.query
+    playerVars.playerId = req.params.playerId
+
+ //ready/unready btn
+ if (req.query.hasOwnProperty('readyStatus')) {
+
+  aw.players[req.params.playerId].readyStatus = utils.boolConv(req.query.readyStatus)
+  playerVars.readyStatus = utils.boolConv(req.query.readyStatus)
+
+  utils.updateAllPlayersReadyStatus()
+
+  res.render('ready-btn',playerVars)
+}
+
+  }
+
+  function showQuestion(questionIndex) {
+
+
+  }
+  
+  module.exports = {connect,connectRoute,disconnect,createGame,joinGame,leaveGame,updatePlayer,getPlayerList,disconnectHostLeaves,checkReadyStatus,checkAnsweredStatus,getGameRules,updatePlayer}

@@ -1,7 +1,8 @@
-tr(class='player-columns')
- th Player 
- th Ready 
- each player in playerList
-  tr(class='player-row')
-   td #{player.playerName}
-   td #{player.readyStatus}
+table(id='player-list' class='game-list' hx-swap='outerHTML' hx-trigger='every 1s' hx-get=`/games/${gameId}/playerlist`)
+ tr(class='player-columns')
+  th Player 
+  th Ready 
+  each player in playerList
+   tr(class='player-row')
+    td #{player.playerName}
+    td #{player.readyStatus}

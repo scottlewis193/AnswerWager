@@ -1,6 +1,41 @@
 const aw = require('./index.js')
 
+
+
+
 //FUNCTIONS
+
+function newPlayerObj() {
+  return {
+    playerName: '', 
+    readyStatus: false,
+    answeredStatus: false, 
+    points: 0, 
+    exactCorrectAnswers: 0, 
+    correctAnswers: 0, 
+    mostPointsEarnedRound: 0, 
+    highestOddsWon: ''
+  };
+}
+
+function newGameObj(hostPlayerId) {
+  return {
+    hostPlayerId: hostPlayerId, 
+    playerIds: [],
+    playersReady: false, 
+    playersAnswered: false,
+    state: 'preGameLobby',
+    questions: {
+      0: {
+        text: 'TEST QUESTION?',
+        type: 'integer'
+      }
+    },
+    questionIndex: 0
+  };
+}
+
+
 
 function generateGameId() {
 
@@ -32,27 +67,25 @@ function generateGameId() {
   
   drawDebug()
   }
+
+  function updateAllPlayersAnsweredStatus() {
+
+    for (const gameId in aw.games) {
+      aw.games[gameId].playersReady = true
+      for (let i = 0; i < aw.games[gameId].playerIds.length; i++) {
   
-  function getPlayerList(gameId) {
+        if (aw.players[aw.games[gameId].playerIds[i]].answeredStatus == false) {
+      
+          aw.games[gameId].playersAnswered = false; 
+          break;
+        }
   
-    var playerList = {}
-  
-  //check if game is still available, if not boot client back to menu
-  if (gameId in aw.games) {
-    if (aw.games[gameId].playerIds.length !== 0) {
-        
-      aw.games[gameId].playerIds.forEach(id => {
-        playerList[id] = aw.players[id]})
-  
+      }
+    }
+
   }
   
-  }
-  
-  
-  
-  return playerList
-  
-  }
+
   
   function getCurrentTime() {
     var today = new Date();
@@ -60,7 +93,7 @@ function generateGameId() {
   }
   
   function drawDebug() {
-    console.clear()
+    process.stdout.write("\u001b[3J\u001b[2J\u001b[1J");console.clear();
     console.log('░█▀█░█▀█░█▀▀░█░█░█▀▀░█▀▄░░░█░█░█▀█░█▀▀░█▀▀░█▀▄')
     console.log('░█▀█░█░█░▀▀█░█▄█░█▀▀░█▀▄░░░█▄█░█▀█░█░█░█▀▀░█▀▄')
     console.log('░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░░░▀░▀░▀░▀░▀▀▀░▀▀▀░▀░▀')
@@ -78,4 +111,4 @@ function generateGameId() {
     return boolStr
   }
 
-  module.exports = {generateGameId,updateAllPlayersReadyStatus,getPlayerList,getCurrentTime,drawDebug,boolConv}
+  module.exports = {generateGameId,updateAllPlayersReadyStatus,getCurrentTime,drawDebug,boolConv,newPlayerObj,newGameObj,updateAllPlayersAnsweredStatus}
