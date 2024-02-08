@@ -9,7 +9,8 @@ function newPlayerObj() {
   return {
     playerName: '', 
     readyStatus: false,
-    answeredStatus: false, 
+    answeredStatus: false,
+    wageredStatus: false,
     points: 0, 
     exactCorrectAnswers: 0, 
     correctAnswers: 0, 
@@ -27,8 +28,11 @@ function newGameObj(hostPlayerId) {
     state: 'preGameLobby',
     questions: {
       0: {
-        text: 'TEST QUESTION?',
-        type: 'integer'
+        question: 'Test Question?',
+        imageURL: 'https://www.thewowstyle.com/wp-content/uploads/2015/04/cat1.jpg',
+        answerType: 'integer',
+        answer: 1,
+        submittedAnswers: {}
       }
     },
     questionIndex: 0
@@ -65,13 +69,12 @@ function generateGameId() {
       }
     }
   
-  drawDebug()
   }
 
   function updateAllPlayersAnsweredStatus() {
 
     for (const gameId in aw.games) {
-      aw.games[gameId].playersReady = true
+      aw.games[gameId].playersAnswered = true
       for (let i = 0; i < aw.games[gameId].playerIds.length; i++) {
   
         if (aw.players[aw.games[gameId].playerIds[i]].answeredStatus == false) {

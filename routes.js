@@ -34,11 +34,21 @@ aw.app.get('/games/:gameId/leave', (req,res) => {
  handlers.leaveGame(req,res)
 })
 
+aw.app.get('/games/:gameId/submitanswer',(req,res) => {
+  handlers.submitAnswer(req,res)
+})
+
+aw.app.get('/games/:gameId/start',(req,res) => {
+  handlers.showQuestion(req,res)
+})
+
+
 aw.app.get('/games/:gameId/readycheck', (req,res) => {
  handlers.checkReadyStatus(req,res)
 })
 
 aw.app.get('/games/:gameId/answercheck', (req,res) => {
+ 
  handlers.checkAnsweredStatus(req,res)
 })
 

@@ -70,7 +70,7 @@ button:disabled {
 
 input {
     width: max(30vw,37.5vh);
-    justify-self: left;
+    /* justify-self: left; */
     border: 1px solid var(--Surface0) ;
     border-radius: 6px;
   
@@ -102,6 +102,14 @@ table {
 
 div {
     row-gap: max(2.5vw,3.125vh);
+}
+
+.player-id {
+    display: none;
+}
+
+.game-id {
+    display: none;
 }
 
 .start-page {
@@ -139,6 +147,10 @@ div {
         padding-bottom: 4vh;
     }
 
+    .game-id {
+        display: block;
+    }
+
 }
 
 .game-rules {
@@ -154,11 +166,23 @@ div {
     }
 }
 
-
-
-.player-id {
-    display: none;
+.question {
+    display:grid;
+    grid-auto-flow: row;
+    height:100vh;
+    text-align: center;
+    align-items: center;
+    justify-items: center;
 }
+
+.question-img {
+    max-width: max(20vw,27.5vh);
+    height: auto;
+}
+
+
+
+
 
 .center {
     position: absolute;

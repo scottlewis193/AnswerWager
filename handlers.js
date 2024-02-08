@@ -47,88 +47,106 @@ function connect(socketid) {
   
   }
 
-  function disconnectHostLeaves() {
-    res.render('main-menu', {playerId: req.query.playerId, playerName: req.query.playerName})
+  function disconnectHostLeaves(req,res) {
+
+    const PLAYERID = req.query.playerId
+    const PLAYERNAME = req.query.playerName
+
+    res.render('main-menu', {playerId: PLAYERID, playerName: PLAYERNAME})
   }
   
   function createGame(req,res) {
-    
-    //generateGameId
-    let newGameId = utils.generateGameId()
+
+    const NEWGAMEID = utils.generateGameId()
+    const PLAYERID = req.query.playerId
+    const PLAYERNAME = req.query.playerName
+
   
     //add game info to games object
-    aw.games[newGameId] = utils.newGameObj(req.query.playerId)
+    aw.games[NEWGAMEID] = utils.newGameObj(PLAYERID)
   
-    aw.games[newGameId].playerIds.push(req.query.playerId)
+    aw.games[NEWGAMEID].playerIds.push(PLAYERID)
 
    utils.drawDebug();
   
      //send game-lobby screen to client
-     res.render('pre-game-lobby', {playerId: req.query.playerId, gameId: newGameId, playerName: req.query.playerName, isHost: true})
+     res.render('pre-game-lobby', {playerId: PLAYERID, gameId: NEWGAMEID, playerName: PLAYERNAME, isHost: true})
   
     
   }
   
   function joinGame(req,res) {
+
+    const GAMEID = req.get('HX-Prompt')
+    const PLAYERID = req.query.playerId
+    const PLAYERNAME = req.query.playerName
   
-    aw.games[req.get('HX-Prompt')].playerIds.push(req.query.playerId)
+    aw.games[GAMEID].playerIds.push(PLAYERID)
     utils.drawDebug();
 
     //send game-lobby screen to client
-    res.render('pre-game-lobby', {playerId: req.query.playerId, gameId: req.get('HX-Prompt'), playerName: req.query.playerName, isHost: false})
+    res.render('pre-game-lobby', {playerId: PLAYERID, gameId: GAMEID, playerName: PLAYERNAME, isHost: false})
 
   
   }
   
   function leaveGame(req,res) {
+
+    const GAMEID = req.query.gameId
+    const PLAYERID = req.query.playerId
+
   
     //check if player is hosting game and if so, remove game from obj
-    if (aw.games[req.params.gameId].hostPlayerId == req.query.playerId) {
-      delete aw.games[req.params.gameId]
+    if (aw.games[GAMEID].hostPlayerId == PLAYERID) {
+      delete aw.games[GAMEID]
       utils.drawDebug();
       return
     }
   
     //remove player from array of playerids in game
-    aw.games[req.params.gameId].playerIds.splice(aw.games[req.params.gameId].playerIds.indexOf(playerId),1)
+    aw.games[GAMEID].playerIds.splice(aw.games[GAMEID].playerIds.indexOf(PLAYERID),1)
     utils.drawDebug();
 
-    res.render('main-menu', {playerId: req.query.playerId, playerName: req.query.playerName})
+    res.render('main-menu', {playerId: PLAYERID, playerName: req.query.playerName})
   }
   
-  function updatePlayer(playerId, playerObj) {
+  // function updatePlayer(req,res) {
   
-    
-    //only update values that have been included in request
-    for (const playerKey in aw.players[playerId]) {
+  //   const PLAYEROBJ = req.query
+
+  //   //only update values that have been included in request
+  //   for (const playerKey in aw.players[playerId]) {
   
-      for(const newPlayerKey in playerObj) {
+  //     for(const newPlayerKey in PLAYEROBJ) {
   
-        //bools come in as string, this will convert them to true booleans prior to comparisions
-        playerObj[newPlayerKey] = utils.boolConv(playerObj[newPlayerKey]);
+  //       //bools come in as string, this will convert them to true booleans prior to comparisions
+  //       PLAYEROBJ[newPlayerKey] = utils.boolConv(PLAYEROBJ[newPlayerKey]);
   
-        if (playerKey == newPlayerKey) {
+  //       if (playerKey == newPlayerKey) {
   
-          //if key exists, update value in players obj
-          aw.players[playerId][playerKey] = playerObj[newPlayerKey]
+  //         //if key exists, update value in players obj
+  //         aw.players[playerId][playerKey] = PLAYEROBJ[newPlayerKey]
   
-        }
-      }
+  //       }
+  //     }
   
-    }
-    utils.drawDebug();
+  //   }
+  //   utils.drawDebug();
   
-  }
+  // }
 
   function getPlayerList(req,res) {
+
+    const GAMEID = req.params.gameId
+    const PLAYERID = req.query.playerId
   
     var playerList = {}
   
     //check if game is still available, if not boot client back to menu
-    if (req.params.gameId in aw.games) {
-      if (aw.games[req.params.gameId].playerIds.length !== 0) {
+    if (GAMEID in aw.games) {
+      if (aw.games[GAMEID].playerIds.length !== 0) {
           
-        aw.games[req.params.gameId].playerIds.forEach(id => {
+        aw.games[GAMEID].playerIds.forEach(id => {
           playerList[id] = aw.players[id]})
     
     }
@@ -138,33 +156,61 @@ function connect(socketid) {
     //if player list returns nothing assume game no longer exists and boot client back to main menu
     if (Object.keys(playerList).length == 0) {
 
-      res.render('disconnect', {playerId: req.query.playerId})
+      res.render('disconnect', {playerId: PLAYERID})
     } else {
       //return and render player list
-      res.render('player-list', {playerList: playerList, gameId: req.params.gameId})
+      res.render('player-list', {playerList: playerList, gameId: GAMEID})
     }
 
 
   
   }
 
+  function submitAnswer(req,res) {
+
+    const GAMEID = req.params.gameId
+    const PLAYERID = req.query.playerId
+    const QUESTIONINDEX = aw.games[GAMEID].questionIndex
+    const SUBMITTEDANSWER = req.query.submittedAnswer
+
+    aw.games[GAMEID].questions[QUESTIONINDEX].submittedAnswers[PLAYERID] = {answer: SUBMITTEDANSWER}
+    aw.players[PLAYERID].answeredStatus = true;
+
+    utils.drawDebug();
+  }
+
 
   function checkReadyStatus(req,res) {
+
+    const GAMEID = req.params.gameId
+
     utils.updateAllPlayersReadyStatus()
 
-    res.render('start-btn',{gameId: req.params.gameId, playersReady: aw.games[req.params.gameId].playersReady})
+    res.render('start-btn',{gameId: GAMEID, playersReady: aw.games[GAMEID].playersReady})
 
   utils.drawDebug();
   }
 
   function checkAnsweredStatus(req,res) {
+
+    const GAMEID = req.params.gameId
+
     utils.updateAllPlayersAnsweredStatus()
 
+    if (aw.games[GAMEID].playersAnswered) {
+      res.render('wager-board')
+    } else{
+      res.sendStatus(204)
+    }
 
+    utils.drawDebug();
   }
 
   function getGameRules(req,res) {
-    res.render('game-rules', {playerId: req.query.playerId})
+
+    const PLAYERID = req.query.playerId
+
+    res.render('game-rules', {playerId: PLAYERID})
   }
 
   function updatePlayer(req,res) {
@@ -185,9 +231,19 @@ function connect(socketid) {
 
   }
 
-  function showQuestion(questionIndex) {
+  function showQuestion(req,res) {
+    const GAMEID = req.params.gameId
+    const PLAYERID = req.query.playerId
+    const QUESTIONINDEX = aw.games[GAMEID].questionIndex
+    let questionObj = aw.games[GAMEID].questions[QUESTIONINDEX]
+    questionObj.gameId = GAMEID
+    questionObj.playerId = PLAYERID
 
+
+
+
+    res.render('question', questionObj)
 
   }
   
-  module.exports = {connect,connectRoute,disconnect,createGame,joinGame,leaveGame,updatePlayer,getPlayerList,disconnectHostLeaves,checkReadyStatus,checkAnsweredStatus,getGameRules,updatePlayer}
+  module.exports = {connect,connectRoute,disconnect,createGame,joinGame,leaveGame,updatePlayer,getPlayerList,disconnectHostLeaves,checkReadyStatus,checkAnsweredStatus,getGameRules,updatePlayer,submitAnswer,showQuestion}
