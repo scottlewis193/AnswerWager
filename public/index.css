@@ -180,6 +180,86 @@ div {
     height: auto;
 }
 
+.wager-board {
+    display: grid;
+    grid-auto-flow: row;
+    text-align: center;
+    align-items: center;
+    justify-items: center;
+    width:100%;
+    height:100%;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    column-gap: 1%;
+    row-gap: 1%;
+    padding: 1%;
+
+    .board-segment {
+        display: grid;
+        grid-auto-flow: row;
+        text-align: center;
+        align-items: center;
+        justify-items: center;
+        width: 100%;
+        height:100%;
+        border: max(0.1vw,0.125vh) solid var(--Blue);
+    
+        /* padding: 1vw; */
+        grid-template-rows: auto 20px auto auto;
+      
+
+        .segment-btn {
+            width: 80%;
+        }
+    }
+}
+
+
+
+
+
+/* @media (max-aspect-ratio: 16/9) {
+    .wager-board {
+        grid-template-columns: repeat(8,1fr);
+        grid-template-rows: 1fr;
+    }
+} */
+
+/* @media (max-aspect-ratio: 1/1)  {
+    .wager-board {
+        grid-template-columns: repeat(4,1fr);
+        grid-template-rows: repeat(2,1fr);
+    }
+}
+
+
+@media (min-aspect-ratio: 1/1) {
+    .wager-board {
+        grid-template-columns: repeat(2,1fr);
+        grid-template-rows: repeat(4,1fr);
+
+        .board-segment {
+            grid-template-columns: repeat(2,1fr);
+            grid-template-rows: 1fr;
+        }
+    }
+}
+
+@media  (min-aspect-ratio: 9/16) {
+    .wager-board {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(8,1fr);
+        
+        .board-segment {
+            grid-template-columns: repeat(2,1fr);
+            grid-template-rows: 1fr;
+        }
+    }
+
+
+} */
+
+
+
 
 
 
@@ -189,10 +269,14 @@ div {
     top: 50%;
     left: 50%;
     transform: translate(-50%,-50%);
-    
-
+    padding-left: max(1vw,1.25vh);
+    padding-right: max(1vw,1.25vh);
   }
 
+  .center:has(.wager-board) {
+    width:100%;
+    height:100%;
+  }
   .center:has(.game-rules) {
     position:initial;
     transform: none;
