@@ -1,33 +1,10 @@
 .wager-board
- .board-segment
-  a(class='odds-text') 6/1
-  a(class='answer-text') SMALLER
-  button(class='segment-btn') Bet 
- .board-segment
-  a(class='odds-text') 5/1
-  a(class='answer-text') 
-  button(class='segment-btn') Bet
- .board-segment
-  a(class='odds-text') 4/1
-  a(class='answer-text') 
-  button(class='segment-btn') Bet
- .board-segment
-  a(class='odds-text') 3/1
-  a(class='answer-text') 
-  button(class='segment-btn') Bet
- .board-segment
-  a(class='odds-text') 2/1
-  a(class='answer-text') 
-  button(class='segment-btn') Bet
- .board-segment
-  a(class='odds-text') 3/1
-  a(class='answer-text') 
-  button(class='segment-btn') Bet
- .board-segment
-  a(class='odds-text') 4/1
-  a(class='answer-text') 
-  button(class='segment-btn') Bet
- .board-segment
-  a(class='odds-text') 5/1
-  a(class='answer-text') 
-  button(class='segment-btn') Bet
+  div(class='board-segment' id='0')
+   a(class='odds-text') 6/1
+   a(class='answer-text') SMALLER
+   button(class='segment-btn') Bet 
+  each answer, index in answers  
+   div(class='board-segment' id=`${index}`)
+    a(class='odds-text') #{answers.odds}
+    a(class='answer-text') #{answer.answer}
+    button(class='segment-btn') Bet

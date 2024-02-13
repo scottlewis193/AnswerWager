@@ -1,260 +1,255 @@
 :root {
-    --Base: #1e1e2e;
-    --Mantle: #181825;
-    --Crust: #11111b;
-    --Blue: #69b4fa;
-    --Text: #cdd6f4;
-    --SubText1: #bac2de;
-    --SubText0: #a6adc8;
-    --Surface0: #313244;
-    --Surface1: #45475a;
-    --Surface2: #585b70;
-    --Overlay0: #6c7086;
-    --Overlay1: #7f849c;
-    --Overlay2: #9399b2;
-    --Scale: 1;
+  --Base: #1e1e2e;
+  --Mantle: #181825;
+  --Crust: #11111b;
+  --Blue: #69b4fa;
+  --Text: #cdd6f4;
+  --SubText1: #bac2de;
+  --SubText0: #a6adc8;
+  --Surface0: #313244;
+  --Surface1: #45475a;
+  --Surface2: #585b70;
+  --Overlay0: #6c7086;
+  --Overlay1: #7f849c;
+  --Overlay2: #9399b2;
+  --Scale: 1;
 }
 
-
-
-
-
-*, *::after, *::before {
-    box-sizing:border-box;
-    padding:0;
-    margin:0;
-  }
-
-html,body,input,button,li {
-    font-size: max(2vw,2.5vh);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif !important;
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
+html,
+body,
+input,
+button,
+li {
+  font-size: max(2vw, 2.5vh);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif !important;
+}
 
-  html,body {
-    line-height:1.5em;
-    color: var(--Text);
-    background-color: var(--Base);
+html,
+body {
+  line-height: 1.5em;
+  color: var(--Text);
+  background-color: var(--Base);
 }
 
 h2 {
-    font-size: max(2.4vw,3vh);
-    font-weight: bold;
+  font-size: max(2.4vw, 3vh);
+  font-weight: bold;
 }
 
 h3 {
-    font-size: max(2vw,2.5vh);
-    font-weight: bold;
+  font-size: max(2vw, 2.5vh);
+  font-weight: bold;
 }
 
 button {
-    padding: max(1vw,1.25vh);
-    width: max(30vw,37.5vh);
-    height: max(5vw,6.25vh);
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    background-color: transparent;
-    color: var(--Blue);
-    border: max(0.1vw,0.125vh) solid var(--Blue);
-    cursor: pointer;
-    border-radius: max(1vw,1.25vh);
+  padding: max(1vw, 1.25vh);
+  width: max(30vw, 37.5vh);
+  height: max(5vw, 6.25vh);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background-color: transparent;
+  color: var(--Blue);
+  border: max(0.1vw, 0.125vh) solid var(--Blue);
+  cursor: pointer;
+  border-radius: max(1vw, 1.25vh);
 }
 button:hover:not(:disabled) {
-    background-color: var(--Surface0);
+  background-color: var(--Surface0);
 }
 button:disabled {
-    cursor:default;
-    color: var(--Overlay0);
-    border: max(0.1vw,0.125vh) solid var(--Overlay0);
+  cursor: default;
+  color: var(--Overlay0);
+  border: max(0.1vw, 0.125vh) solid var(--Overlay0);
 }
 
 input {
-    width: max(30vw,37.5vh);
-    /* justify-self: left; */
-    border: 1px solid var(--Surface0) ;
-    border-radius: 6px;
-  
-    color: var(--Text);
-    background-color: var(--Mantle);
+  width: max(30vw, 37.5vh);
+  /* justify-self: left; */
+  border: 1px solid var(--Surface0);
+  border-radius: 6px;
+
+  color: var(--Text);
+  background-color: var(--Mantle);
 }
 
 table {
+  border-spacing: 0;
+  width: max(30vw, 37.5vh);
+  text-align: center;
 
-    border-spacing: 0;
-    width: max(30vw,37.5vh);
-    text-align: center;
+  tr {
+    border: 0;
+  }
 
-    tr {
-        border: 0;
-    }
+  th {
+    padding: max(1vw, 1.25vh);
+    border: max(0.1vw, 0.125vh) solid var(--Surface0);
+    text-transform: uppercase;
+  }
 
-    th {
-        padding: max(1vw,1.25vh);
-        border: max(0.1vw,0.125vh) solid var(--Surface0);
-        text-transform: uppercase;
-    }
-
-    td {
-        padding: max(1vw,1.25vh);
-        border: max(0.1vw,0.125vh) solid var(--Surface0);
-    }
+  td {
+    padding: max(1vw, 1.25vh);
+    border: max(0.1vw, 0.125vh) solid var(--Surface0);
+  }
 }
 
 div {
-    row-gap: max(2.5vw,3.125vh);
+  row-gap: max(2.5vw, 3.125vh);
 }
 
 .player-id {
-    display: none;
+  display: none;
 }
 
 .game-id {
-    display: none;
+  display: none;
 }
 
 .start-page {
-    display: grid;
-    row-gap: max(1vw,1.25vh);
-    text-align: center;
-    align-items: center;
-    justify-items: center;
+  display: grid;
+  row-gap: max(1vw, 1.25vh);
+  text-align: center;
+  align-items: center;
+  justify-items: center;
 }
 
 .main-menu {
-    display:grid;
-    grid-auto-flow: row;
-    width: 80%;
-    text-align: center;
-    align-items: center;
-    justify-items: center;
+  display: grid;
+  grid-auto-flow: row;
+  width: 80%;
+  text-align: center;
+  align-items: center;
+  justify-items: center;
 }
 
 .pre-game-lobby {
-    display:grid;
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr auto auto auto 1fr auto;
+  height: 100vh;
+  align-items: center;
+  justify-items: center;
+
+  .sub-grid {
+    display: grid;
     grid-auto-flow: row;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr auto auto auto 1fr auto;
-    height: 100vh;
+    row-gap: max(1vw, 1.25vh);
     align-items: center;
     justify-items: center;
+    padding-bottom: 4vh;
+  }
 
-    .sub-grid {
-        display:grid;
-        grid-auto-flow: row;
-        row-gap: max(1vw,1.25vh);
-        align-items: center;
-        justify-items: center;
-        padding-bottom: 4vh;
-    }
-
-    .game-id {
-        display: block;
-    }
-
+  .game-id {
+    display: block;
+  }
 }
 
 .game-rules {
-    
- padding: 10px;
- width: 90vw;
- column-gap: 5px;
- display:grid;
+  padding: 10px;
+  width: 90vw;
+  column-gap: 5px;
+  display: grid;
 
-
-    button {
-        justify-self: center;
-    }
+  button {
+    justify-self: center;
+  }
 }
 
 .question {
-    display:grid;
-    grid-auto-flow: row;
-    height:100vh;
-    text-align: center;
-    align-items: center;
-    justify-items: center;
+  display: grid;
+  grid-auto-flow: row;
+  height: 100vh;
+  text-align: center;
+  align-items: center;
+  justify-items: center;
 }
 
 .question-img {
-    max-width: max(20vw,27.5vh);
-    height: auto;
+  max-width: max(20vw, 27.5vh);
+  height: auto;
 }
 
 .wager-board {
+  display: grid;
+  grid-auto-flow: row;
+  text-align: center;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(calc(200px * var(--Scale)), 1fr)
+  );
+  column-gap: 1%;
+  row-gap: 1%;
+  padding: 1%;
+
+  .board-segment {
     display: grid;
     grid-auto-flow: row;
     text-align: center;
     align-items: center;
     justify-items: center;
-    width:100%;
-    height:100%;
-    grid-template-columns: repeat(auto-fit,minmax(calc(200px*var(--Scale)),1fr));
-    column-gap: 1%;
-    row-gap: 1%;
-    padding: 1%;
+    width: 100%;
+    height: 100%;
+    max-height: 450px;
+    border: max(0.1vw, 0.125vh) solid var(--Blue);
 
-    .board-segment {
-        display: grid;
-        grid-auto-flow: row;
-        text-align: center;
-        align-items: center;
-        justify-items: center;
-        width: 100%;
-        height:100%;
-        max-height: 450px;
-        border: max(0.1vw,0.125vh) solid var(--Blue);
-    
-        padding-top: 2%;
-        grid-template-rows: auto 20px auto auto;
-      
+    padding-top: 2%;
+    grid-template-rows: auto 20px auto auto;
 
-        .segment-btn {
-            width: 80%; 
-        }
+    .segment-btn {
+      width: 80%;
     }
+  }
 }
 
-
 @media (min-resolution: 2x) {
-    :root {
+  :root {
     --Scale: 2;
-    }
+  }
 }
 
 @media (min-resolution: 3x) {
-    :root {
+  :root {
     --Scale: 3;
-    }
+  }
 }
 
 @media (min-resolution: 4x) {
-    :root {
+  :root {
     --Scale: 4;
-    }
+  }
 }
 
 .center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    padding-left: max(1vw,1.25vh);
-    padding-right: max(1vw,1.25vh);
-  }
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding-left: max(1vw, 1.25vh);
+  padding-right: max(1vw, 1.25vh);
+}
 
-  .center:has(.wager-board) {
-    width:100%;
-    height:100%;
-  }
-  .center:has(.game-rules) {
-    position:initial;
-    transform: none;
-    display: flex;
-    justify-content: center;
-  }
-
-
-
-
-
-
+.center:has(.wager-board) {
+  width: 100%;
+  height: 100%;
+}
+.center:has(.game-rules) {
+  position: initial;
+  transform: none;
+  display: flex;
+  justify-content: center;
+}

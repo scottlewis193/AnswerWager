@@ -1,5 +1,6 @@
-if playersReady
- div(hx-swap='outerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']")
+div(class='ready-check' hx-target='.ready-check' hx-swap='outerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']")
+ if playersReady
   button(type='button' id='start-btn' class='menu-btn' hx-target='.center' hx-swap='innerHTML' hx-get=`/games/${gameId}/start` hx-include="[name='gameId'],[name='playerId']") Start
-else 
- button(type='button' id='start-btn' class='menu-btn' disabled) Start
+ else 
+  button(type='button' id='start-btn' class='menu-btn' disabled) Start
+
