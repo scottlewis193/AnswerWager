@@ -50,25 +50,23 @@ function generateGameId() {
 
 function updateAllPlayersReadyStatus() {
   for (const gameId in aw.games) {
-    aw.games[gameId].playersReady = true;
-    for (let i = 0; i < aw.games[gameId].playerIds.length; i++) {
-      if (aw.players[aw.games[gameId].playerIds[i]].readyStatus == false) {
-        aw.games[gameId].playersReady = false;
-        break;
-      }
-    }
+    //get game from id
+    const GAME = aw.games[gameId];
+    //check if all players are ready
+    GAME.playersReady = GAME.playerIds.every(
+      (playerId) => aw.players[playerId].readyStatus
+    );
   }
 }
 
 function updateAllPlayersAnsweredStatus() {
   for (const gameId in aw.games) {
-    aw.games[gameId].playersAnswered = true;
-    for (let i = 0; i < aw.games[gameId].playerIds.length; i++) {
-      if (aw.players[aw.games[gameId].playerIds[i]].answeredStatus == false) {
-        aw.games[gameId].playersAnswered = false;
-        break;
-      }
-    }
+    //get game from id
+    const GAME = aw.games[gameId];
+    //check if all players have answered
+    aw.games[gameId].playersAnswered = aw.games[gameId].playerIds.every(
+      (playerId) => aw.players[playerId].answeredStatus
+    );
   }
 }
 

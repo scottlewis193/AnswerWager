@@ -109,31 +109,6 @@ function leaveGame(req, res) {
   });
 }
 
-// function updatePlayer(req,res) {
-
-//   const PLAYEROBJ = req.query
-
-//   //only update values that have been included in request
-//   for (const playerKey in aw.players[playerId]) {
-
-//     for(const newPlayerKey in PLAYEROBJ) {
-
-//       //bools come in as string, this will convert them to true booleans prior to comparisions
-//       PLAYEROBJ[newPlayerKey] = utils.boolConv(PLAYEROBJ[newPlayerKey]);
-
-//       if (playerKey == newPlayerKey) {
-
-//         //if key exists, update value in players obj
-//         aw.players[playerId][playerKey] = PLAYEROBJ[newPlayerKey]
-
-//       }
-//     }
-
-//   }
-//   utils.drawDebug();
-
-// }
-
 function getPlayerList(req, res) {
   const GAMEID = req.params.gameId;
   const PLAYERID = req.query.playerId;
