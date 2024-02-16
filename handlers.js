@@ -1,14 +1,15 @@
-var aw = require("./index.js");
-var utils = require("./utils.js");
+import * as aw from "./app.js";
+import * as utils from "./utils.js";
 
-function connect(socketid) {
+const connect = (socketid) => {
   //add player to players obj
   aw.players[socketid] = utils.newPlayerObj();
 
   utils.drawDebug();
-}
+};
 
-function connectRoute(req, res) {
+const connectRoute = (req, res) => {
+  console.log(req.query);
   res.render("main-menu", {
     playerId: req.query.playerId,
     playerName: req.query.playerName,
@@ -16,10 +17,10 @@ function connectRoute(req, res) {
 
   aw.players[req.query.playerId].playerName = req.query.playerName;
 
-  utils.drawDebug();
-}
+  //utils.drawDebug();
+};
 
-function disconnect(socketid) {
+const disconnect = (socketid) => {
   //remove player from players object
   delete aw.players[socketid];
 
@@ -38,16 +39,16 @@ function disconnect(socketid) {
   }
 
   utils.drawDebug();
-}
+};
 
-function disconnectHostLeaves(req, res) {
+const disconnectHostLeaves = (req, res) => {
   const PLAYERID = req.query.playerId;
   const PLAYERNAME = req.query.playerName;
 
   res.render("main-menu", { playerId: PLAYERID, playerName: PLAYERNAME });
-}
+};
 
-function createGame(req, res) {
+const createGame = (req, res) => {
   const NEWGAMEID = utils.generateGameId();
   const PLAYERID = req.query.playerId;
   const PLAYERNAME = req.query.playerName;
@@ -66,9 +67,9 @@ function createGame(req, res) {
     playerName: PLAYERNAME,
     isHost: true,
   });
-}
+};
 
-function joinGame(req, res) {
+const joinGame = (req, res) => {
   const GAMEID = req.get("HX-Prompt");
   const PLAYERID = req.query.playerId;
   const PLAYERNAME = req.query.playerName;
@@ -83,9 +84,9 @@ function joinGame(req, res) {
     playerName: PLAYERNAME,
     isHost: false,
   });
-}
+};
 
-function leaveGame(req, res) {
+const leaveGame = (req, res) => {
   const GAMEID = req.query.gameId;
   const PLAYERID = req.query.playerId;
 
@@ -107,9 +108,9 @@ function leaveGame(req, res) {
     playerId: PLAYERID,
     playerName: req.query.playerName,
   });
-}
+};
 
-function getPlayerList(req, res) {
+const getPlayerList = (req, res) => {
   const GAMEID = req.params.gameId;
   const PLAYERID = req.query.playerId;
 
@@ -131,9 +132,9 @@ function getPlayerList(req, res) {
     //return and render player list
     res.render("player-list", { playerList: playerList, gameId: GAMEID });
   }
-}
+};
 
-function submitAnswer(req, res) {
+const submitAnswer = (req, res) => {
   const GAMEID = req.params.gameId;
   const PLAYERID = req.query.playerId;
   const QUESTIONINDEX = aw.games[GAMEID].questionIndex;
@@ -143,9 +144,9 @@ function submitAnswer(req, res) {
   aw.players[PLAYERID].answers[QUESTIONINDEX] = { answer: SUBMITTEDANSWER };
 
   utils.drawDebug();
-}
+};
 
-function checkReadyStatus(req, res) {
+const checkReadyStatus = (req, res) => {
   const GAMEID = req.params.gameId;
 
   utils.updateAllPlayersReadyStatus();
@@ -156,9 +157,9 @@ function checkReadyStatus(req, res) {
   });
 
   utils.drawDebug();
-}
+};
 
-function checkAnsweredStatus(req, res) {
+const checkAnsweredStatus = (req, res) => {
   const GAMEID = req.params.gameId;
 
   utils.updateAllPlayersAnsweredStatus();
@@ -174,15 +175,15 @@ function checkAnsweredStatus(req, res) {
   }
 
   utils.drawDebug();
-}
+};
 
-function getGameRules(req, res) {
+const getGameRules = (req, res) => {
   const PLAYERID = req.query.playerId;
 
   res.render("game-rules", { playerId: PLAYERID });
-}
+};
 
-function updatePlayer(req, res) {
+const updatePlayer = (req, res) => {
   var playerVars = req.query;
   playerVars.playerId = req.params.playerId;
 
@@ -197,9 +198,9 @@ function updatePlayer(req, res) {
 
     res.render("ready-btn", playerVars);
   }
-}
+};
 
-function showQuestion(req, res) {
+const showQuestion = (req, res) => {
   const GAMEID = req.params.gameId;
   const PLAYERID = req.query.playerId;
   const QUESTIONINDEX = aw.games[GAMEID].questionIndex;
@@ -208,9 +209,9 @@ function showQuestion(req, res) {
   questionObj.playerId = PLAYERID;
 
   res.render("question", questionObj);
-}
+};
 
-module.exports = {
+export {
   connect,
   connectRoute,
   disconnect,
@@ -223,7 +224,6 @@ module.exports = {
   checkReadyStatus,
   checkAnsweredStatus,
   getGameRules,
-  updatePlayer,
   submitAnswer,
   showQuestion,
 };

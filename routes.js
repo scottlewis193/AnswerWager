@@ -1,58 +1,72 @@
-//LOCAL IMPORTS
-const aw = require("./index.js");
-const handlers = require("./handlers.js");
-const utils = require("./utils.js");
+import {
+  connectRoute,
+  createGame,
+  joinGame,
+  getPlayerList,
+  leaveGame,
+  submitAnswer,
+  showQuestion,
+  disconnectHostLeaves,
+  checkReadyStatus,
+  checkAnsweredStatus,
+  getGameRules,
+  updatePlayer,
+} from "./handlers.js";
 
-//ROUTES
+import express from "express";
 
-aw.app.get("/", (req, res) => {
+const router = express.Router();
+
+router.get("/", (req, res) => {
   res.render("start-page", { playerName: "John" });
 });
 
-aw.app.get("/connect", (req, res) => {
-  handlers.connectRoute(req, res);
+router.get("/connect", (req, res) => {
+  connectRoute(req, res);
 });
 
-aw.app.get("/games/create", (req, res) => {
-  handlers.createGame(req, res);
+router.get("/games/create", (req, res) => {
+  createGame(req, res);
 });
 
-aw.app.get("/games/join", (req, res) => {
-  handlers.joinGame(req, res);
+router.get("/games/join", (req, res) => {
+  joinGame(req, res);
 });
 
-aw.app.get("/games/:gameId/playerlist", (req, res) => {
-  handlers.getPlayerList(req, res);
+router.get("/games/:gameId/playerlist", (req, res) => {
+  getPlayerList(req, res);
 });
 
-aw.app.get("/games/disconnect", (req, res) => {
-  handlers.disconnectHostLeaves(req, res);
+router.get("/games/disconnect", (req, res) => {
+  disconnectHostLeaves(req, res);
 });
 
-aw.app.get("/games/:gameId/leave", (req, res) => {
-  handlers.leaveGame(req, res);
+router.get("/games/:gameId/leave", (req, res) => {
+  leaveGame(req, res);
 });
 
-aw.app.get("/games/:gameId/submitanswer", (req, res) => {
-  handlers.submitAnswer(req, res);
+router.get("/games/:gameId/submitanswer", (req, res) => {
+  submitAnswer(req, res);
 });
 
-aw.app.get("/games/:gameId/start", (req, res) => {
-  handlers.showQuestion(req, res);
+router.get("/games/:gameId/start", (req, res) => {
+  showQuestion(req, res);
 });
 
-aw.app.get("/games/:gameId/readycheck", (req, res) => {
-  handlers.checkReadyStatus(req, res);
+router.get("/games/:gameId/readycheck", (req, res) => {
+  checkReadyStatus(req, res);
 });
 
-aw.app.get("/games/:gameId/answercheck", (req, res) => {
-  handlers.checkAnsweredStatus(req, res);
+router.get("/games/:gameId/answercheck", (req, res) => {
+  checkAnsweredStatus(req, res);
 });
 
-aw.app.get("/game-rules", (req, res) => {
-  handlers.getGameRules(req, res);
+router.get("/game-rules", (req, res) => {
+  getGameRules(req, res);
 });
 
-aw.app.get("/players/:playerId/update", (req, res) => {
-  handlers.updatePlayer(req, res);
+router.get("/players/:playerId/update", (req, res) => {
+  updatePlayer(req, res);
 });
+
+export default router;

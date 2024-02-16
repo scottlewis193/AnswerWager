@@ -1,8 +1,9 @@
-const aw = require("./index.js");
+// import the necessary functions and objects
+import * as aw from "./app.js";
 
 //FUNCTIONS
 
-function newPlayerObj() {
+const newPlayerObj = () => {
   return {
     playerName: "",
     readyStatus: false,
@@ -15,11 +16,11 @@ function newPlayerObj() {
     mostPointsEarnedRound: 0,
     highestOddsWon: "",
   };
-}
+};
 
-function newGameObj(hostPlayerId) {
+const newGameObj = (hostPlayerId) => {
   return {
-    hostPlayerId: hostPlayerId,
+    hostPlayerId,
     playerIds: [],
     playersReady: false,
     playersAnswered: false,
@@ -36,9 +37,9 @@ function newGameObj(hostPlayerId) {
     },
     questionIndex: 0,
   };
-}
+};
 
-function generateGameId() {
+const generateGameId = () => {
   let gameId = String(Math.floor(Math.random() * 10));
 
   for (let i = 0; i < 5; i++) {
@@ -46,9 +47,9 @@ function generateGameId() {
   }
 
   return gameId;
-}
+};
 
-function updateAllPlayersReadyStatus() {
+const updateAllPlayersReadyStatus = () => {
   for (const gameId in aw.games) {
     //get game from id
     const GAME = aw.games[gameId];
@@ -57,9 +58,9 @@ function updateAllPlayersReadyStatus() {
       (playerId) => aw.players[playerId].readyStatus
     );
   }
-}
+};
 
-function updateAllPlayersAnsweredStatus() {
+const updateAllPlayersAnsweredStatus = () => {
   for (const gameId in aw.games) {
     //get game from id
     const GAME = aw.games[gameId];
@@ -68,9 +69,9 @@ function updateAllPlayersAnsweredStatus() {
       (playerId) => aw.players[playerId].answeredStatus
     );
   }
-}
+};
 
-function processAnswers(gameId) {
+const processAnswers = (gameId) => {
   const QUESTIONINDEX = String(aw.games[gameId].questionIndex);
 
   let processedAnswers = [];
@@ -88,9 +89,7 @@ function processAnswers(gameId) {
   }
 
   //sort from lowest to highest
-  processedAnswers.sort(function (a, b) {
-    return a.answer - b.answer;
-  });
+  processedAnswers.sort((a, b) => a.answer - b.answer);
 
   const MIDDLEANSWERINDEX =
     processedAnswers.length !== 1 ? (processedAnswers.length - 1) / 2 : 1;
@@ -111,14 +110,14 @@ function processAnswers(gameId) {
   }
 
   return processedAnswers;
-}
+};
 
-function getCurrentTime() {
-  var today = new Date();
+const getCurrentTime = () => {
+  const today = new Date();
   return today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-}
+};
 
-function drawDebug() {
+const drawDebug = () => {
   process.stdout.write("\u001b[3J\u001b[2J\u001b[1J");
   console.clear();
   console.log("░█▀█░█▀█░█▀▀░█░█░█▀▀░█▀▄░░░█░█░█▀█░█▀▀░█▀▀░█▀▄");
@@ -130,9 +129,9 @@ function drawDebug() {
   console.log(aw.players);
   console.log(`GAMES: ${Object.keys(aw.games).length}`);
   console.log(aw.games);
-}
+};
 
-function boolConv(boolStr) {
+const boolConv = (boolStr) => {
   if (boolStr === "true") {
     return true;
   }
@@ -140,9 +139,9 @@ function boolConv(boolStr) {
     return false;
   }
   return boolStr;
-}
+};
 
-module.exports = {
+export {
   generateGameId,
   updateAllPlayersReadyStatus,
   getCurrentTime,
