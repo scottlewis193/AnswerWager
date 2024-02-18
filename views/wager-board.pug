@@ -1,10 +1,10 @@
 .wager-board
   div(class='board-segment' id='0')
-   a(class='odds-text') 6/1
+   a(class='odds-text') #{highestodds}/1
    a(class='answer-text') SMALLER
    button(class='segment-btn') Bet 
-  each answer, index in answers  
+  each answerObj, index in answers  
    div(class='board-segment' id=`${index}`)
-    a(class='odds-text') #{answers.odds}
-    a(class='answer-text') #{answer.answer}
+    a(class='odds-text') #{answerObj.odds}
+    a(class='answer-text') #{answerObj.answer}
     button(class='segment-btn') Bet

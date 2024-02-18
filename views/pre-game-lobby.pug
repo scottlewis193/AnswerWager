@@ -8,8 +8,12 @@
 
     button(id='ready-btn' class='menu-btn' hx-swap='outerHTML' hx-get=`/players/${playerId}/update` hx-vals='{"readyStatus": true}') Ready  
     button(id='leave-btn' class='menu-btn' hx-get=`/games/${gameId}/leave` hx-target='.center' hx-include="[name='gameId'],[name='playerId']") Leave
-    if isHost    
-     button(id='start-btn' class='menu-btn' hx-swap='outerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']" disabled) Start
+
+    if isHost   
+     div(class='ready-check' hx-target='.ready-check' hx-swap='innerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']") 
+      include start-btn.pug
+    else
+     div(class='ready-check' hx-target='.ready-check' hx-swap='innerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']") 
     .spacer
     .sub-grid
      a(class='input-desc') Game ID

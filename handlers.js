@@ -9,7 +9,6 @@ const connect = (socketid) => {
 };
 
 const connectRoute = (req, res) => {
-  console.log(req.query);
   res.render("main-menu", {
     playerId: req.query.playerId,
     playerName: req.query.playerName,
@@ -143,38 +142,67 @@ const submitAnswer = (req, res) => {
   aw.players[PLAYERID].answeredStatus = true;
   aw.players[PLAYERID].answers[QUESTIONINDEX] = { answer: SUBMITTEDANSWER };
 
+  utils.updateAllPlayersAnsweredStatus();
+
+  res.sendStatus(204);
+
   utils.drawDebug();
 };
 
 const checkReadyStatus = (req, res) => {
   const GAMEID = req.params.gameId;
+  const PLAYERID = req.query.playerId;
+  const QUESTIONINDEX = aw.games[GAMEID].questionIndex;
 
   utils.updateAllPlayersReadyStatus();
 
-  res.render("start-btn", {
-    gameId: GAMEID,
-    playersReady: aw.games[GAMEID].playersReady,
-  });
+  //if player is host then show start button
+  if (utils.isHost(PLAYERID, aw.games[GAMEID])) {
+    res.render("start-btn", {
+      gameId: GAMEID,
+      playersReady: aw.games[GAMEID].playersReady,
+    });
+  } else {
+    //if all players are ready and game has started then show question
+    if (aw.games[GAMEID].state == "Question" && aw.games[GAMEID].playersReady) {
+      let questionObj = aw.games[GAMEID].questions[QUESTIONINDEX];
+      questionObj.gameId = GAMEID;
+      questionObj.playerId = PLAYERID;
+      //add HX-Retarget to question so replaces the contents of the center div
+      res.set("HX-Retarget", ".center");
+      res.render("question", questionObj);
+      return;
+    }
+
+    //send empty response if all players aren't ready or game hasn't started
+    res.sendStatus(204);
+  }
 
   utils.drawDebug();
 };
 
 const checkAnsweredStatus = (req, res) => {
   const GAMEID = req.params.gameId;
-
+  const PLAYERID = req.query.playerId;
   utils.updateAllPlayersAnsweredStatus();
-
   if (aw.games[GAMEID].playersAnswered) {
     //process answers
-    const PROCESSEDANSWERS = utils.processAnswers(GAMEID);
+    const PROCESSEDANSWERS = (aw.games[GAMEID].processedAnswers = {}
+      ? utils.processAnswers(utils.getAnswers(GAMEID))
+      : aw.games[GAMEID].processedAnswers);
+    console.log(PROCESSEDANSWERS);
+    res.render("wager-board", {
+      answers: PROCESSEDANSWERS,
+      highestodds: utils.getHighestOdds(PROCESSEDANSWERS),
+    });
 
-    res.render("wager-board", { answers: PROCESSEDANSWERS });
-  } else {
-    //send empty response if all players haven't submitted an answer
-    res.sendStatus(204);
+    return;
   }
 
-  utils.drawDebug();
+  //send empty response if all players haven't submitted an answer
+  res.sendStatus(204);
+
+  //utils.drawDebug();
 };
 
 const getGameRules = (req, res) => {
@@ -207,6 +235,8 @@ const showQuestion = (req, res) => {
   let questionObj = aw.games[GAMEID].questions[QUESTIONINDEX];
   questionObj.gameId = GAMEID;
   questionObj.playerId = PLAYERID;
+
+  aw.games[GAMEID].state = "Question";
 
   res.render("question", questionObj);
 };

@@ -2,5 +2,6 @@
  include ids.pug
  img(class='question-img' id='question-img' src=`${imageURL}`)
  h2(class='big-text' id='question-text') #{question}
- input(class='menu-input' id='answer-input' name='submittedAnswer' hx-trigger='every 3s' hx-get=`/games/${gameId}/answercheck` hx-target='.center')
+ div(class='answer-check' id='answer-check-id' hx-trigger='load, every 5s' hx-get=`/games/${gameId}/answercheck` hx-target='.center' hx-include="[name='playerId']")
+ input(class='menu-input' id='answer-input' name='submittedAnswer')
  button(id='submit-btn' class='menu-button' onclick='this.setAttribute("disabled", "disabled")' hx-get=`/games/${gameId}/submitanswer` hx-target='.center' hx-include="[name='submittedAnswer'],[name='playerId']") Submit

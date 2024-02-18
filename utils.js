@@ -65,56 +65,77 @@ const updateAllPlayersAnsweredStatus = () => {
     //get game from id
     const GAME = aw.games[gameId];
     //check if all players have answered
-    aw.games[gameId].playersAnswered = aw.games[gameId].playerIds.every(
+    GAME.playersAnswered = GAME.playerIds.every(
       (playerId) => aw.players[playerId].answeredStatus
     );
   }
 };
 
-const processAnswers = (gameId) => {
+const getAnswers = (gameId) => {
   const QUESTIONINDEX = String(aw.games[gameId].questionIndex);
 
-  let processedAnswers = [];
-
-  for (const playerId in aw.players) {
+  let answers = [];
+  for (const playerId of aw.games[gameId].playerIds) {
     const PLAYERANSWER = aw.players[playerId].answers[QUESTIONINDEX].answer;
 
     //if answer already exists, skip over it - to avoid duplicates
-    if (processedAnswers.includes(PLAYERANSWER)) {
+    if (answers.includes(PLAYERANSWER)) {
       continue;
     }
 
     //add to processed answers
-    processedAnswers.push({ answer: PLAYERANSWER, odds: "" });
+    answers.push(PLAYERANSWER);
   }
 
   //sort from lowest to highest
-  processedAnswers.sort((a, b) => a.answer - b.answer);
+  answers.sort((a, b) => a - b);
 
-  const MIDDLEANSWERINDEX =
-    processedAnswers.length !== 1 ? (processedAnswers.length - 1) / 2 : 1;
-  const HIGHESTODDS = processedAnswers.length !== 1 ? MIDDLEANSWERINDEX + 1 : 2;
+  return answers;
+};
 
-  for (let index = 0; index < processedAnswers.length; index++) {
+const processAnswers = (answersAry) => {
+  let answersObjAry = [];
+
+  for (const answer of answersAry) {
+    answersObjAry.push({ answer: answer, odds: 0 });
+  }
+
+  const MIDDLEANSWERINDEX = getMiddleIndex(answersObjAry);
+
+  for (let index = 0; index < answersObjAry.length; index++) {
     if (index < MIDDLEANSWERINDEX) {
-      processedAnswers[index].odds = HIGHESTODDS - index + "/1";
+      const oddsnum = Math.abs(index - 2 - MIDDLEANSWERINDEX);
+      answersObjAry[index].odds = oddsnum + "/1";
     }
 
     if (index == MIDDLEANSWERINDEX) {
-      processedAnswers[index].odds = "2/1";
+      answersObjAry[index].odds = "2/1";
     }
 
     if (index > MIDDLEANSWERINDEX) {
-      processedAnswers[index].odds = index - HIGHESTODDS + "/1";
+      const oddsnum = index + 2 - MIDDLEANSWERINDEX;
+      answersObjAry[index].odds = oddsnum + "/1";
     }
   }
 
-  return processedAnswers;
+  return answersObjAry;
+};
+
+const getMiddleIndex = (array) => {
+  return array.length !== 1 ? Math.floor((array.length - 1) / 2) : 1;
+};
+
+const getHighestOdds = (answersObjAry) => {
+  return answersObjAry.length !== 1 ? getMiddleIndex(answersObjAry) + 3 : 2;
 };
 
 const getCurrentTime = () => {
   const today = new Date();
   return today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+};
+
+const isHost = (playerId, gameObj) => {
+  return playerId == gameObj.hostPlayerId;
 };
 
 const drawDebug = () => {
@@ -127,8 +148,11 @@ const drawDebug = () => {
   console.log("");
   console.log(`PLAYERS: ${Object.keys(aw.players).length}`);
   console.log(aw.players);
+
   console.log(`GAMES: ${Object.keys(aw.games).length}`);
   console.log(aw.games);
+  if (Object.keys(aw.games).length !== 0)
+    console.log(aw.games[Object.keys(aw.games)[0]].processedAnswers);
 };
 
 const boolConv = (boolStr) => {
@@ -151,4 +175,8 @@ export {
   newGameObj,
   updateAllPlayersAnsweredStatus,
   processAnswers,
+  getAnswers,
+  getMiddleIndex,
+  getHighestOdds,
+  isHost,
 };
