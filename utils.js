@@ -138,6 +138,21 @@ const isHost = (playerId, gameObj) => {
   return playerId == gameObj.hostPlayerId;
 };
 
+const CSVToJSON = (csv) => {
+  const lines = csv.split("\n");
+  const result = [];
+  const headers = lines[0].split(",");
+  for (let i = 1; i < lines.length; i++) {
+    const obj = {};
+    const currentline = lines[i].split(",");
+    for (let j = 0; j < headers.length; j++) {
+      obj[headers[j]] = currentline[j];
+    }
+    result.push(obj);
+  }
+  return result;
+};
+
 const drawDebug = () => {
   process.stdout.write("\u001b[3J\u001b[2J\u001b[1J");
   console.clear();
@@ -179,4 +194,5 @@ export {
   getMiddleIndex,
   getHighestOdds,
   isHost,
+  CSVToJSON,
 };

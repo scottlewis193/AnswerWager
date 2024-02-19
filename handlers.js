@@ -4,19 +4,16 @@ import * as utils from "./utils.js";
 const connect = (socketid) => {
   //add player to players obj
   aw.players[socketid] = utils.newPlayerObj();
-
-  utils.drawDebug();
 };
 
 const connectRoute = (req, res) => {
   res.render("main-menu", {
     playerId: req.query.playerId,
-    playerName: req.query.playerName,
   });
 
-  aw.players[req.query.playerId].playerName = req.query.playerName;
-
-  //utils.drawDebug();
+  //check if playerName exists in req.query and if so set it
+  if (req.query.hasOwnProperty("playerName"))
+    aw.players[req.query.playerId].playerName = req.query.playerName;
 };
 
 const disconnect = (socketid) => {
@@ -36,8 +33,6 @@ const disconnect = (socketid) => {
       break;
     }
   }
-
-  utils.drawDebug();
 };
 
 const disconnectHostLeaves = (req, res) => {
@@ -74,7 +69,6 @@ const joinGame = (req, res) => {
   const PLAYERNAME = req.query.playerName;
 
   aw.games[GAMEID].playerIds.push(PLAYERID);
-  utils.drawDebug();
 
   //send game-lobby screen to client
   res.render("pre-game-lobby", {
@@ -92,7 +86,6 @@ const leaveGame = (req, res) => {
   //check if player is hosting game and if so, remove game from obj
   if (aw.games[GAMEID].hostPlayerId == PLAYERID) {
     delete aw.games[GAMEID];
-    utils.drawDebug();
     return;
   }
 
@@ -145,8 +138,6 @@ const submitAnswer = (req, res) => {
   utils.updateAllPlayersAnsweredStatus();
 
   res.sendStatus(204);
-
-  utils.drawDebug();
 };
 
 const checkReadyStatus = (req, res) => {
@@ -177,8 +168,6 @@ const checkReadyStatus = (req, res) => {
     //send empty response if all players aren't ready or game hasn't started
     res.sendStatus(204);
   }
-
-  utils.drawDebug();
 };
 
 const checkAnsweredStatus = (req, res) => {
@@ -228,6 +217,14 @@ const updatePlayer = (req, res) => {
   }
 };
 
+const loadQuestions = (req, res) => {
+  const GAMEID = req.params.gameId;
+  const QUESTIONFILE = req.file.path;
+  aw.games[GAMEID].questions = utils.CSVToJSON(QUESTIONFILE);
+  //send empty response if all players haven't submitted an answer
+  res.sendStatus(204);
+};
+
 const showQuestion = (req, res) => {
   const GAMEID = req.params.gameId;
   const PLAYERID = req.query.playerId;
@@ -256,4 +253,5 @@ export {
   getGameRules,
   submitAnswer,
   showQuestion,
+  loadQuestions,
 };

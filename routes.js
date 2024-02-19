@@ -11,14 +11,24 @@ import {
   checkAnsweredStatus,
   getGameRules,
   updatePlayer,
+  loadQuestions,
 } from "./handlers.js";
+
+import * as utils from "./utils.js";
+import multer from "multer";
 
 import express from "express";
 
 const router = express.Router();
+const upload = multer({ dest: "uploads/" });
+
+router.use((req, res, next) => {
+  next();
+  //utils.drawDebug();
+});
 
 router.get("/", (req, res) => {
-  res.render("start-page", { playerName: "John" });
+  res.render("start-page");
 });
 
 router.get("/connect", (req, res) => {
@@ -36,6 +46,16 @@ router.get("/games/join", (req, res) => {
 router.get("/games/:gameId/playerlist", (req, res) => {
   getPlayerList(req, res);
 });
+
+router.post(
+  "/games/:gameId/loadquestions",
+  upload.single("file"),
+  (req, res) => {
+    const file = req.file;
+    console.log(file);
+    loadQuestions(req, res);
+  }
+);
 
 router.get("/games/disconnect", (req, res) => {
   disconnectHostLeaves(req, res);

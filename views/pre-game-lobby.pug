@@ -10,8 +10,14 @@
     button(id='leave-btn' class='menu-btn' hx-get=`/games/${gameId}/leave` hx-target='.center' hx-include="[name='gameId'],[name='playerId']") Leave
 
     if isHost   
-     div(class='ready-check' hx-target='.ready-check' hx-swap='innerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']") 
+     div(class='ready-check' hx-target='.ready-check' hx-swap='innerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']")
       include start-btn.pug
+     form(id='form' hx-encoding='multipart/form-data' hx-post=`/games/${gameId}/loadquestions`)
+      input(type='file' name='file')
+      button() Upload Questions
+      progress(id='progress' value='0' max='100')
+         script(type='text/javascript') htmx.on('#form', 'htmx:xhr:progress', function(evt) {htmx.find('#progress').setAttribute('value', evt.detail.loaded/evt.detail.total * 100)});
+    
     else
      div(class='ready-check' hx-target='.ready-check' hx-swap='innerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']") 
     .spacer
