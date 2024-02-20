@@ -1,6 +1,6 @@
 .main-menu  
     h1(class='title' id='game-title') Answer Wager
-    input(class='player-id' id='playerId' name='playerId' value=`${playerId}` readonly) 
+    input(class='player-id' id='playerId' name='playerId' value=`${playerId}` readonly)
     button(id='join-game' class='menu-button' hx-get=`/games/join` hx-target='.center' hx-prompt='Enter Game ID: ' hx-include="[name='playerId']") Join Game 
     button(id='host-game' class='menu-button' hx-get='/games/create' hx-target='.center' hx-include="[name='playerId']") Host Game
     button(id='game-rules' class='menu-button' hx-get='/game-rules' hx-target='.center' hx-include="[name='playerId']") Game Rules

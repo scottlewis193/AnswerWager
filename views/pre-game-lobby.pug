@@ -12,9 +12,9 @@
     if isHost   
      div(class='ready-check' hx-target='.ready-check' hx-swap='innerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']")
       include start-btn.pug
-     form(id='form')
+     form(id='form' hx-encoding='multipart/form-data' hx-post=`/games/${gameId}/loadquestions`)
       div(class="button-wrap")
-       label(class="button" for="upload" hx-encoding='multipart/form-data' hx-post=`/games/${gameId}/loadquestions`) Upload File
+       label(class="button" for="upload" onchange='if (document.getElementById("upload").value) {document.getElementById("form").submit()}') Upload File
         input(type='file' id='upload' accept='.csv')
       //- button(class='menu-btn' id='upload-btn' ) Upload
       //- progress(id='progress' value='0' max='100')
