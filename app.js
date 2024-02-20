@@ -7,6 +7,7 @@ import connectLivereload from "connect-livereload";
 import * as utils from "./utils.js";
 import { default as router } from "./routes.js";
 import { connect, disconnect } from "./handlers.js";
+import fs from "fs";
 
 const app = express();
 const server = http.createServer(app);
@@ -52,6 +53,10 @@ wss.getUniqueID = function () {
 
 server.listen(3000, function listening() {
   utils.drawDebug();
+
+  //delete uploads
+  fs.rmSync("uploads", { recursive: true });
+  fs.mkdirSync("uploads", { recursive: true });
 });
 
 liveReloadServer.server.once("connection", () => {

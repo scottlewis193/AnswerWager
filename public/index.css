@@ -27,6 +27,7 @@ html,
 body,
 input,
 button,
+label,
 li {
   font-size: max(2vw, 2.5vh);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -51,7 +52,8 @@ h3 {
   font-weight: bold;
 }
 
-button {
+button,
+label[class="button"] {
   padding: max(1vw, 1.25vh);
   width: max(30vw, 37.5vh);
   height: max(5vw, 6.25vh);
@@ -63,13 +65,21 @@ button {
   cursor: pointer;
   border-radius: max(1vw, 1.25vh);
 }
-button:hover:not(:disabled) {
+button:hover:not(:disabled),
+label[class="button"]:hover:not(:disabled) {
   background-color: var(--Surface0);
 }
-button:disabled {
+button:disabled,
+label[class="button"]:disabled {
   cursor: default;
   color: var(--Overlay0);
   border: max(0.1vw, 0.125vh) solid var(--Overlay0);
+}
+
+form {
+  display: grid;
+  align-content: center;
+  justify-content: center;
 }
 
 input {
@@ -80,6 +90,10 @@ input {
 
   color: var(--Text);
   background-color: var(--Mantle);
+}
+
+input[type="file"] {
+  display: none;
 }
 
 table {
