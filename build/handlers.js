@@ -177,10 +177,10 @@ const updatePlayer = (req, res) => {
 };
 const loadQuestions = (req, res) => {
     const GAMEID = req.params.gameId;
-    const QUESTIONFILE = req.file ? String(req.file.path) : "";
-    aw.games[GAMEID].questions = utils.CSVToJSON(QUESTIONFILE);
+    const QUESTIONFILE = req.file;
+    console.log(QUESTIONFILE);
+    //aw.games[GAMEID].questions = utils.CSVToJSON(QUESTIONFILE);
     //send empty response if all players haven't submitted an answer
-    res.sendStatus(204);
 };
 const showQuestion = (req, res) => {
     const GAMEID = String(req.params.gameId);

@@ -3,13 +3,6 @@ import * as aw from "./app.js";
 import WebSocket, { WebSocketServer } from "ws";
 import { Player, Game, Players, Games, Answer, Answers, Question, Questions, BoardAnswer, BoardAnswers, AWWebSocket } from "./interfaces.js";
 
-
-
-
-
-
-//FUNCTIONS
-
 const newPlayerObj = () => {
   let player: Player = {
     playerName: "",

@@ -20,7 +20,8 @@ import multer from "multer";
 import express from "express";
 
 const router = express.Router();
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: "./uploads" }).single("file");
+
 
 router.use((req : express.Request, res : express.Response, next : Function) => {
   next();
@@ -32,6 +33,7 @@ router.get("/", (req : express.Request, res :  express.Response) => {
 });
 
 router.get("/connect", (req : express.Request, res : express.Response) => {
+  console.log(req.query)
   connectRoute(req, res);
 });
 
@@ -48,14 +50,20 @@ router.get("/games/:gameId/playerlist", (req : express.Request, res : express.Re
 });
 
 router.post(
-  "/games/:gameId/loadquestions",
-  upload.single("file"),
-  (req : express.Request, res : express.Response) => {
-    const file = req.file;
-    console.log(file);
-    loadQuestions(req, res);
-  }
-);
+  "/games/:gameId/loadquestions",function (req : express.Request, res : express.Response) {
+    upload(req,res,function(err) {
+      if (err) {
+        console.log(err);
+        return res.status(400).send("a error occured uploading the file");
+      }
+      console.log(req.file)
+      loadQuestions(req, res);
+     return res.status(200).send("Successfully uploaded files");
+    }
+  
+)
+
+});
 
 router.get("/games/disconnect", (req : express.Request, res : express.Response) => {
   disconnectHostLeaves(req, res);

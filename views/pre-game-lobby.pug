@@ -13,10 +13,12 @@
      div(class='ready-check' hx-target='.ready-check' hx-swap='innerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']")
       include start-btn.pug
      form(id='form' hx-encoding='multipart/form-data' hx-post=`/games/${gameId}/loadquestions`)
-      div(class="button-wrap")
-       label(class="button" for="upload" onchange='if (document.getElementById("upload").value) {document.getElementById("form").submit()}') Upload File
-        input(type='file' id='upload' accept='.csv')
-      //- button(class='menu-btn' id='upload-btn' ) Upload
+    
+      label(class="button" for="upload") Upload File
+      input(type='file' id='upload' name='file' accept='.csv' onchange="document.getElementById('form').requestSubmit();")
+      //- button(class='menu-btn' id='upload-btn') Upload
+      //- onchange='console.log("document.getElementById("upload").value"); if (document.getElementById("upload").value) {console.log("test"); document.getElementById("form").requestSubmit()}'
+      
       //- progress(id='progress' value='0' max='100')
          script(type='text/javascript') htmx.on('#form', 'htmx:xhr:progress', function(evt) {htmx.find('#progress').setAttribute('value', evt.detail.loaded/evt.detail.total * 100)});
     

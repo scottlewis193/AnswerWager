@@ -1,6 +1,5 @@
 // import the necessary functions and objects
 import * as aw from "./app.js";
-//FUNCTIONS
 const newPlayerObj = () => {
     let player = {
         playerName: "",

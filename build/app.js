@@ -39,8 +39,8 @@ wss.on("connection", function connection(ws) {
 server.listen(3000, function listening() {
     utils.drawDebug();
     //delete uploads
-    fs.rmSync("uploads", { recursive: true });
-    fs.mkdirSync("uploads", { recursive: true });
+    fs.rmSync("./uploads", { recursive: true });
+    fs.mkdirSync("./uploads", { recursive: true });
 });
 liveReloadServer.server.once("connection", () => {
     setTimeout(() => {
