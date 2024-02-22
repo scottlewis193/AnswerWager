@@ -2,20 +2,21 @@ import { WebSocket } from "ws";
 
 //INTERFACES
 
-type Games = Record<string, Game>;
+type Games = Record<number, Game>;
 
 interface Game {
-  hostPlayerId: string;
-  playerIds: string[];
+  hostPlayerId: number;
+  playerIds: number[];
   playersReady: boolean;
   playersAnswered: boolean;
   state: string;
+  hasProcessedAnswers: boolean;
   processedAnswers: BoardAnswers;
   questions: Questions;
   questionIndex: number;
 }
 
-type Players = Record<string, Player>;
+type Players = Record<number, Player>;
 
 interface Player {
   playerName: string;
@@ -31,19 +32,26 @@ interface Player {
 }
 
 interface PlayerVars {
-  playerId?: string;
+  playerId?: number;
   playerName?: string;
   readyStatus?: boolean;
 }
 
-type Answers = Answer[];
+type Answers = Record<number, Answer>;
 
 interface Answer {
   answer: string | number ;
   answerType: string;
 }
 
-type BoardAnswers = BoardAnswer[];
+type Bets = Record<number, Bet>;
+
+interface Bet {
+  playerId: number;
+  amount: number;
+}
+
+type BoardAnswers = Record<number,BoardAnswer>;
 
 interface BoardAnswer {
   answer: string | number;
@@ -51,22 +59,23 @@ interface BoardAnswer {
 }
 
 
-type Questions = Question[];
+type Questions = Record<number,Question>;
 
 interface Question {
   question: string;
   imageURL: string;
   answerType: string;
   answer: string | number;
-  gameId: string;
-  playerId: string;
+  gameId: number;
+  playerId: number;
+  playerList: Players;
 }
 
 type JSONCSV = Record<number, string | number>;
 
 interface AWWebSocket extends WebSocket  {
 
-  id: string;
+  id: number;
 }
 
 export {

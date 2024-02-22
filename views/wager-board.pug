@@ -1,10 +1,13 @@
-.wager-board
-  div(class='board-segment' id='0')
-   a(class='odds-text') #{highestodds}/1
-   a(class='answer-text') SMALLER
-   button(class='segment-btn') Bet 
-  each answerObj, index in answers  
-   div(class='board-segment' id=`${index}`)
-    a(class='odds-text') #{answerObj.odds}
-    a(class='answer-text') #{answerObj.answer}
-    button(class='segment-btn') Bet
+include scores.pug
+.center
+ .wager-board
+   div(class='board-segment' id='0')
+    a(class='odds-text') #{highestodds}/1
+    a(class='answer-text') SMALLER
+    button(class='segment-btn' hx-post=`/games/join` hx-target='.content' hx-prompt='Enter Amount: ' hx-include="[name='playerId']") Bet 
+   each answerObj, index in answers  
+    div(class='board-segment' id=`${index}`)
+     a(class='odds-text') #{answerObj.odds}
+     a(class='answer-text') #{answerObj.answer}
+     button(class='segment-btn') Bet
+include ids.pug

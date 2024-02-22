@@ -1,30 +1,18 @@
-.pre-game-lobby
-    .spacer
-    table(id='player-list' class='game-list' hx-swap='outerHTML' hx-trigger='every 0.1s' hx-get=`/games/${gameId}/playerlist`)
+.center
+ .pre-game-lobby
+     table(id='player-list' class='game-list' hx-swap='outerHTML' hx-trigger='every 0.1s' hx-get=`/games/${gameId}/playerlist`)
      tr(class='player-columns')
-      th Player 
-      th Ready 
 
-
-    button(id='ready-btn' class='menu-btn' hx-swap='outerHTML' hx-get=`/players/${playerId}/update` hx-vals='{"readyStatus": true}') Ready  
-    button(id='leave-btn' class='menu-btn' hx-get=`/games/${gameId}/leave` hx-target='.center' hx-include="[name='gameId'],[name='playerId']") Leave
-
-    if isHost   
-     div(class='ready-check' hx-target='.ready-check' hx-swap='innerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']")
-      include start-btn.pug
-     form(id='form' hx-encoding='multipart/form-data' hx-post=`/games/${gameId}/loadquestions`)
-    
-      label(class="button" for="upload") Upload File
-      input(type='file' id='upload' name='file' accept='.csv' onchange="document.getElementById('form').requestSubmit();")
-      //- button(class='menu-btn' id='upload-btn') Upload
-      //- onchange='console.log("document.getElementById("upload").value"); if (document.getElementById("upload").value) {console.log("test"); document.getElementById("form").requestSubmit()}'
-      
-      //- progress(id='progress' value='0' max='100')
-         script(type='text/javascript') htmx.on('#form', 'htmx:xhr:progress', function(evt) {htmx.find('#progress').setAttribute('value', evt.detail.loaded/evt.detail.total * 100)});
-    
-    else
-     div(class='ready-check' hx-target='.ready-check' hx-swap='innerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']") 
-    .spacer
-    .sub-grid
-     a(class='input-desc') Game ID
-     include ids.pug
+     div(class='lobby-btn-grid' id='lobby-btn-grid')
+     button(id='ready-btn' class='menu-btn' hx-swap='outerHTML' hx-get=`/players/${playerId}/update` hx-vals='{"readyStatus": true}') Ready  
+     button(id='leave-btn' class='menu-btn' hx-get=`/games/${gameId}/leave` hx-target='.content' hx-include="[name='gameId'],[name='playerId']") Leave
+ 
+     if isHost   
+       div(class='ready-check' hx-target='.ready-check' hx-swap='innerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']")
+        include start-btn.pug
+       form(id='form' hx-encoding='multipart/form-data' hx-post=`/games/${gameId}/loadquestions`)
+        label(class="button" for="upload") Upload File
+        input(type='file' id='upload' name='file' accept='.csv' onchange="document.getElementById('form').requestSubmit();")   
+     else
+       div(class='ready-check' hx-target='.ready-check' hx-swap='innerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/readycheck` hx-include="[name='gameId'],[name='playerId']") 
+include ids.pug

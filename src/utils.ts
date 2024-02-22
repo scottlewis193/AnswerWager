@@ -2,6 +2,9 @@
 import * as aw from "./app.js";
 import WebSocket, { WebSocketServer } from "ws";
 import { Player, Game, Players, Games, Answer, Answers, Question, Questions, BoardAnswer, BoardAnswers, AWWebSocket } from "./interfaces.js";
+import { default as csvtojson } from "csvtojson"
+
+let log : any[] = [];
 
 const newPlayerObj = () => {
   let player: Player = {
@@ -10,7 +13,7 @@ const newPlayerObj = () => {
     answeredStatus: false,
     answers: [],
     wageredStatus: false,
-    points: 0,
+    points: 5,
     exactCorrectAnswers: 0,
     correctAnswers: 0,
     mostPointsEarnedRound: 0,
@@ -19,13 +22,14 @@ const newPlayerObj = () => {
   return player
 };
 
-const newGameObj = (hostPlayerId: string) => {
+const newGameObj = (hostPlayerId: number) => {
   let game: Game = {
     hostPlayerId,
     playerIds: [],
     playersReady: false,
     playersAnswered: false,
     state: "preGameLobby",
+    hasProcessedAnswers: false,
     processedAnswers: [],
     questions: [],
     questionIndex: 0,
@@ -33,14 +37,14 @@ const newGameObj = (hostPlayerId: string) => {
   return game
 };
 
-const generateGameId = () => {
-  let gameId = String(Math.floor(Math.random() * 10));
+const generateId = () => {
+  let Id : string = String(Math.floor(Math.random() * 10));
 
   for (let i = 0; i < 5; i++) {
-    gameId += String(Math.floor(Math.random() * 10));
+    Id += String(Math.floor(Math.random() * 10));
   }
 
-  return gameId;
+  return Number(Id);
 };
 
 const updateAllPlayersReadyStatus = () => {
@@ -65,10 +69,11 @@ const updateAllPlayersAnsweredStatus = () => {
   }
 };
 
-const getAnswers = (gameId : string) => {
+const getAnswers = (gameId : number) => {
   const QUESTIONINDEX = Number(aw.games[gameId].questionIndex);
 
   let answers : Answers = [];
+
   for (const playerId of aw.games[gameId].playerIds) {
     const PLAYERANSWER : Answer ={ answer: aw.players[playerId].answers[QUESTIONINDEX].answer, answerType: '' };//aw.players[playerId].answers[QUESTIONINDEX].answer, answerType: '' };
 
@@ -80,28 +85,46 @@ const getAnswers = (gameId : string) => {
     }
 
     //add to processed answers
-    answers.push(PLAYERANSWER);
+    answers[playerId]= PLAYERANSWER;
   }
 
-  //sort from lowest to highest
-  answers.sort((a , b) => Number(a.answer) - Number(b.answer));
+  let answersAry = Object.values(answers);
 
-  return answers;
+  //sort from lowest to highest
+  answersAry.sort((a , b) => {return Number(a.answer) - Number(b.answer)});
+
+  let sortedAnswers : Answers = [];
+
+  for (let index = 0; index < answersAry.length; index++) {
+    sortedAnswers[index] = answersAry[index];
+  }
+
+  debug(sortedAnswers)
+  return sortedAnswers;
 };
+
+const getPlayerList = (gameId : number) => {
+  let players : Players = {};
+  for (const playerId of aw.games[gameId].playerIds) {
+    players[playerId] = aw.players[playerId]
+  }
+  return players
+}
 
 const processAnswers = (answers : Answers) => {
   let boardAnswers: BoardAnswers = [];
-
-  for (const answer of answers) {
-    boardAnswers.push({
-      answer: answer.answer,
+  debug(answers)
+  for (let index : number = 0; index < Object.keys(answers).length; index++) {
+    boardAnswers[index] = {
+      answer: answers[index].answer,
       odds: '0',
-    })
+    }
+    
   }
 
   const MIDDLEANSWERINDEX = getMiddleIndex(boardAnswers);
 
-  for (let index : number = 0; index < boardAnswers.length; index++) {
+  for (let index : number = 0; index < Object.keys(boardAnswers).length; index++) {
     if (index < MIDDLEANSWERINDEX) {
       const oddsnum = Math.abs(index - 2 - MIDDLEANSWERINDEX);
       boardAnswers[index].odds = oddsnum + "/1";
@@ -116,16 +139,15 @@ const processAnswers = (answers : Answers) => {
       boardAnswers[index].odds = oddsnum + "/1";
     }
   }
-
   return boardAnswers;
 };
 
 const getMiddleIndex = (answers : BoardAnswers) => {
-  return answers.length !== 1 ? Math.floor((answers.length - 1) / 2) : 1;
+  return Object.keys(answers).length !== 1 ? Math.floor((Object.keys(answers).length - 1) / 2) : 1;
 };
 
 const getHighestOdds = (answers : BoardAnswers) => {
-  return answers.length !== 1 ? getMiddleIndex(answers) + 3 : 2;
+  return Object.keys(answers).length !== 1 ? getMiddleIndex(answers) + 3 : 2;
 };
 
 const getCurrentTime = () => {
@@ -133,32 +155,19 @@ const getCurrentTime = () => {
   return today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 };
 
-const isHost = (playerId : string, gameObj : Game) => {
+const isHost = (playerId : number, gameObj : Game) => {
   return playerId == gameObj.hostPlayerId;
 };
 
 const CSVToJSON = (csv : string) => {
-  const lines = csv.split("\n");
-  const result : Questions = [];
-  const headers = lines[0].split(",");
-  for (let i = 1; i < lines.length; i++) {
-    
-    const currentline = lines[i].split(",");
-    let question: Question = {
-      question: "",
-      imageURL: "",
-      answerType: "",
-      answer: "",
-      gameId: "",
-      playerId: "",
-    };
-    for (let j = 0; j < headers.length; j++) {
-      Object.keys(question)[j] = currentline[j];
-    }
-
-    result.push(question);
-  }
-  return result;
+  
+      try {
+          const jsonObject: any = csvtojson().fromFile(csv);
+          return jsonObject;
+      } catch (err) {
+          debug(err)
+      }
+  
 };
 
 const getUniqueID = function () {
@@ -167,25 +176,48 @@ const getUniqueID = function () {
       .toString(16)
       .substring(1);
   }
-  return s4() + s4() + "-" + s4();
+  return s4() + s4() + s4();
 };
 
-const drawDebug = () => {
+const debug = (msg : any) => {
+  log.push(msg);
+  writeLog();
+};
+
+const writeLog = () => {
+
   process.stdout.write("\u001b[3J\u001b[2J\u001b[1J");
   console.clear();
-  console.log("░█▀█░█▀█░█▀▀░█░█░█▀▀░█▀▄░░░█░█░█▀█░█▀▀░█▀▀░█▀▄");
-  console.log("░█▀█░█░█░▀▀█░█▄█░█▀▀░█▀▄░░░█▄█░█▀█░█░█░█▀▀░█▀▄");
-  console.log("░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░░░▀░▀░▀░▀░▀▀▀░▀▀▀░▀░▀");
-  console.log("server running at http://localhost:3000");
-  console.log("");
-  console.log(`PLAYERS: ${Object.keys(aw.players).length}`);
-  console.log(aw.players);
 
-  console.log(`GAMES: ${Object.keys(aw.games).length}`);
-  console.log(aw.games);
-  if (Object.keys(aw.games).length !== 0)
-    console.log(aw.games[Object.keys(aw.games)[0]].processedAnswers);
-};
+  appendStatsToLog();
+  
+  for (const line of log) {
+    console.log(line);
+  }
+}
+
+const appendStatsToLog = () => {
+ 
+  if (log.length != 0) log.splice(0,8);
+  let newLog : any[] = [];
+  newLog.push("░█▀█░█▀█░█▀▀░█░█░█▀▀░█▀▄░░░█░█░█▀█░█▀▀░█▀▀░█▀▄");
+  newLog.push("░█▀█░█░█░▀▀█░█▄█░█▀▀░█▀▄░░░█▄█░█▀█░█░█░█▀▀░█▀▄");
+  newLog.push("░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░░░▀░▀░▀░▀░▀▀▀░▀▀▀░▀░▀");
+  newLog.push("server running at http://localhost:3000");
+  newLog.push("");
+  newLog.push(`PLAYERS: ${Object.keys(aw.players).length}`);
+  //log.push(aw.players);
+  newLog.push(`GAMES: ${Object.keys(aw.games).length}`);
+  newLog.push("==========================");
+  //console.log(aw.games);
+  // if (Object.keys(aw.games).length !== 0)
+  //   console.log(aw.games[Object.keys(aw.games)[0]].processedAnswers);
+    for (const line of log) {
+      newLog.push(line)
+    }
+    log = newLog;
+    
+  };
 
 const boolConv = (boolStr : string) => {
   if (boolStr === "true") {
@@ -198,10 +230,10 @@ const boolConv = (boolStr : string) => {
 };
 
 export {
-  generateGameId,
+  generateId,
   updateAllPlayersReadyStatus,
   getCurrentTime,
-  drawDebug,
+  appendStatsToLog as drawDebug,
   boolConv,
   newPlayerObj,
   newGameObj,
@@ -213,4 +245,8 @@ export {
   isHost,
   CSVToJSON,
   getUniqueID,
+  debug,
+  writeLog,
+  appendStatsToLog,
+  getPlayerList
 };

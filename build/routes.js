@@ -1,18 +1,18 @@
-import { connectRoute, createGame, joinGame, getPlayerList, leaveGame, submitAnswer, showQuestion, disconnectHostLeaves, checkReadyStatus, checkAnsweredStatus, getGameRules, updatePlayer, loadQuestions, } from "./handlers.js";
-import * as utils from "./utils.js";
+import { connectRoute, createGame, joinGame, getPlayerList, leaveGame, submitAnswer, showQuestion, disconnectHostLeaves, checkReadyStatus, checkAnsweredStatus, getGameRules, updatePlayer, loadQuestions, submitBet } from "./handlers.js";
+import { debug } from "./utils.js";
 import multer from "multer";
 import express from "express";
 const router = express.Router();
 const upload = multer({ dest: "./uploads" }).single("file");
 router.use((req, res, next) => {
     next();
-    utils.drawDebug();
+    //utils.writeLog();
 });
 router.get("/", (req, res) => {
-    res.render("start-page");
+    res.render("base");
 });
 router.get("/connect", (req, res) => {
-    console.log(req.query);
+    debug(req.query);
     connectRoute(req, res);
 });
 router.get("/games/create", (req, res) => {
@@ -27,12 +27,10 @@ router.get("/games/:gameId/playerlist", (req, res) => {
 router.post("/games/:gameId/loadquestions", function (req, res) {
     upload(req, res, function (err) {
         if (err) {
-            console.log(err);
+            debug(err);
             return res.status(400).send("a error occured uploading the file");
         }
-        console.log(req.file);
         loadQuestions(req, res);
-        return res.status(200).send("Successfully uploaded files");
     });
 });
 router.get("/games/disconnect", (req, res) => {
@@ -43,6 +41,9 @@ router.get("/games/:gameId/leave", (req, res) => {
 });
 router.get("/games/:gameId/submitanswer", (req, res) => {
     submitAnswer(req, res);
+});
+router.get("/games/:gameId/submitbet", (req, res) => {
+    submitBet(req, res);
 });
 router.get("/games/:gameId/start", (req, res) => {
     showQuestion(req, res);

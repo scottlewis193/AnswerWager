@@ -1,0 +1,14 @@
+doctype html 
+html(lang="en")
+ head 
+  title Answer Wager
+  link(rel="stylesheet" href="index.css")
+  div(class='connect' hx-ext='ws' ws-connect='/')
+ body 
+  div(class='content')
+   div(class='center')
+    include start-page.pug
+   include ids.pug
+  script(src="/htmx.min.js")
+  script(src="/ws.js.js")
+   

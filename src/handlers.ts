@@ -1,16 +1,19 @@
 import * as aw from "./app.js";
 import * as utils from "./utils.js";
+import {debug} from "./utils.js"
 import { Games, Game, Players, Player, BoardAnswers,BoardAnswer,PlayerVars } from "./interfaces.js";
 import express from "express";
 
-const connect = (socketid : string) => {
+
+
+const connect = (socketid : number) => {
   //add player to players obj
   aw.players[socketid] = utils.newPlayerObj();
 };
 
 const connectRoute = (req : express.Request, res : express.Response) => {
 
-  const PLAYERID = String(req.query.playerId)
+  const PLAYERID = Number(req.query.playerId)
 
   res.render("main-menu", {
     playerId: String(PLAYERID),
@@ -23,7 +26,7 @@ const connectRoute = (req : express.Request, res : express.Response) => {
     aw.players[PLAYERID].playerName = String(req.query.playerName);
 };
 
-const disconnect = (socketid : string) => {
+const disconnect = (socketid : number) => {
   //remove player from players object
   delete aw.players[socketid];
 
@@ -31,7 +34,7 @@ const disconnect = (socketid : string) => {
   //also check if player has joined any games and remove them from connected players
   for (const [gameId, game] of Object.entries(aw.games)) {
     if (game.hostPlayerId == socketid) {
-      delete aw.games[gameId];
+      delete aw.games[Number(gameId)];
       break;
     }
 
@@ -40,6 +43,7 @@ const disconnect = (socketid : string) => {
       break;
     }
   }
+
 };
 
 const disconnectHostLeaves = (req : express.Request, res : express.Response) => {
@@ -50,8 +54,8 @@ const disconnectHostLeaves = (req : express.Request, res : express.Response) => 
 };
 
 const createGame = (req : express.Request, res : express.Response) => {
-  const NEWGAMEID = utils.generateGameId();
-  const PLAYERID = String(req.query.playerId);
+  const NEWGAMEID = utils.generateId();
+  const PLAYERID = Number(req.query.playerId);
   const PLAYERNAME = req.query.playerName;
 
   //add game info to games object
@@ -71,8 +75,8 @@ const createGame = (req : express.Request, res : express.Response) => {
 };
 
 const joinGame = (req : express.Request, res : express.Response) => {
-  const GAMEID = String(req.get("HX-Prompt"));
-  const PLAYERID = String(req.query.playerId); 
+  const GAMEID = Number(req.get("HX-Prompt"));
+  const PLAYERID = Number(req.query.playerId); 
   const PLAYERNAME = req.query.playerName;
 
   aw.games[GAMEID].playerIds.push(PLAYERID);
@@ -87,20 +91,21 @@ const joinGame = (req : express.Request, res : express.Response) => {
 };
 
 const leaveGame = (req : express.Request, res : express.Response) => {
-  const GAMEID = String(req.query.gameId); 
-  const PLAYERID = String(req.query.playerId); 
+  const GAMEID = Number(req.query.gameId); 
+  const PLAYERID = Number(req.query.playerId); 
+
+//remove player from array of playerids in game
+aw.games[GAMEID].playerIds.splice(
+  aw.games[GAMEID].playerIds.indexOf(PLAYERID),
+  1
+);
 
   //check if player is hosting game and if so, remove game from obj
   if (aw.games[GAMEID].hostPlayerId == PLAYERID) {
     delete aw.games[GAMEID];
-    return;
   }
 
-  //remove player from array of playerids in game
-  aw.games[GAMEID].playerIds.splice(
-    aw.games[GAMEID].playerIds.indexOf(PLAYERID),
-    1
-  );
+  
 
   res.render("main-menu", {
     playerId: PLAYERID,
@@ -109,21 +114,11 @@ const leaveGame = (req : express.Request, res : express.Response) => {
 };
 
 const getPlayerList = (req : express.Request, res : express.Response) => {
-  const GAMEID = req.params.gameId;
-  const PLAYERID = req.query.playerId;
+  const GAMEID = Number(req.params.gameId);
+  const PLAYERID = Number(req.query.playerId);
 
-  var playerList : Player[] = [];
+  var playerList : Players = utils.getPlayerList(GAMEID);
 
-  //check if game is still available, if not boot client back to menu
-  if (GAMEID in aw.games) {
-
-    if (aw.games[GAMEID].playerIds.length !== 0) {
-
-      aw.games[GAMEID].playerIds.forEach((id) => {
-        playerList.push(aw.players[id]);
-      });
-    }
-  }
 
 
   //if player list returns nothing assume game no longer exists and boot client back to main menu
@@ -136,8 +131,8 @@ const getPlayerList = (req : express.Request, res : express.Response) => {
 };
 
 const submitAnswer = (req : express.Request, res : express.Response) => {
-  const GAMEID = String(req.params.gameId);
-  const PLAYERID = String(req.query.playerId);
+  const GAMEID = Number(req.params.gameId);
+  const PLAYERID = Number(req.query.playerId);
   const QUESTIONINDEX = aw.games[GAMEID].questionIndex;
   const SUBMITTEDANSWER = String(req.query.submittedAnswer);
 
@@ -149,9 +144,17 @@ const submitAnswer = (req : express.Request, res : express.Response) => {
   res.sendStatus(204);
 };
 
+const submitBet = (req : express.Request, res : express.Response) => {
+  const GAMEID = Number(req.params.gameId);
+  const PLAYERID = Number(req.query.playerId);
+  const BET = String(req.query.bet);
+  //aw.players[PLAYERID].bet = BET;
+  res.sendStatus(204);
+}
+
 const checkReadyStatus = (req : express.Request, res : express.Response) => {
-  const GAMEID = String(req.params.gameId);
-  const PLAYERID = String(req.query.playerId);
+  const GAMEID = Number(req.params.gameId);
+  const PLAYERID = Number(req.query.playerId);
   const QUESTIONINDEX = aw.games[GAMEID].questionIndex;
 
   utils.updateAllPlayersReadyStatus();
@@ -169,7 +172,7 @@ const checkReadyStatus = (req : express.Request, res : express.Response) => {
       questionObj.gameId = GAMEID;
       questionObj.playerId = PLAYERID;
       //add HX-Retarget to question so replaces the contents of the center div
-      res.set("HX-Retarget", ".center");
+      res.set("HX-Retarget", ".content");
       res.render("question", questionObj);
       return;
     }
@@ -180,22 +183,28 @@ const checkReadyStatus = (req : express.Request, res : express.Response) => {
 };
 
 const checkAnsweredStatus = (req : express.Request, res : express.Response) => {
-  const GAMEID = req.params.gameId;
-  const PLAYERID = req.query.playerId;
+  const GAMEID = Number(req.params.gameId);
+  const PLAYERID = Number(req.query.playerId);
   utils.updateAllPlayersAnsweredStatus();
   if (aw.games[GAMEID].playersAnswered) {
     //process answers
     let PROCESSEDANSWERS : BoardAnswers
-    if (aw.games[GAMEID].processedAnswers == null) {
+    // debug(aw.games[GAMEID].processedAnswers)
+    // if (aw.games[GAMEID].hasProcessedAnswers) {
+    //   PROCESSEDANSWERS = aw.games[GAMEID].processedAnswers
+      
+    // } else {
       PROCESSEDANSWERS = utils.processAnswers(utils.getAnswers(GAMEID))
-    } else {
-      PROCESSEDANSWERS = aw.games[GAMEID].processedAnswers
-    }
+      aw.games[GAMEID].hasProcessedAnswers = true;
+    // }
  
-    console.log(PROCESSEDANSWERS);
+   //render wager board
     res.render("wager-board", {
       answers: PROCESSEDANSWERS,
       highestodds: utils.getHighestOdds(PROCESSEDANSWERS),
+      playerId: PLAYERID,
+      gameId: GAMEID,
+      playerList: utils.getPlayerList(GAMEID),
     });
 
     return;
@@ -215,11 +224,11 @@ const getGameRules = (req : express.Request, res : express.Response) => {
 
 const updatePlayer = (req : express.Request, res : express.Response) => {
   var playerVars : PlayerVars = req.query;
-  playerVars.playerId = req.params.playerId;
+  playerVars.playerId = Number(req.params.playerId);
 
   //ready/unready btn
   if (req.query.hasOwnProperty("readyStatus")) {
-    aw.players[req.params.playerId].readyStatus = utils.boolConv(
+    aw.players[playerVars.playerId].readyStatus = utils.boolConv(
       String(req.query.readyStatus)
     );
     playerVars.readyStatus = utils.boolConv(String(req.query.readyStatus));
@@ -230,23 +239,26 @@ const updatePlayer = (req : express.Request, res : express.Response) => {
   }
 };
 
-const loadQuestions = (req : express.Request, res : express.Response) => {
-  const GAMEID = req.params.gameId;
-  const QUESTIONFILE = req.file ;
-  console.log(QUESTIONFILE);
-  //aw.games[GAMEID].questions = utils.CSVToJSON(QUESTIONFILE);
-  //send empty response if all players haven't submitted an answer
+const loadQuestions = async (req : express.Request, res : express.Response) => {
+  const GAMEID = Number(req.params.gameId);
+  const QUESTIONFILE = (req.file as Express.Multer.File).path ;
+
+  aw.games[GAMEID].questions = await utils.CSVToJSON(QUESTIONFILE);
+
+  return res.status(200).send("Successfully uploaded files");
 };
 
 const showQuestion = (req : express.Request, res : express.Response) => {
-  const GAMEID = String(req.params.gameId);
-  const PLAYERID = String(req.query.playerId);
+  const GAMEID = Number(req.params.gameId);
+  const PLAYERID = Number(req.query.playerId);
   const QUESTIONINDEX = aw.games[GAMEID].questionIndex;
   let questionObj = aw.games[GAMEID].questions[QUESTIONINDEX];
   questionObj.gameId = GAMEID;
   questionObj.playerId = PLAYERID;
+  questionObj.playerList = utils.getPlayerList(GAMEID);
 
   aw.games[GAMEID].state = "Question";
+  debug(questionObj)
 
   res.render("question", questionObj);
 };
@@ -267,4 +279,5 @@ export {
   submitAnswer,
   showQuestion,
   loadQuestions,
+  submitBet
 };

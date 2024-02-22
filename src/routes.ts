@@ -12,9 +12,11 @@ import {
   getGameRules,
   updatePlayer,
   loadQuestions,
+  submitBet
 } from "./handlers.js";
 
 import * as utils from "./utils.js";
+import {debug} from "./utils.js"
 import multer from "multer";
 
 import express from "express";
@@ -25,15 +27,15 @@ const upload = multer({ dest: "./uploads" }).single("file");
 
 router.use((req : express.Request, res : express.Response, next : Function) => {
   next();
-  utils.drawDebug();
+  //utils.writeLog();
 });
 
 router.get("/", (req : express.Request, res :  express.Response) => {
-  res.render("start-page");
+  res.render("base");
 });
 
 router.get("/connect", (req : express.Request, res : express.Response) => {
-  console.log(req.query)
+  debug(req.query)
   connectRoute(req, res);
 });
 
@@ -53,12 +55,10 @@ router.post(
   "/games/:gameId/loadquestions",function (req : express.Request, res : express.Response) {
     upload(req,res,function(err) {
       if (err) {
-        console.log(err);
+        debug(err);
         return res.status(400).send("a error occured uploading the file");
       }
-      console.log(req.file)
       loadQuestions(req, res);
-     return res.status(200).send("Successfully uploaded files");
     }
   
 )
@@ -76,6 +76,10 @@ router.get("/games/:gameId/leave", (req : express.Request, res : express.Respons
 router.get("/games/:gameId/submitanswer", (req : express.Request, res : express.Response) => {
   submitAnswer(req, res);
 });
+
+router.get("/games/:gameId/submitbet", (req : express.Request, res : express.Response) => {
+  submitBet(req,res)
+})
 
 router.get("/games/:gameId/start", (req : express.Request, res : express.Response) => {
   showQuestion(req, res);

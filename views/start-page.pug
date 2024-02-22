@@ -1,16 +1,3 @@
-doctype html 
-html(lang="en")
-    head 
-        title Answer Wager
-        link(rel="stylesheet" href="index.css")
-    body 
-    div(class='center' hx-ext='ws' ws-connect='/') 
-        .start-page  
-            input(class='player-id' id='playerId' name='playerId')
-            input(id='name-input' class='menu-input' name='playerName' value='' placeholder='Enter Name') 
-            //- button(id='connect' class='menu-button' hx-ext='ws' ws-connect='ws://localhost:3000' hx-get='/connect' hx-target='.center' hx-include="[name='playerName'],[name='playerId']") Confirm
-            button(id='connect' class='menu-button' hx-get='/connect' hx-target='.center' hx-include="[name='playerName'],[name='playerId']") Confirm
-    script(src="/htmx.min.js")
-    script(src="/ws.js.js")
-   
-    //- script(type='text/javascript')  ws.addEventListener("message", function(event) {let receivedData = JSON.parse(event.data); document.getElementById('playerId').value = receivedData.playerId;})
+.start-page      
+ input(id='name-input' class='menu-input' name='playerName' value='' placeholder='Enter Name') 
+ button(id='connect' class='menu-button' hx-get='/connect' hx-target='.content' hx-include="[name='playerName'],[name='playerId']") Confirm       
