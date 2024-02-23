@@ -39,6 +39,7 @@ wss.on("connection", function connection(ws : AWWebSocket) {
 
   ws.on("close", function close() {
     disconnect(ws.id);
+
   });
 });
 
@@ -56,3 +57,5 @@ server.listen(3000, function listening() {
 
 
 export { games, players, app };
+
+

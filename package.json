@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watchts": "npx tsc -p tsconfig.json --watch",
-    "watch": "nodemon --ignore public -e html,pug,css,js"
+    "start": "ts-node src/app.ts",
+    "watch": "tsc && nodemon --watch build --ignore public -e html,pug,css,js"
   },
   "author": "",
   "license": "ISC",
@@ -30,6 +30,7 @@
     "connect-livereload": "^0.6.1",
     "livereload": "^0.9.3",
     "nodemon": "^3.0.3",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
 }
