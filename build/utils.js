@@ -1,5 +1,5 @@
 // import the necessary functions and objects
-import * as aw from "./app.js";
+import * as aw from "./server.js";
 import { default as csvtojson } from "csvtojson";
 let log = [];
 const newPlayerObj = () => {

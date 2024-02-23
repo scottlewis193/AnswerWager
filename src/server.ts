@@ -5,7 +5,7 @@ import WebSocket, { WebSocketServer } from "ws";
 import * as utils from "./utils.js";
 import { default as router } from "./routes.js";
 import { connect, disconnect } from "./handlers.js";
-import { Games, Players, AWWebSocket } from "./interfaces";
+import { Games, Players, AWWebSocket } from "./interfaces.js";
 import { getUniqueID } from "./utils.js";
 import fs from "fs";
 import path from "path";

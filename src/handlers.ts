@@ -1,4 +1,4 @@
-import * as aw from "./app.js";
+import * as aw from "./server.js";
 import * as utils from "./utils.js";
 import {debug} from "./utils.js"
 import { Games, Game, Players, Player, BoardAnswers,BoardAnswer,PlayerVars } from "./interfaces.js";

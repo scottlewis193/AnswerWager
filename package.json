@@ -1,12 +1,12 @@
 {
   "name": "answerwager",
   "version": "1.0.0",
-  "description": "app.js",
-  "main": "./build/app.js",
+  "description": "server.js",
+  "main": "./build/server.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node src/app.ts",
+    "start": "node ./build/server.js",
     "watch": "tsc && nodemon --watch build --ignore public -e html,pug,css,js"
   },
   "author": "",

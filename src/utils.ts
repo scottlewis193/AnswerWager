@@ -1,5 +1,5 @@
 // import the necessary functions and objects
-import * as aw from "./app.js";
+import * as aw from "./server.js";
 import WebSocket, { WebSocketServer } from "ws";
 import { Player, Game, Players, Games, Answer, Answers, Question, Questions, BoardAnswer, BoardAnswers, AWWebSocket } from "./interfaces.js";
 import { default as csvtojson } from "csvtojson"
