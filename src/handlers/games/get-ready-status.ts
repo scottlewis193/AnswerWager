@@ -1,21 +1,24 @@
+import express from "express";
+import { gameStore } from "../../server";
+
 const checkReadyStatus = (req : express.Request, res : express.Response) => {
-    const GAMEID = Number(req.params.gameId);
+    const GAME = gameStore.Games[Number(req.params.gameId)]
     const PLAYERID = Number(req.query.playerId);
-    const QUESTIONINDEX = aw.games[GAMEID].questionIndex;
+    const QUESTIONINDEX = GAME.questionIndex;
   
-    utils.updateAllPlayersReadyStatus();
+    GAME.UpdateReadyStatus();
   
     //if player is host then show start button
-    if (utils.isHost(PLAYERID, aw.games[GAMEID])) {
+    if (GAME.isHost(PLAYERID)) {
       res.render("start-btn", {
-        gameId: GAMEID,
-        playersReady: aw.games[GAMEID].playersReady,
+        gameId: GAME.gameId,
+        playersReady: GAME.playersReady,
       });
     } else {
       //if all players are ready and game has started then show question
-      if (aw.games[GAMEID].state == "Question" && aw.games[GAMEID].playersReady) {
-        let questionObj = aw.games[GAMEID].questions[QUESTIONINDEX];
-        questionObj.gameId = GAMEID;
+      if (GAME.state == "Question" && GAME.playersReady) {
+        let questionObj = GAME.questions[QUESTIONINDEX];
+        questionObj.gameId = GAME.gameId;
         questionObj.playerId = PLAYERID;
         //add HX-Retarget to question so replaces the contents of the center div
         res.set("HX-Retarget", ".content");
@@ -27,3 +30,5 @@ const checkReadyStatus = (req : express.Request, res : express.Response) => {
       res.sendStatus(204);
     }
   };
+
+  export {checkReadyStatus}

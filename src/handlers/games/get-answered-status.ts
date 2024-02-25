@@ -1,30 +1,28 @@
 import express from "express";
 import { gameStore } from "../../server";
-import { BoardAnswers } from "../../store/store";
+import { BoardAnswer } from "../../store/answers";
+import { getHighestOdds } from "../../utils";
 
 const checkAnsweredStatus = (req : express.Request, res : express.Response) => {
     const GAMEID = Number(req.params.gameId);
+    const GAME = gameStore.Games[GAMEID];
     const PLAYERID = Number(req.query.playerId);
-    gameStore.UpdateAllPlayersAnsweredStatus(GAMEID);
-    if (gameStore.PlayersAnswered(GAMEID)) {
-      //process answers
-      let PROCESSEDANSWERS : BoardAnswers
-      // debug(aw.games[GAMEID].processedAnswers)
-      // if (aw.games[GAMEID].hasProcessedAnswers) {
-      //   PROCESSEDANSWERS = aw.games[GAMEID].processedAnswers
-        
-      // } else {
-        PROCESSEDANSWERS = utils.processAnswers(utils.getAnswers(GAMEID))
-        aw.games[GAMEID].hasProcessedAnswers = true;
-      // }
-   
+    GAME.UpdateAnsweredStatus();
+
+    if (GAME.PlayersAnswered()) {
+ 
+
+        GAME.ProcessAnswers()
+
+        gameStore.Games[GAMEID].hasProcessedAnswers = true;
+  
      //render wager board
       res.render("wager-board", {
-        answers: PROCESSEDANSWERS,
-        highestodds: utils.getHighestOdds(PROCESSEDANSWERS),
+        answers: GAME.processedAnswers,
+        highestodds: getHighestOdds(GAME.processedAnswers),
         playerId: PLAYERID,
         gameId: GAMEID,
-        playerList: utils.getPlayerList(GAMEID),
+        playerList: GAME.GetPlayerList(),
       });
   
       return;
@@ -36,4 +34,4 @@ const checkAnsweredStatus = (req : express.Request, res : express.Response) => {
   //utils.drawDebug();
 };
 
-export default checkAnsweredStatus
+export { checkAnsweredStatus }

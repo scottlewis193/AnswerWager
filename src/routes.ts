@@ -1,4 +1,17 @@
-import { connectRoute } from "./handlers/connection";
+import { connectRoute } from "./handlers/connection/get-connect-route";
+import { disconnectHostLeaves } from "./handlers/connection/get-disconnect-host-leaves";
+import { createGame } from "./handlers/games/post-create-game";
+import { getPlayerList } from "./handlers/games/get-player-list";
+import { joinGame } from "./handlers/games/put-join-game";
+import { checkAnsweredStatus } from "./handlers/games/get-answered-status";
+import { checkReadyStatus } from "./handlers/games/get-ready-status";
+import { showQuestion } from "./handlers/games/get-show-question";
+import { submitAnswer } from "./handlers/games/post-submit-answer";
+import { submitBet } from "./handlers/games/post-submit-bet";
+import { leaveGame } from "./handlers/games/put-leave-game";
+import { loadQuestions } from "./handlers/games/post-load-questions";
+import { getGameRules } from "./handlers/games/get-game-rules";
+import { updatePlayer } from "./handlers/players/put-update-player";
  
 
 import * as utils from "./utils.js";

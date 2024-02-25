@@ -1,50 +1,11 @@
 // import the necessary functions and objects
-import * as aw from "./server.js";
+import { gameStore, playerStore } from "./server.js";
 import WebSocket, { WebSocketServer } from "ws";
-import { Player, Game, Players, Games, Answer, Answers, Question, Questions, BoardAnswer, BoardAnswers, AWWebSocket } from "./interfaces.js";
+import { BoardAnswer } from "./store/answers.js";
 import { default as csvtojson } from "csvtojson"
 
 let log : any[] = [];
 
-const newPlayerObj = (playerId: number) => {
-  let player: Player = {
-    playerId: playerId,
-    playerName: "",
-    readyStatus: false,
-    answeredStatus: false,
-    answers: [],
-    wageredStatus: false,
-    points: 5,
-    exactCorrectAnswers: 0,
-    correctAnswers: 0,
-    mostPointsEarnedRound: 0,
-    highestOddsWon: "",
-  };
-  return player
-};
-
-const newGameObj = (hostPlayerId: number, gameId: number) => {
-  let game: Game = {
-    gameId: gameId,
-    hostPlayerId: hostPlayerId,
-    playerIds: [],
-    playersReady: false,
-    playersAnswered: false,
-    state: "preGameLobby",
-    hasProcessedAnswers: false,
-    processedAnswers: [],
-    questions: [],
-    questionIndex: 0,
-    getPlayerList: () => {
-      let playerList : Players = {};
-      for (const playerId of aw.games[gameId].playerIds) {
-        playerList[playerId] = aw.players[playerId]
-      }
-      return playerList
-    }
-  };
-  return game
-};
 
 const generateId = () => {
   let Id : string = String(Math.floor(Math.random() * 10));
@@ -56,94 +17,14 @@ const generateId = () => {
   return Number(Id);
 };
 
-const updateAllPlayersReadyStatus = () => {
-  for (const gameId in aw.games) {
-  
-  }
-};
 
-const updateAllPlayersAnsweredStatus = () => {
 
-};
 
-const getAnswers = (gameId : number) => {
-  const QUESTIONINDEX = Number(aw.games[gameId].questionIndex);
-
-  let answers : Answers = [];
-
-  for (const playerId of aw.games[gameId].playerIds) {
-    const PLAYERANSWER : Answer ={ answer: aw.players[playerId].answers[QUESTIONINDEX].answer, answerType: '' };//aw.players[playerId].answers[QUESTIONINDEX].answer, answerType: '' };
-
-    //if answer already exists, skip over it - to avoid duplicates
-
-    let answersAry = Object.values(answers);
-    if (answersAry.includes(PLAYERANSWER)) {
-      continue;
-    }
-
-    //add to processed answers
-    answers[playerId]= PLAYERANSWER;
-  }
-
-  let answersAry = Object.values(answers);
-
-  //sort from lowest to highest
-  answersAry.sort((a , b) => {return Number(a.answer) - Number(b.answer)});
-
-  let sortedAnswers : Answers = [];
-
-  for (let index = 0; index < answersAry.length; index++) {
-    sortedAnswers[index] = answersAry[index];
-  }
-
-  debug(sortedAnswers)
-  return sortedAnswers;
-};
-
-const getPlayerList = (gameId : number) => {
-  let players : Players = {};
-  for (const playerId of aw.games[gameId].playerIds) {
-    players[playerId] = aw.players[playerId]
-  }
-  return players
-}
-
-const processAnswers = (answers : Answers) => {
-  let boardAnswers: BoardAnswers = [];
-  debug(answers)
-  for (let index : number = 0; index < Object.keys(answers).length; index++) {
-    boardAnswers[index] = {
-      answer: answers[index].answer,
-      odds: '0',
-    }
-    
-  }
-
-  const MIDDLEANSWERINDEX = getMiddleIndex(boardAnswers);
-
-  for (let index : number = 0; index < Object.keys(boardAnswers).length; index++) {
-    if (index < MIDDLEANSWERINDEX) {
-      const oddsnum = Math.abs(index - 2 - MIDDLEANSWERINDEX);
-      boardAnswers[index].odds = oddsnum + "/1";
-    }
-
-    if (index == MIDDLEANSWERINDEX) {
-      boardAnswers[index].odds = "2/1";
-    }
-
-    if (index > MIDDLEANSWERINDEX) {
-      const oddsnum = index + 2 - MIDDLEANSWERINDEX;
-      boardAnswers[index].odds = oddsnum + "/1";
-    }
-  }
-  return boardAnswers;
-};
-
-const getMiddleIndex = (answers : BoardAnswers) => {
+const getMiddleIndex = (answers : BoardAnswer[]) => {
   return Object.keys(answers).length !== 1 ? Math.floor((Object.keys(answers).length - 1) / 2) : 1;
 };
 
-const getHighestOdds = (answers : BoardAnswers) => {
+const getHighestOdds = (answers : BoardAnswer[]) => {
   return Object.keys(answers).length !== 1 ? getMiddleIndex(answers) + 3 : 2;
 };
 
@@ -152,9 +33,6 @@ const getCurrentTime = () => {
   return today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 };
 
-const isHost = (playerId : number, gameObj : Game) => {
-  return playerId == gameObj.hostPlayerId;
-};
 
 const CSVToJSON = (csv : string) => {
   
@@ -167,14 +45,7 @@ const CSVToJSON = (csv : string) => {
   
 };
 
-const getUniqueID = function () {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-  }
-  return s4() + s4() + s4();
-};
+
 
 const debug = (msg : any) => {
   log.push(msg);
@@ -202,9 +73,9 @@ const appendStatsToLog = () => {
   newLog.push("░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░░░▀░▀░▀░▀░▀▀▀░▀▀▀░▀░▀");
   newLog.push("server running at http://localhost:3000");
   newLog.push("");
-  newLog.push(`PLAYERS: ${Object.keys(aw.players).length}`);
+  newLog.push(`PLAYERS: ${Object.keys(playerStore.Players).length}`);
   //log.push(aw.players);
-  newLog.push(`GAMES: ${Object.keys(aw.games).length}`);
+  newLog.push(`GAMES: ${Object.keys(gameStore.Games).length}`);
   newLog.push("==========================");
   //console.log(aw.games);
   // if (Object.keys(aw.games).length !== 0)
@@ -228,22 +99,14 @@ const boolConv = (boolStr : string) => {
 
 export {
   generateId,
-  updateAllPlayersReadyStatus,
   getCurrentTime,
   appendStatsToLog as drawDebug,
   boolConv,
-  newPlayerObj,
-  newGameObj,
-  updateAllPlayersAnsweredStatus,
-  processAnswers,
-  getAnswers,
   getMiddleIndex,
   getHighestOdds,
-  isHost,
   CSVToJSON,
-  getUniqueID,
   debug,
   writeLog,
   appendStatsToLog,
-  getPlayerList
+ 
 };

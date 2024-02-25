@@ -1,15 +1,19 @@
+import express from "express";
+import { gameStore, playerStore } from "../../server";
+
 const joinGame = (req : express.Request, res : express.Response) => {
-    const GAMEID = Number(req.get("HX-Prompt"));
-    const PLAYERID = Number(req.query.playerId); 
-    const PLAYERNAME = req.query.playerName;
+    const GAME = gameStore.Games[Number(req.get("HX-Prompt"))];
+    const PLAYER = playerStore.Players[Number(req.query.playerId)];
   
-    aw.games[GAMEID].playerIds.push(PLAYERID);
+    GAME.playerIds.push(PLAYER.playerId);
   
     //send game-lobby screen to client
     res.render("pre-game-lobby", {
-      playerId: PLAYERID,
-      gameId: GAMEID,
-      playerName: PLAYERNAME,
+      playerId: PLAYER.playerId,
+      gameId: GAME.gameId,
+      playerName: PLAYER.playerName,
       isHost: false,
     });
   };
+
+  export {joinGame}

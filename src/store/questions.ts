@@ -1,4 +1,4 @@
-import { Player } from "./store";
+import { Player } from "./players";
 
 interface Question {
   question: string;
@@ -9,3 +9,5 @@ interface Question {
   playerId: number;
   playerList: Player[]
 }
+
+export { Question }

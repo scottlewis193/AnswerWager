@@ -1,14 +1,19 @@
 
+import express from "express";
+import { gameStore, playerStore } from "../../server";
+
 const submitAnswer = (req : express.Request, res : express.Response) => {
-    const GAMEID = Number(req.params.gameId);
-    const PLAYERID = Number(req.query.playerId);
-    const QUESTIONINDEX = aw.games[GAMEID].questionIndex;
+    const GAME = gameStore.Games[Number(req.params.gameId)];
+    const PLAYER = playerStore.Players[Number(req.query.playerId)];
+    const QUESTIONINDEX = GAME.questionIndex;
     const SUBMITTEDANSWER = String(req.query.submittedAnswer);
   
-    aw.players[PLAYERID].answeredStatus = true;
-    aw.players[PLAYERID].answers[QUESTIONINDEX] = { answer: SUBMITTEDANSWER, answerType: '' };
+    PLAYER.answeredStatus = true;
+    PLAYER.answers[QUESTIONINDEX] = {playerId: PLAYER.playerId, answer: SUBMITTEDANSWER, answerType: '' };
   
-    utils.updateAllPlayersAnsweredStatus();
+    GAME.UpdateAnsweredStatus();
   
     res.sendStatus(204);
   };
+
+  export {submitAnswer}

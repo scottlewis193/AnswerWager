@@ -1,23 +1,28 @@
 
+import express from "express";
+import { gameStore, playerStore } from "../../server";
+
 const leaveGame = (req : express.Request, res : express.Response) => {
-    const GAMEID = Number(req.query.gameId); 
-    const PLAYERID = Number(req.query.playerId); 
+    const GAME = gameStore.Games[Number(req.query.gameId)];
+    const PLAYER = playerStore.Players[Number(req.query.playerId)];
   
   //remove player from array of playerids in game
-  aw.games[GAMEID].playerIds.splice(
-    aw.games[GAMEID].playerIds.indexOf(PLAYERID),
+  GAME.playerIds.splice(
+    GAME.playerIds.indexOf(PLAYER.playerId),
     1
   );
   
     //check if player is hosting game and if so, remove game from obj
-    if (aw.games[GAMEID].hostPlayerId == PLAYERID) {
-      delete aw.games[GAMEID];
+    if (GAME.hostPlayerId == PLAYER.playerId) {
+      gameStore.DeleteGame(GAME.gameId);
     }
   
     
   
     res.render("main-menu", {
-      playerId: PLAYERID,
-      playerName: req.query.playerName,
+      playerId: PLAYER.playerId,
+      playerName: PLAYER.playerName,
     });
   };
+
+  export {leaveGame}

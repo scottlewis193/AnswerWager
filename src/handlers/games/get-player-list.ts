@@ -1,8 +1,13 @@
+import express from "express";
+import { gameStore } from "../../server";
+import { Player } from "../../store/players";
+
 const getPlayerList = (req : express.Request, res : express.Response) => {
     const GAMEID = Number(req.params.gameId);
+    const GAME = gameStore.Games[GAMEID];
     const PLAYERID = Number(req.query.playerId);
   
-    var playerList : Players = utils.getPlayerList(GAMEID);
+    var playerList : Record<number,Player> = GAME.GetPlayerList();
   
   
   
@@ -14,3 +19,5 @@ const getPlayerList = (req : express.Request, res : express.Response) => {
       res.render("player-list", { playerList: playerList, gameId: GAMEID });
     }
   };
+
+  export {getPlayerList}

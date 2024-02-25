@@ -1,3 +1,5 @@
+import express from "express";
+
 const submitBet = (req : express.Request, res : express.Response) => {
     const GAMEID = Number(req.params.gameId);
     const PLAYERID = Number(req.query.playerId);
@@ -5,3 +7,5 @@ const submitBet = (req : express.Request, res : express.Response) => {
     //aw.players[PLAYERID].bet = BET;
     res.sendStatus(204);
   }
+
+  export {submitBet}

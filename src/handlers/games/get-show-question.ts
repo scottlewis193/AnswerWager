@@ -1,14 +1,20 @@
+import express from "express";
+import { gameStore } from "../../server";
+
 const showQuestion = (req : express.Request, res : express.Response) => {
     const GAMEID = Number(req.params.gameId);
+    const GAME = gameStore.Games[Number(req.params.gameId)];
     const PLAYERID = Number(req.query.playerId);
-    const QUESTIONINDEX = aw.games[GAMEID].questionIndex;
-    let questionObj = aw.games[GAMEID].questions[QUESTIONINDEX];
+    const QUESTIONINDEX = GAME.questionIndex;
+
+    let questionObj = GAME.questions[QUESTIONINDEX];
     questionObj.gameId = GAMEID;
     questionObj.playerId = PLAYERID;
-    questionObj.playerList = utils.getPlayerList(GAMEID);
+    questionObj.playerList = GAME.GetPlayerList();
   
-    aw.games[GAMEID].state = "Question";
-    debug(questionObj)
+    GAME.state = "Question";
   
     res.render("question", questionObj);
   };
+
+  export {showQuestion}

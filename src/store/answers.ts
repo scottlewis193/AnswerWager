@@ -10,3 +10,8 @@ interface BoardAnswer {
   odds: string;
 }
 
+export {
+  Answer,
+  BoardAnswer,
+}
+
