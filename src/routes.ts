@@ -1,19 +1,5 @@
-import {
-  connectRoute,
-  createGame,
-  joinGame,
-  getPlayerList,
-  leaveGame,
-  submitAnswer,
-  showQuestion,
-  disconnectHostLeaves,
-  checkReadyStatus,
-  checkAnsweredStatus,
-  getGameRules,
-  updatePlayer,
-  loadQuestions,
-  submitBet
-} from "./handlers.js";
+import { connectRoute } from "./handlers/connection";
+ 
 
 import * as utils from "./utils.js";
 import {debug} from "./utils.js"

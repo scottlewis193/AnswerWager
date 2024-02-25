@@ -4,11 +4,13 @@ import express from "express";
 import WebSocket, { WebSocketServer } from "ws";
 import * as utils from "./utils.js";
 import { default as router } from "./routes.js";
-import { connect, disconnect } from "./handlers.js";
-import { Games, Players, AWWebSocket } from "./interfaces.js";
-import { getUniqueID } from "./utils.js";
 import fs from "fs";
 import path from "path";
+import { NewPlayerStore, PlayerStore } from "./store/players.js";
+import { NewGameStore } from "./store/games.js";
+import { AWWebSocket } from "./store/store.js";
+import { connect } from "./handlers/connection/get-connect.js"
+import { disconnect } from "./handlers/connection/get-disconnect.js"
 
 import { fileURLToPath } from "url";
 const app = express();
@@ -24,8 +26,9 @@ app.use(express.static("lib"));
 app.set("views", "./views");
 app.use("/", router);
 
-let games : Games = {};
-let players : Players = {};
+//stores
+const gameStore = NewGameStore()
+const playerStore = NewPlayerStore()
 
 wss.on("connection", function connection(ws : AWWebSocket) {
   ws.id = utils.generateId();
@@ -47,7 +50,6 @@ wss.on("connection", function connection(ws : AWWebSocket) {
 server.listen(3000, function listening() {
   utils.appendStatsToLog();
 
- 
 
   //delete uploads
   fs.rmSync("./uploads", { recursive: true });
@@ -56,6 +58,6 @@ server.listen(3000, function listening() {
 
 
 
-export { games, players, app };
+export { gameStore, playerStore, app };
 
 

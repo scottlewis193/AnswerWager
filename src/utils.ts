@@ -6,8 +6,9 @@ import { default as csvtojson } from "csvtojson"
 
 let log : any[] = [];
 
-const newPlayerObj = () => {
+const newPlayerObj = (playerId: number) => {
   let player: Player = {
+    playerId: playerId,
     playerName: "",
     readyStatus: false,
     answeredStatus: false,
@@ -22,9 +23,10 @@ const newPlayerObj = () => {
   return player
 };
 
-const newGameObj = (hostPlayerId: number) => {
+const newGameObj = (hostPlayerId: number, gameId: number) => {
   let game: Game = {
-    hostPlayerId,
+    gameId: gameId,
+    hostPlayerId: hostPlayerId,
     playerIds: [],
     playersReady: false,
     playersAnswered: false,
@@ -33,6 +35,13 @@ const newGameObj = (hostPlayerId: number) => {
     processedAnswers: [],
     questions: [],
     questionIndex: 0,
+    getPlayerList: () => {
+      let playerList : Players = {};
+      for (const playerId of aw.games[gameId].playerIds) {
+        playerList[playerId] = aw.players[playerId]
+      }
+      return playerList
+    }
   };
   return game
 };
@@ -49,24 +58,12 @@ const generateId = () => {
 
 const updateAllPlayersReadyStatus = () => {
   for (const gameId in aw.games) {
-    //get game from id
-    const GAME = aw.games[gameId];
-    //check if all players are ready
-    GAME.playersReady = GAME.playerIds.every(
-      (playerId) => aw.players[playerId].readyStatus
-    );
+  
   }
 };
 
 const updateAllPlayersAnsweredStatus = () => {
-  for (const gameId in aw.games) {
-    //get game from id
-    const GAME = aw.games[gameId];
-    //check if all players have answered
-    GAME.playersAnswered = GAME.playerIds.every(
-      (playerId) => aw.players[playerId].answeredStatus
-    );
-  }
+
 };
 
 const getAnswers = (gameId : number) => {
