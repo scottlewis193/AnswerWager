@@ -7,9 +7,7 @@ const getPlayerList = (req : express.Request, res : express.Response) => {
     const GAME = gameStore.Games[GAMEID];
     const PLAYERID = Number(req.query.playerId);
   
-    var playerList : Record<number,Player> = GAME.GetPlayerList();
-  
-  
+    var playerList : Player[] = GAME.GetPlayerList();
   
     //if player list returns nothing assume game no longer exists and boot client back to main menu
     if (Object.keys(playerList).length == 0) {

@@ -35,7 +35,7 @@ router.get("/", (req : express.Request, res :  express.Response) => {
 
 router.get("/connect", (req : express.Request, res : express.Response) => {
   debug(req.query)
-  connectRoute(req, res);
+ connectRoute(req, res);
 });
 
 router.get("/games/create", (req : express.Request, res : express.Response) => {

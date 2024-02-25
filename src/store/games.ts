@@ -66,8 +66,10 @@ class Game {
 
     GetPlayerList() {
         let playerList : Player[] = [];
+
         for (const playerId of this.playerIds) {
-          playerList[playerId] = playerStore.GetPlayer(playerId)
+          playerList.push(playerStore.GetPlayer(playerId))
+         
         }
         return playerList
     }

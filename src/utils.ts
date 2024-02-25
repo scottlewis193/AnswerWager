@@ -77,7 +77,6 @@ const appendStatsToLog = () => {
   //log.push(aw.players);
   newLog.push(`GAMES: ${Object.keys(gameStore.Games).length}`);
   newLog.push("==========================");
-  //console.log(aw.games);
   // if (Object.keys(aw.games).length !== 0)
   //   console.log(aw.games[Object.keys(aw.games)[0]].processedAnswers);
     for (const line of log) {

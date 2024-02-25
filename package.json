@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./build/server.js",
-    "watch": "tsc && nodemon --watch build --ignore public -e html,pug,css,js"
+    "watch": "tsc && tsc-alias && nodemon --watch build --ignore public -e html,pug,css,js"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +16,7 @@
     "express": "^4.18.2",
     "multer": "^1.4.5-lts.1",
     "pug": "^3.0.2",
+    "tsc-alias": "^1.8.8",
     "ws": "^8.16.0"
   },
   "devDependencies": {
