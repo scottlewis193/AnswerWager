@@ -9,9 +9,7 @@ const createGame = (req : express.Request, res : express.Response) => {
     //add game info to games object
     const NEWGAMEID = gameStore.CreateGame(PLAYER.playerId);
 
-    console.log(PLAYER)
 
-  
     //send game-lobby screen to client
     res.render("pre-game-lobby", {
       playerId: PLAYER.playerId,

@@ -8,6 +8,7 @@ interface Answer {
 interface BoardAnswer {
   answer: string | number;
   odds: string;
+  wagered: boolean;
 }
 
 export {

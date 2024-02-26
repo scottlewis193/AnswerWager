@@ -3,7 +3,6 @@
      table(id='player-list' class='game-list' hx-swap='outerHTML' hx-trigger='every 0.1s' hx-get=`/games/${gameId}/playerlist`)
      tr(class='player-columns')
 
-     div(class='lobby-btn-grid' id='lobby-btn-grid')
      button(id='ready-btn' class='menu-btn' hx-swap='outerHTML' hx-get=`/players/${playerId}/update` hx-vals='{"readyStatus": true}') Ready  
      button(id='leave-btn' class='menu-btn' hx-get=`/games/${gameId}/leave` hx-target='.content' hx-include="[name='gameId'],[name='playerId']") Leave
  

@@ -162,6 +162,7 @@ div {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  row-gap: 1%;
   padding: 1%;
   width: 100%;
 }
@@ -223,6 +224,9 @@ div {
     padding-bottom: 2%;
     .segment-btn {
       width: 80%;
+    }
+    .win {
+      background-color: lightgreen;
     }
   }
 }

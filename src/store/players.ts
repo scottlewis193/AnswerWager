@@ -1,5 +1,6 @@
 import { IPlayerStore } from "./store";
 import { Answer } from "./answers";
+import { Bet } from "./bets";
 
 function NewPlayerStore() {
     return new PlayerStore();
@@ -39,6 +40,7 @@ class Player {
     answeredStatus: boolean
     answers: Answer[]
     wageredStatus: boolean
+    bets: Bet[]
     points: number
     exactCorrectAnswers: number
     correctAnswers: number
@@ -52,6 +54,7 @@ class Player {
         this.answeredStatus = false,
         this.answers = [],
         this.wageredStatus = false,
+        this.bets = [],
         this.points = 5,
         this.exactCorrectAnswers = 0,
         this.correctAnswers = 0,
@@ -61,6 +64,10 @@ class Player {
 
     UpdatePlayerName(playerName: string) {
         this.playerName = playerName;
+    }
+
+    GetBetAnswers() {
+        return this.bets.map((bet) => bet.answer)
     }
 }
 

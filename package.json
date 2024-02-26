@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./build/server.js",
-    "watch": "tsc && tsc-alias && nodemon --watch build --ignore public -e html,pug,css,js"
+    "compile": "tsc && tsc-alias && node ./build/server.js",
+    "watch": "nodemon -e ts --exec \"npm run compile\" --watch src --ignore public -e html,pug,css,js"
   },
   "author": "",
   "license": "ISC",

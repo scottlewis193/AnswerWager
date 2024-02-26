@@ -7,11 +7,12 @@ import { checkAnsweredStatus } from "./handlers/games/get-answered-status";
 import { checkReadyStatus } from "./handlers/games/get-ready-status";
 import { showQuestion } from "./handlers/games/get-show-question";
 import { submitAnswer } from "./handlers/games/post-submit-answer";
-import { submitBet } from "./handlers/games/post-submit-bet";
+import { submitBet } from "./handlers/games/get-submit-bet";
 import { leaveGame } from "./handlers/games/put-leave-game";
 import { loadQuestions } from "./handlers/games/post-load-questions";
 import { getGameRules } from "./handlers/games/get-game-rules";
 import { updatePlayer } from "./handlers/players/put-update-player";
+import { checkWageredStatus } from "./handlers/games/get-wagered-status";
  
 
 import * as utils from "./utils.js";
@@ -26,7 +27,7 @@ const upload = multer({ dest: "./uploads" }).single("file");
 
 router.use((req : express.Request, res : express.Response, next : Function) => {
   next();
-  //utils.writeLog();
+  utils.writeLog();
 });
 
 router.get("/", (req : express.Request, res :  express.Response) => {
@@ -91,6 +92,10 @@ router.get("/games/:gameId/readycheck", (req : express.Request, res : express.Re
 router.get("/games/:gameId/answercheck", (req : express.Request, res : express.Response) => {
   checkAnsweredStatus(req, res);
 });
+
+router.get("/games/:gameId/wageredcheck", (req: express.Request, res : express.Response) => {
+  checkWageredStatus(req, res);
+})
 
 router.get("/game-rules", (req : express.Request, res : express.Response) => {
   getGameRules(req, res);

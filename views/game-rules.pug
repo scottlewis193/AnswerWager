@@ -22,5 +22,5 @@
   .
    Player who did not bet on the closest answer - Loses all points used on losing bets
 
- button(id='back-btn' class='menu-button' hx-target='.content' hx-get='/connect') Back
- input(class='player-id' id='playerId' name='playerId' value=`${playerId}` readonly)
+ button(id='back-btn' class='menu-button' hx-target='.content' hx-get='/connect' hx-include="[name='playerId']") Back
+ include ids.pug

@@ -3992,3 +3992,6 @@ build/store/games.js
 build/store/players.js
 build/store/questions.js
 build/store/store.js
+build/handlers/games/get-submit-bet.js
+build/handlers/games/get-wagered-status.js
+build/handlers/games/put-submit-bet.js

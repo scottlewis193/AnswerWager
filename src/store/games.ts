@@ -47,6 +47,7 @@ class Game {
     state: string
     hasProcessedAnswers: boolean
     processedAnswers: BoardAnswer[]
+    hadProcessedBets: boolean
     questions: Question[]
     questionIndex: number
 
@@ -60,6 +61,7 @@ class Game {
      this.state = "preGameLobby",
      this.hasProcessedAnswers = false,
      this.processedAnswers = [],
+     this.hadProcessedBets = false,
      this.questions = [],
      this.questionIndex = 0
     }
@@ -107,6 +109,7 @@ class Game {
             boardAnswers[index] = {
             answer: answers[index].answer,
             odds: '0',
+            wagered: false
             }
     
         }

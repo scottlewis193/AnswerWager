@@ -66,7 +66,7 @@ const writeLog = () => {
 
 const appendStatsToLog = () => {
  
-  if (log.length != 0) log.splice(0,8);
+  if (log.length != 0) log.splice(0,9);
   let newLog : any[] = [];
   newLog.push("░█▀█░█▀█░█▀▀░█░█░█▀▀░█▀▄░░░█░█░█▀█░█▀▀░█▀▀░█▀▄");
   newLog.push("░█▀█░█░█░▀▀█░█▄█░█▀▀░█▀▄░░░█▄█░█▀█░█░█░█▀▀░█▀▄");
@@ -74,7 +74,7 @@ const appendStatsToLog = () => {
   newLog.push("server running at http://localhost:3000");
   newLog.push("");
   newLog.push(`PLAYERS: ${Object.keys(playerStore.Players).length}`);
-  //log.push(aw.players);
+  newLog.push(playerStore.Players);
   newLog.push(`GAMES: ${Object.keys(gameStore.Games).length}`);
   newLog.push("==========================");
   // if (Object.keys(aw.games).length !== 0)

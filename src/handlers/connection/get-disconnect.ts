@@ -7,11 +7,13 @@ const disconnect = (socketid : number) => {
   
     //check if player has hosted any games and remove if needed
     //also check if player has joined any games and remove them from connected players
-    for (const [gameId, game] of Object.entries(gameStore)) {
+    for (const gameId in gameStore.Games) {
+      const game = gameStore.Games[gameId];
       if (game.hostPlayerId == socketid) {
         gameStore.DeleteGame(Number(gameId));
         break;
       }
+
   
       if (game.playerIds.indexOf(socketid) !== -1) {
         game.playerIds.splice(game.playerIds.indexOf(socketid), 1);
