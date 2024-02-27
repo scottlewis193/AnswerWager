@@ -1,5 +1,6 @@
 import express from "express";
 import { gameStore } from "../../server";
+import { debug } from "../../utils";
 
 const checkReadyStatus = (req : express.Request, res : express.Response) => {
     const GAME = gameStore.Games[Number(req.params.gameId)]
@@ -17,6 +18,10 @@ const checkReadyStatus = (req : express.Request, res : express.Response) => {
     } else {
       //if all players are ready and game has started then show question
       if (GAME.state == "Question" && GAME.playersReady) {
+
+        
+        debug(`${GAME.gameId}: game has started`);
+
         let questionObj = GAME.questions[QUESTIONINDEX];
         questionObj.gameId = GAME.gameId;
         questionObj.playerId = PLAYERID;

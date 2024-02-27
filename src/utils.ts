@@ -47,8 +47,11 @@ const CSVToJSON = (csv : string) => {
 
 
 
-const debug = (msg : any) => {
-  log.push(msg);
+const debug = (msg : any, ...optionalParams : any[]) => {
+  if (log.includes(msg, ...optionalParams)) {
+    return;
+  }
+  log.push(`[${getCurrentTime()}] `+ msg, ...optionalParams);
   writeLog();
 };
 
@@ -66,7 +69,7 @@ const writeLog = () => {
 
 const appendStatsToLog = () => {
  
-  if (log.length != 0) log.splice(0,9);
+  if (log.length != 0) log.splice(0,8);
   let newLog : any[] = [];
   newLog.push("░█▀█░█▀█░█▀▀░█░█░█▀▀░█▀▄░░░█░█░█▀█░█▀▀░█▀▀░█▀▄");
   newLog.push("░█▀█░█░█░▀▀█░█▄█░█▀▀░█▀▄░░░█▄█░█▀█░█░█░█▀▀░█▀▄");
@@ -74,8 +77,9 @@ const appendStatsToLog = () => {
   newLog.push("server running at http://localhost:3000");
   newLog.push("");
   newLog.push(`PLAYERS: ${Object.keys(playerStore.Players).length}`);
-  newLog.push(playerStore.Players);
+  //newLog.push(playerStore.Players);
   newLog.push(`GAMES: ${Object.keys(gameStore.Games).length}`);
+  //newLog.push(gameStore.Games);
   newLog.push("==========================");
   // if (Object.keys(aw.games).length !== 0)
   //   console.log(aw.games[Object.keys(aw.games)[0]].processedAnswers);

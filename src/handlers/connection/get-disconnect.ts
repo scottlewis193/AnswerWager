@@ -1,7 +1,13 @@
 import { playerStore, gameStore } from "../../server";
+import { debug } from "../../utils"; 
+import { BoardAnswer } from "../../store/answers";
 
 
 const disconnect = (socketid : number) => {
+      const PLAYER = playerStore.Players[socketid]
+
+  debug(`${PLAYER.playerId} (${PLAYER.playerName}): disconnected from server`);
+
     //remove player from players object
     playerStore.DeletePlayer(socketid);
   
@@ -11,6 +17,9 @@ const disconnect = (socketid : number) => {
       const game = gameStore.Games[gameId];
       if (game.hostPlayerId == socketid) {
         gameStore.DeleteGame(Number(gameId));
+
+        debug(`${gameId}: game removed`);
+
         break;
       }
 
@@ -19,6 +28,9 @@ const disconnect = (socketid : number) => {
         game.playerIds.splice(game.playerIds.indexOf(socketid), 1);
         break;
       }
+
+
+
     }
   
   };

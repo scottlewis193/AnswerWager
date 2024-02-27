@@ -1,5 +1,6 @@
 import express from "express";
 import { gameStore } from "../../server";
+import { debug } from "../../utils";
 
 const showQuestion = (req : express.Request, res : express.Response) => {
     const GAMEID = Number(req.params.gameId);
@@ -13,6 +14,8 @@ const showQuestion = (req : express.Request, res : express.Response) => {
     questionObj.playerList = GAME.GetPlayerList();
   
     GAME.state = "Question";
+
+    if (QUESTIONINDEX == 0) {debug(`${GAME.gameId}: game has started`);}
   
     res.render("question", questionObj);
   };
