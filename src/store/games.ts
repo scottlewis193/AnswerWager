@@ -1,5 +1,5 @@
 
-import { generateId } from "../utils";
+import { findClosestNumber, generateId } from "../utils";
 import { playerStore } from "../server";
 import {  IGameStore,IPlayerStore } from "./store";
 import { BoardAnswer, Answer } from "./answers";
@@ -104,15 +104,27 @@ class Game {
         const answers = this.GetAnswers()
 
         let boardAnswers: BoardAnswer[] = [];
+        const correctAnswer = Number(answers[this.questionIndex].answer);
+        const closestAnswer = findClosestNumber(answers.map((answer) => Number(answer.answer)), correctAnswer);
 
+        //set board answers and determine correct answer
         for (let index : number = 0; index < Object.keys(answers).length; index++) {
             boardAnswers[index] = {
             answer: answers[index].answer,
             odds: '0',
-            wagered: false
+            wagered: false,
+            correctAnswer: answers[index].answer == closestAnswer
             }
     
         }
+
+        //determine BoardAnswers.answer that is closest to correctAnswer withiut going over
+
+
+
+        
+
+        
 
         const MIDDLEANSWERINDEX = getMiddleIndex(boardAnswers)
         for (let index = 0; index < Object.keys(boardAnswers).length; index++) {

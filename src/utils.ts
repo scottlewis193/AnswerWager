@@ -100,6 +100,18 @@ const boolConv = (boolStr : string) => {
   return false;
 };
 
+const findClosestNumber = (numbers: number[], target: number) => {
+  let closestNumber = -Infinity; // Initialize with a value that is less than any possible number in the array
+
+  for (const number of numbers) {
+    if (number <= target && number > closestNumber) {
+      closestNumber = number;
+    }
+  }
+
+  return closestNumber;
+}
+
 export {
   generateId,
   getCurrentTime,
@@ -111,5 +123,5 @@ export {
   debug,
   writeLog,
   appendStatsToLog,
- 
+  findClosestNumber
 };

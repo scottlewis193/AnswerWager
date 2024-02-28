@@ -9,6 +9,7 @@ interface BoardAnswer {
   answer: string | number;
   odds: string;
   wagered: boolean;
+  correctAnswer: boolean;
 }
 
 export {

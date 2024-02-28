@@ -52,7 +52,7 @@ const submitBet = (req : express.Request, res : express.Response) => {
     //create array of answers to show whether player has wagered so view can be modified appropriately
     const answers: BoardAnswer[] = []
     
-    GAME.processedAnswers.forEach((answer) => answers.push({answer: answer.answer,odds: answer.odds, wagered: playerBetAnswers.includes(answer.answer)}))
+    GAME.processedAnswers.forEach((answer) => answers.push({answer: answer.answer,odds: answer.odds, wagered: playerBetAnswers.includes(answer.answer), correctAnswer: false}));
 
     //rerender wager-board
     res.render("wager-board", 
@@ -65,7 +65,8 @@ const submitBet = (req : express.Request, res : express.Response) => {
       gameId: GAME.gameId,
       playerList: GAME.GetPlayerList(),
       btnsDisabled: PLAYER.bets.length >= 2 || PLAYER.wageredStatus,
-      smallerWagered: ANSWER == "SMALLER"
+      smallerWagered: ANSWER == "SMALLER",
+      revealAnswer: false
     }
   )
 

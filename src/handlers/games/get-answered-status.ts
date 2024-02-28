@@ -26,7 +26,8 @@ const checkAnsweredStatus = (req : express.Request, res : express.Response) => {
         playerId: PLAYER.playerId,
         gameId: GAME.gameId,
         playerList: GAME.GetPlayerList(),
-        btnsDisabled: false
+        btnsDisabled: false,
+        revealAnswer: false
       });
   
       return;
