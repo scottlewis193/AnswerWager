@@ -13,6 +13,7 @@ import { connect } from "./handlers/connection/get-connect.js"
 import { disconnect } from "./handlers/connection/get-disconnect.js"
 
 import { fileURLToPath } from "url";
+import pug from "pug";
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
@@ -44,12 +45,20 @@ wss.on("connection", function connection(ws : AWWebSocket) {
     disconnect(ws.id);
 
   });
+
+  ws.on("message", (message) => {
+    const data = JSON.parse(message.toString());
+      utils.debug('player-list request received')
+      ws.send(`<div id="player-list">TEST</div>`);
+    }
+    
+  );
+
 });
 
 
 server.listen(3000, function listening() {
   utils.appendStatsToLog();
-
 
   //delete uploads
   fs.rmSync("./uploads", { recursive: true });
@@ -58,6 +67,6 @@ server.listen(3000, function listening() {
 
 
 
-export { gameStore, playerStore, app };
+export { gameStore, playerStore, app, wss };
 
 

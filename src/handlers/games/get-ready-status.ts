@@ -10,12 +10,12 @@ const checkReadyStatus = (req : express.Request, res : express.Response) => {
     GAME.UpdateReadyStatus();
   
     //if player is host then show start button
-    if (GAME.isHost(PLAYERID)) {
+
       res.render("start-btn", {
         gameId: GAME.gameId,
         playersReady: GAME.playersReady,
       });
-    } else {
+    
       //if all players are ready and game has started then show question
       if (GAME.state == "Question" && GAME.playersReady) {
 
@@ -33,7 +33,7 @@ const checkReadyStatus = (req : express.Request, res : express.Response) => {
   
       //send empty response if all players aren't ready or game hasn't started
       res.sendStatus(204);
-    }
+    
   };
 
   export {checkReadyStatus}

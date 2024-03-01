@@ -46,6 +46,7 @@ class Player {
     correctAnswers: number
     mostPointsEarnedRound: number
     highestOddsWon: string
+    updateRequired: boolean
 
     constructor(playerId: number) {
         this.playerId = playerId,
@@ -59,7 +60,8 @@ class Player {
         this.exactCorrectAnswers = 0,
         this.correctAnswers = 0,
         this.mostPointsEarnedRound = 0,
-        this.highestOddsWon = ""
+        this.highestOddsWon = "",
+        this.updateRequired = false
     }
 
     UpdatePlayerName(playerName: string) {

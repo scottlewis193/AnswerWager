@@ -4021,3 +4021,7 @@ build/store/games.js.map
 build/store/players.js.map
 build/store/questions.js.map
 build/store/store.js.map
+build/handlers/games/post-start-game.js
+build/handlers/games/post-start-game.js.map
+build/handlers/games/get-update-lobby.js
+build/handlers/games/get-update-lobby.js.map

@@ -1,5 +1,5 @@
 if playersReady
- button(type='button' id='start-btn' class='menu-btn' hx-target='.content' hx-get=`/games/${gameId}/start` hx-include="[name='gameId'],[name='playerId']") Start
+ button(type='button' id='start-btn' class='menu-btn' hx-target='.content' hx-post=`/games/${gameId}/start` hx-include="[name='gameId'],[name='playerId']") Start
 else 
  button(type='button' id='start-btn' class='menu-btn' disabled) Start
 

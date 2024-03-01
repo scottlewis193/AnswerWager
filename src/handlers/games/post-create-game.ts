@@ -12,12 +12,15 @@ const createGame = (req : express.Request, res : express.Response) => {
 
     debug(`${PLAYER.playerName} (${PLAYER.playerId}): created new game (${NEWGAMEID})`);
 
+    const GAME = gameStore.Games[NEWGAMEID];
+
     //send game-lobby screen to client
     res.render("pre-game-lobby", {
       playerId: PLAYER.playerId,
       gameId: NEWGAMEID,
       playerName: PLAYER.playerName,
       isHost: true,
+      playerList: GAME.GetPlayerList()
     });
   };
 

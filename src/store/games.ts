@@ -50,6 +50,7 @@ class Game {
     hadProcessedBets: boolean
     questions: Question[]
     questionIndex: number
+    updateRequired: boolean
 
     constructor(gameId: number, hostPlayerId: number) {
      this.gameId = gameId,
@@ -64,6 +65,7 @@ class Game {
      this.hadProcessedBets = false,
      this.questions = [],
      this.questionIndex = 0
+     this.updateRequired = false
     }
 
     GetPlayerList() {

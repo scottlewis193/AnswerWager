@@ -6,6 +6,8 @@ import { debug } from "../../utils";
 const leaveGame = (req : express.Request, res : express.Response) => {
     const GAME = gameStore.Games[Number(req.query.gameId)];
     const PLAYER = playerStore.Players[Number(req.query.playerId)];
+
+    GAME.updateRequired = true;
   
   //remove player from array of playerids in game
   GAME.playerIds.splice(

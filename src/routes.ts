@@ -1,7 +1,7 @@
 import { connectRoute } from "./handlers/connection/get-connect-route";
 import { disconnectHostLeaves } from "./handlers/connection/get-disconnect-host-leaves";
 import { createGame } from "./handlers/games/post-create-game";
-import { getPlayerList } from "./handlers/games/get-player-list";
+import { updateLobby } from "./handlers/games/get-update-lobby";
 import { joinGame } from "./handlers/games/put-join-game";
 import { checkAnsweredStatus } from "./handlers/games/get-answered-status";
 import { checkReadyStatus } from "./handlers/games/get-ready-status";
@@ -13,6 +13,7 @@ import { loadQuestions } from "./handlers/games/post-load-questions";
 import { getGameRules } from "./handlers/games/get-game-rules";
 import { updatePlayer } from "./handlers/players/put-update-player";
 import { checkWageredStatus } from "./handlers/games/get-wagered-status";
+import { startGame } from "./handlers/games/post-start-game";
  
 
 import * as utils from "./utils.js";
@@ -20,6 +21,7 @@ import {debug} from "./utils.js"
 import multer from "multer";
 
 import express from "express";
+
 
 const router = express.Router();
 const upload = multer({ dest: "./uploads" }).single("file");
@@ -46,8 +48,8 @@ router.get("/games/join", (req : express.Request, res : express.Response) => {
   joinGame(req, res);
 });
 
-router.get("/games/:gameId/playerlist", (req : express.Request, res : express.Response) => {
-  getPlayerList(req, res);
+router.get("/games/:gameId/updatelobby", (req : express.Request, res : express.Response) => {
+  updateLobby(req, res);
 });
 
 router.post(
@@ -78,9 +80,13 @@ router.get("/games/:gameId/submitanswer", (req : express.Request, res : express.
 
 router.get("/games/:gameId/submitbet", (req : express.Request, res : express.Response) => {
   submitBet(req,res)
-})
+});
 
-router.get("/games/:gameId/start", (req : express.Request, res : express.Response) => {
+router.post("/games/:gameId/start", (req : express.Request, res : express.Response) => {
+  startGame(req, res);
+});
+
+router.get("/games/:gameId/showquestion", (req : express.Request, res : express.Response) => {
   showQuestion(req, res);
 });
 
@@ -94,7 +100,7 @@ router.get("/games/:gameId/answercheck", (req : express.Request, res : express.R
 
 router.get("/games/:gameId/wageredcheck", (req: express.Request, res : express.Response) => {
   checkWageredStatus(req, res);
-})
+});
 
 router.get("/game-rules", (req : express.Request, res : express.Response) => {
   getGameRules(req, res);
@@ -103,5 +109,6 @@ router.get("/game-rules", (req : express.Request, res : express.Response) => {
 router.get("/players/:playerId/update",(req : express.Request, res : express.Response) => {
   updatePlayer(req, res);
 });
+
 
 export default router;

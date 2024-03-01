@@ -1,4 +1,4 @@
 if readyStatus
- button(id='unready-btn' class='menu-btn' hx-swap='outerHTML' hx-get=`/players/${playerId}/update` hx-vals='{"readyStatus": false}') Unready
+ button(id='unready-btn' class='menu-btn' hx-target='.content' hx-get=`/players/${playerId}/update` hx-vals='{"readyStatus": false}') Unready
 else
- button(id='ready-btn' class='menu-btn' hx-swap='outerHTML' hx-get=`/players/${playerId}/update` hx-vals='{"readyStatus": true}') Ready
+ button(id='ready-btn' class='menu-btn' hx-target='.content' hx-get=`/players/${playerId}/update` hx-vals='{"readyStatus": true}') Ready
