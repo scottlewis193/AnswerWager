@@ -5,6 +5,7 @@ import { getHighestOdds, debug } from "../../utils";
 
 
 const checkAnsweredStatus = (req : express.Request, res : express.Response) => {
+  
     const GAME = gameStore.Games[Number(req.params.gameId)];
     const PLAYER = playerStore.Players[Number(req.query.playerId)];
 

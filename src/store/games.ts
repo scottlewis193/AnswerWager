@@ -66,6 +66,10 @@ class Game {
      this.questionIndex = 0
     }
 
+    /**
+     * iterates over the player ids and returns an array of players
+     * @returns array of players
+     */
     GetPlayerList() {
         let playerList : Player[] = [];
 
@@ -76,29 +80,53 @@ class Game {
         return playerList
     }
 
+    /**
+     * update the game's state
+     * @param state "preGameLobby" | "Question"
+     */
     UpdateGameState(state: string) {
         this.state = state;
     }
 
+
+    /**
+     * Update the game's `playersAnswered` flag to true if all players have answered
+     * their question.
+     */
     PlayersAnswered() {
         return this.playersAnswered;
     }
 
+
+    /**
+     * Update the game's `playersAnswered` flag to true if all players have answered
+     * their question.
+     */
     UpdateAnsweredStatus() {
-        //set playersAnswered to true if all players have answered
         this.playersAnswered = this.playerIds.every((playerId) => playerStore.GetPlayer(playerId).answeredStatus);
     }
-
+    /**
+     * Update the game's `playersReady' flag to true if all players are ready
+     */
     UpdateReadyStatus()  {
         //set playersReady to true if all players are ready
         this.playersReady = this.playerIds.every((playerId) => playerStore.GetPlayer(playerId).readyStatus);
     }
-
+    /**
+     * Update the game's `playersWagered' flag to true if all players have wagered
+     */
     UpdateWageredStatus() {
         //set playersReady to true if all players are ready
         this.playersWagered = this.playerIds.every((playerId) => playerStore.GetPlayer(playerId).wageredStatus);
     }
 
+    /**
+     * Set boardAnswers array with the answers and determine if they are correct.
+     * For each answer in the answers array, create a new BoardAnswer object with
+     * the answer, odds, wagered, and correctAnswer fields. The correctAnswer field
+     * is set to true if the answer is equal to the closest number to the correct
+     * answer.
+     */
     ProcessAnswers() {
 
         const answers = this.GetAnswers()
@@ -145,6 +173,10 @@ class Game {
         
     }
 
+    /**
+     * iterates over the submitted answers, discards any duplicates and sorts the remaining answers from lowest to highest
+     * @returns array of answers
+     */
     GetAnswers() {
         const QUESTIONINDEX = Number(this.questionIndex);
 
@@ -172,6 +204,11 @@ class Game {
         return answers;
     }
 
+    /**
+     * determines if player is the host
+     * @param playerId a player id
+     * @returns true if the player is the host
+     */
      isHost(playerId : number) {
         return playerId == this.hostPlayerId;
      };

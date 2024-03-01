@@ -1,7 +1,7 @@
 include scores.pug
 .center
  div(class='wagered-status' hx-target='.content' hx-swap='innerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/wageredcheck` hx-include="[name='gameId'],[name='playerId']")
- div(class="wager-board")
+ div(class="page wager-board")
  if smallerCorrect && revealAnswer 
   div(class='board-segment-answer')
  else

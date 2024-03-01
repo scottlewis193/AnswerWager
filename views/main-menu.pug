@@ -1,5 +1,5 @@
 .center
- .main-menu  
+ div(class='page main-menu')  
   h1(class='title' id='game-title') Answer Wager
   button(id='join-game' class='menu-button' hx-get=`/games/join` hx-target='.content' hx-prompt='Enter Game ID: ' hx-include="[name='playerId']") Join Game 
   button(id='host-game' class='menu-button' hx-get='/games/create' hx-target='.content' hx-include="[name='playerId']") Host Game

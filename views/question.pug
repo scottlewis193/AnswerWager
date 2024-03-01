@@ -1,6 +1,6 @@
 include scores.pug
 .center
- .question
+ div(class='page question')
   img(class='question-img' id='question-img' src=`${imageURL}`)
   h2(class='big-text' id='question-text') #{question}
   div(class='answer-check' id='answer-check-id' hx-trigger='load, every 5s' hx-get=`/games/${gameId}/answercheck` hx-target='.content' hx-include="[name='gameId'],[name='playerId']")
