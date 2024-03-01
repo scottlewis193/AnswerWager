@@ -27,7 +27,7 @@ const updatePlayer = (req : express.Request, res : express.Response) => {
           if (gameStore.Games[gameId].playerIds[player] == playerVars.playerId) {
             GAME = gameStore.Games[gameId];
 
-            GAME.updateRequired = true;
+            GAME.updateLobbyUI(PLAYER.playerId);
             
             //update ready status - update readyStatus if all players are ready
             GAME.UpdateReadyStatus();

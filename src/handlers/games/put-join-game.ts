@@ -8,8 +8,7 @@ const joinGame = (req : express.Request, res : express.Response) => {
     const GAME = gameStore.Games[Number(req.get("HX-Prompt"))];
     const PLAYER = playerStore.Players[Number(req.query.playerId)];
   
-    GAME.updateRequired = true;
-    PLAYER.updateRequired = true;
+    GAME.updateLobbyUI(PLAYER.playerId);
     GAME.playerIds.push(PLAYER.playerId);
 
     debug(`${GAME.gameId}: ${PLAYER.playerName} has joined the game (${PLAYER.playerId})`);

@@ -34,9 +34,8 @@ const updateLobby = (req : express.Request, res : express.Response) => {
 
       
      //IF LOBBY REQUIRES UPDATE, RERENDER PRE-GAME LOBBY
-      if (PLAYER.updateRequired || GAME.updateRequired) {
+      if (PLAYER.updateRequired) {
         PLAYER.updateRequired = false;
-        GAME.updateRequired = false;
         res.render("pre-game-lobby", {
           playerId: PLAYER.playerId,
           gameId: GAME.gameId,

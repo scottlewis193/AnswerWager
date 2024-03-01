@@ -50,7 +50,6 @@ class Game {
     hadProcessedBets: boolean
     questions: Question[]
     questionIndex: number
-    updateRequired: boolean
 
     constructor(gameId: number, hostPlayerId: number) {
      this.gameId = gameId,
@@ -65,7 +64,6 @@ class Game {
      this.hadProcessedBets = false,
      this.questions = [],
      this.questionIndex = 0
-     this.updateRequired = false
     }
 
     GetPlayerList() {
@@ -176,6 +174,15 @@ class Game {
 
      isHost(playerId : number) {
         return playerId == this.hostPlayerId;
+     };
+
+     updateLobbyUI(triggeredPlayerId : number) {
+        for (const playerId of this.playerIds) {
+            if (playerId == triggeredPlayerId) {
+                continue;
+            }
+            playerStore.GetPlayer(playerId).updateRequired = true;
+        }
      };
 }
 
