@@ -35,24 +35,23 @@ wss.on("connection", function connection(ws : AWWebSocket) {
   ws.id = utils.generateId();
   connect(ws.id);
 
-  ws.send(
-    '<input class="player-id" id="playerId" name="playerId" value="' +
-      ws.id +
-      '">'
-  );
+  ws.send(`<div class='page start-page' id='start-page' name='start-page' hx-vals='{"playerId": "${ws.id}"}' hx-include='[name="playerName"]' hx-target='.content'>
+  <input id='name-input' class='menu-input' name='playerName' value='' placeholder='Enter Name'>
+  <button id='connect' class='menu-button' hx-get='/connect/${ws.id}'>Confirm</button></div>`)
+
+  // ws.send(
+  //   '<input class="player-id" id="playerId" name="playerId" value="' +
+  //     ws.id +
+  //     '">'
+  // );
 
   ws.on("close", function close() {
     disconnect(ws.id);
 
   });
 
-  ws.on("message", (message) => {
-    const data = JSON.parse(message.toString());
-      utils.debug('player-list request received')
-      ws.send(`<div id="player-list">TEST</div>`);
-    }
     
-  );
+  
 
 });
 

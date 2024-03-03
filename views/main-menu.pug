@@ -1,8 +1,7 @@
 .center
- div(class='page main-menu')  
+ div(class='page main-menu' hx-target='.content' hx-vals=`{"playerId": "${playerId}"}`)  
   h1(class='title' id='game-title') Answer Wager
-  button(id='join-game' class='menu-button' hx-get=`/games/join` hx-target='.content' hx-prompt='Enter Game ID: ' hx-include="[name='playerId']") Join Game 
-  button(id='host-game' class='menu-button' hx-get='/games/create' hx-target='.content' hx-include="[name='playerId']") Host Game
-  button(id='game-rules' class='menu-button' hx-get='/game-rules' hx-target='.content' hx-include="[name='playerId']") Game Rules
-include ids.pug
+  button(id='join-game' class='menu-button' hx-get=`/games/join` hx-prompt='Enter Game ID: ') Join Game 
+  button(id='host-game' class='menu-button' hx-get=`/games/${playerId}/create`) Host Game
+  button(id='game-rules' class='menu-button' hx-get=`/game-rules/${playerId}`) Game Rules
   

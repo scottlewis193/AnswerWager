@@ -1,13 +1,12 @@
 .center
- div(class='page pre-game-lobby' hx-target='.content' hx-trigger='every 1s' hx-get=`/games/${gameId}/updatelobby` hx-include="[name='gameId'],[name='playerId']")
+ div(class='page pre-game-lobby' id='pre-game-lobby' hx-target='.content' hx-trigger='load, every 5s' hx-vals=`{"playerId": "${playerId}"}` hx-get=`/games/${gameId}/updatelobby`)
   include player-list.pug
-  div(class='btn-grid')
-   include ready-btn.pug
-   button(id='leave-btn' class='menu-btn' hx-get=`/games/${gameId}/leave` hx-target='.content' hx-include="[name='gameId'],[name='playerId']") Leave
-    if isHost   
-     include start-btn.pug
-     form(id='form' hx-encoding='multipart/form-data' hx-target='#form' hx-post=`/games/${gameId}/loadquestions`)
-      label(class="button" for="upload") Upload File
-      input(type='file' id='upload' name='file' accept='.csv' onchange="document.getElementById('form').requestSubmit();")   
-    else
-include ids.pug
+  include ready-btn.pug
+  button(id='leave-btn' class='menu-btn' hx-get=`/games/${gameId}/leave`) Leave
+  if isHost   
+   include start-btn.pug
+   form(id='form' hx-encoding='multipart/form-data' hx-target='#form' hx-post=`/games/${gameId}/loadquestions`)
+    label(class="button" for="upload") Upload File
+    input(type='file' id='upload' name='file' accept='.csv' onchange="document.getElementById('form').requestSubmit();")   
+  else
+  a(class='label' id='game-id-label' onclick=`copyText(this)`) Game ID: #{gameId}

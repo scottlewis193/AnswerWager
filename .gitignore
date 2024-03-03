@@ -4025,3 +4025,13 @@ build/handlers/games/post-start-game.js
 build/handlers/games/post-start-game.js.map
 build/handlers/games/get-update-lobby.js
 build/handlers/games/get-update-lobby.js.map
+build/handlers/games/get-join-game.js
+build/handlers/games/get-join-game.js.map
+build/handlers/games/get-leave-game.js
+build/handlers/games/get-leave-game.js.map
+build/handlers/games/get-start-game.js
+build/handlers/games/get-start-game.js.map
+build/handlers/games/get-submit-answer.js
+build/handlers/games/get-submit-answer.js.map
+build/handlers/games/put-start-game.js
+build/handlers/games/put-start-game.js.map

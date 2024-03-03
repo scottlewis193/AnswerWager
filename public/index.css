@@ -15,6 +15,15 @@
   --Scale: 1;
 }
 
+@keyframes copytext {
+  from {
+    color: var(--Text);
+  }
+  to {
+    color: var(--Blue);
+  }
+}
+
 *,
 *::after,
 *::before {
@@ -102,7 +111,6 @@ table {
   border-spacing: 0;
   width: max(30vw, 37.5vh);
   text-align: center;
-
   tr {
     border: 0;
   }
@@ -144,18 +152,45 @@ body::-webkit-scrollbar-corner {
   background: var(--Base);
 }
 
-.player-id,
-.game-id,
-.label {
-  display: none;
+#game-id-label {
+  cursor: copy;
 }
 
-.pre-game-lobby {
-  grid-template-rows: 33vh 1.5fr;
+.copyanimation {
+  animation-name: copytext;
+  animation-duration: 2s;
+  animation-direction: reverse;
 }
 
-#player-list {
-  overflow-y: visible;
+.player-list {
+  display: grid;
+  grid-auto-flow: row;
+  row-gap: 0px;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+
+  border-spacing: 0;
+  width: max(30vw, 37.5vh);
+  text-align: center;
+
+  #player-row-ready {
+    color: var(--Blue);
+    font-weight: bold;
+  }
+
+  #player-row {
+    font-weight: bold;
+  }
+
+  .grid-col {
+    padding: max(1vw, 1.25vh);
+    border: max(0.1vw, 0.125vh) solid var(--Surface0);
+    text-transform: uppercase;
+  }
+
+  .grid-row {
+    padding: max(1vw, 1.25vh);
+    border: max(0.1vw, 0.125vh) solid var(--Surface0);
+  }
 }
 
 .page,
@@ -169,11 +204,11 @@ body::-webkit-scrollbar-corner {
 }
 
 .content {
-  width: 96%;
-  margin: 2%;
+  width: 100%;
 }
 
-.id-wrapper {
+.id-wrapper,
+.id-wrapper-host {
   position: absolute;
   bottom: 0;
   display: flex;
@@ -182,7 +217,16 @@ body::-webkit-scrollbar-corner {
   flex-direction: column;
   row-gap: 1%;
   padding: 1%;
-  width: 100%;
+  width: 96%;
+}
+
+.id-wrapper-host {
+  .game-id {
+    display: block;
+  }
+  .label {
+    display: block;
+  }
 }
 
 .game-rules {
@@ -288,16 +332,9 @@ body::-webkit-scrollbar-corner {
   overflow-x: hidden;
 }
 
-.content .center:has(.pre-game-lobby) + .id-wrapper {
-  .game-id {
-    display: block;
-  }
-  .label {
-    display: block;
-  }
-}
-
 .center {
+  width: 96%;
+  margin: 2%;
   position: absolute;
   top: 50%;
   left: 50%;

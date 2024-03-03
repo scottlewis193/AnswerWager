@@ -1,8 +1,6 @@
-table(id='player-list' class='game-list')
- tr(class='player-columns')
-  th Player 
-  th Ready 
-  each player in playerList
-   tr(class='player-row')
-    td #{player.playerName}
-    td #{player.readyStatus}
+div(class='player-list' id='player-list-grid')
+ each player in playerList
+  if player.readyStatus
+   div(class='grid-row' id='player-row-ready') #{player.playerName}
+  else 
+   div(class='grid-row' id='player-row') #{player.playerName}

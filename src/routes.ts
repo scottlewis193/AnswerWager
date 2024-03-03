@@ -2,18 +2,18 @@ import { connectRoute } from "./handlers/connection/get-connect-route";
 import { disconnectHostLeaves } from "./handlers/connection/get-disconnect-host-leaves";
 import { createGame } from "./handlers/games/post-create-game";
 import { updateLobby } from "./handlers/games/get-update-lobby";
-import { joinGame } from "./handlers/games/put-join-game";
+import { joinGame } from "./handlers/games/get-join-game";
 import { checkAnsweredStatus } from "./handlers/games/get-answered-status";
 import { checkReadyStatus } from "./handlers/games/get-ready-status";
 import { showQuestion } from "./handlers/games/get-show-question";
-import { submitAnswer } from "./handlers/games/post-submit-answer";
+import { submitAnswer } from "./handlers/games/get-submit-answer";
 import { submitBet } from "./handlers/games/get-submit-bet";
-import { leaveGame } from "./handlers/games/put-leave-game";
+import { leaveGame } from "./handlers/games/get-leave-game";
 import { loadQuestions } from "./handlers/games/post-load-questions";
 import { getGameRules } from "./handlers/games/get-game-rules";
 import { updatePlayer } from "./handlers/players/put-update-player";
 import { checkWageredStatus } from "./handlers/games/get-wagered-status";
-import { startGame } from "./handlers/games/post-start-game";
+import { startGame } from "./handlers/games/get-start-game";
  
 
 import * as utils from "./utils.js";
@@ -36,11 +36,11 @@ router.get("/", (req : express.Request, res :  express.Response) => {
   res.render("base");
 });
 
-router.get("/connect", (req : express.Request, res : express.Response) => {
+router.get("/connect/:playerId", (req : express.Request, res : express.Response) => {
  connectRoute(req, res);
 });
 
-router.get("/games/create", (req : express.Request, res : express.Response) => {
+router.get("/games/:playerId/create", (req : express.Request, res : express.Response) => {
   createGame(req, res);
 });
 
@@ -66,7 +66,7 @@ router.post(
 
 });
 
-router.get("/games/disconnect", (req : express.Request, res : express.Response) => {
+router.get("/games/:gameId/disconnect", (req : express.Request, res : express.Response) => {
   disconnectHostLeaves(req, res);
 });
 
@@ -82,7 +82,7 @@ router.get("/games/:gameId/submitbet", (req : express.Request, res : express.Res
   submitBet(req,res)
 });
 
-router.post("/games/:gameId/start", (req : express.Request, res : express.Response) => {
+router.get("/games/:gameId/start", (req : express.Request, res : express.Response) => {
   startGame(req, res);
 });
 
@@ -102,7 +102,7 @@ router.get("/games/:gameId/wageredcheck", (req: express.Request, res : express.R
   checkWageredStatus(req, res);
 });
 
-router.get("/game-rules", (req : express.Request, res : express.Response) => {
+router.get("/game-rules/:playerId", (req : express.Request, res : express.Response) => {
   getGameRules(req, res);
 });
 

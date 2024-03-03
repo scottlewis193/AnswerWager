@@ -1,30 +1,33 @@
 include scores.pug
-.center
- div(class='wagered-status' hx-target='.content' hx-swap='innerHTML' hx-trigger='every 5s' hx-get=`/games/${gameId}/wageredcheck` hx-include="[name='gameId'],[name='playerId']")
- div(class="page wager-board")
- if smallerCorrect && revealAnswer 
-  div(class='board-segment-answer')
- else
-  div(class='board-segment')
-   a(class='odds-text') #{highestodds}/1
-   a(class='answer-text' name='answer-0' value='SMALLER') SMALLER
-   if player.wageredStatus
-    //- no button
-   else if btnsDisabled || smallerWagered
-    button(class='segment-btn' disabled) Bet
-   else
-    button(class='segment-btn' id='segment-btn-smaller' hx-vals=`{"answer": "SMALLER"}` hx-target=`.content` hx-get=`/games/${gameId}/submitbet` hx-prompt='Enter Amount:' hx-include="[name='playerId']") Bet 
-  each answerObj, index in answers
-  if answerObj.correctAnswer && revealAnswer  
+if revealAnswer
+ div(class='revealed-status' hx-target='.content' hx-trigger='every 30s' hx-get=`/games/${gameId}/scores` hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
+ a(class='counter-text' onload='countdown()' id='counter')
+else
+ div(class='wagered-status' hx-target='.content' hx-trigger='every 5s' hx-get=`/games/${gameId}/wageredcheck` hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
+ div(class="page wager-board" hx-target='.content' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
+  if smallerCorrect && revealAnswer 
    div(class='board-segment-answer')
   else
    div(class='board-segment')
-    a(class='odds-text') #{answerObj.odds}
-    a(class='answer-text' name=`answer-${index+1}`) #{answerObj.answer}
+    a(class='odds-text') #{highestodds}/1
+    a(class='answer-text' name='answer-0' value='SMALLER') SMALLER
     if player.wageredStatus
-    //- no button
-    else if answerObj.wagered || btnsDisabled
+     //- no button
+    else if btnsDisabled || smallerWagered
      button(class='segment-btn' disabled) Bet
     else
-     button(class=`segment-btn` id=`segment-btn-${index+1}` hx-vals=`{"answer": ${answerObj.answer}}` hx-target=`.content` hx-get=`/games/${gameId}/submitbet` hx-prompt='Enter Amount:' hx-include=`[name='playerId']`) Bet
-include ids.pug
+     button(class='segment-btn' id='segment-btn-smaller' hx-vals=`{"answer": "SMALLER"}` hx-get=`/games/${gameId}/submitbet` hx-prompt='Enter Amount:') Bet 
+    
+   each answerObj, index in answers
+    if answerObj.correctAnswer && revealAnswer  
+     div(class='board-segment-answer')
+    else
+     div(class='board-segment')
+      a(class='odds-text') #{answerObj.odds}
+      a(class='answer-text' name=`answer-${index+1}`) #{answerObj.answer}
+      if player.wageredStatus
+       //- no button
+      else if answerObj.wagered || btnsDisabled
+       button(class='segment-btn' disabled) Bet
+      else
+       button(class=`segment-btn` id=`segment-btn-${index+1}` hx-vals=`{"answer": ${answerObj.answer}}` hx-get=`/games/${gameId}/submitbet` hx-prompt='Enter Amount:') Bet

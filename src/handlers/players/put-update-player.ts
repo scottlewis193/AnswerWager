@@ -8,7 +8,7 @@ import { Game } from "../../store/games";
 
 const updatePlayer = (req : express.Request, res : express.Response) => {
     var playerVars : PlayerVars = req.query;
-    playerVars.playerId = Number(req.params.playerId);
+    playerVars.playerId = Number(req.query.playerId);
     const PLAYER = playerStore.Players[playerVars.playerId];
 
     PLAYER.updateRequired = true;

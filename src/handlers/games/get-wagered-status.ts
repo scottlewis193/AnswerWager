@@ -24,6 +24,7 @@ const checkWageredStatus = (req : express.Request, res : express.Response) => {
     
     GAME.processedAnswers.forEach((answer) => answers.push({answer: answer.answer,odds: answer.odds, wagered: playerBetAnswers.includes(answer.answer), correctAnswer: false}));
 
+    console.log(answers)
         //rerender wager-board
     res.render("wager-board", 
     {
@@ -40,6 +41,7 @@ const checkWageredStatus = (req : express.Request, res : express.Response) => {
     }
 
     )
+    return
   }
 
     //send empty response if all players haven't finished wagering

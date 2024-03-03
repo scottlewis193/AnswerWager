@@ -1,9 +1,8 @@
 include scores.pug
 .center
- div(class='page question')
+ div(class='page question' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}` hx-target='.content')
   img(class='question-img' id='question-img' src=`${imageURL}`)
   h2(class='big-text' id='question-text') #{question}
-  div(class='answer-check' id='answer-check-id' hx-trigger='load, every 5s' hx-get=`/games/${gameId}/answercheck` hx-target='.content' hx-include="[name='gameId'],[name='playerId']")
+  div(class='answer-check' id='answer-check-id' hx-trigger='load, every 5s' hx-get=`/games/${gameId}/answercheck`)
   input(class='menu-input' id='answer-input' name='submittedAnswer')
-  button(id='submit-btn' class='menu-button' onclick='this.setAttribute("disabled", "disabled")' hx-get=`/games/${gameId}/submitanswer` hx-target='.content' hx-include="[name='submittedAnswer'],[name='gameId'],[name='playerId']") Submit
-include ids.pug
+  button(id='submit-btn' class='menu-button' onclick='this.setAttribute("disabled", "disabled")' hx-get=`/games/${gameId}/submitanswer` hx-include='[name="submittedAnswer"]' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`) Submit

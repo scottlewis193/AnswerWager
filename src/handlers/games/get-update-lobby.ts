@@ -8,14 +8,15 @@ const updateLobby = (req : express.Request, res : express.Response) => {
     const GAMEID = Number(req.params.gameId);
     const GAME = gameStore.Games[GAMEID];
     const PLAYER = playerStore.Players[Number(req.query.playerId)];
+
+  if (GAME == null) {
+    res.render("disconnect", { playerId: PLAYER.playerId });
+  }
     const QUESTIONINDEX = GAME.questionIndex;
   
     var playerList : Player[] = GAME.GetPlayerList();
 
-    //if player list returns nothing assume game no longer exists and boot client back to main menu
-    if (Object.keys(playerList).length == 0) {
-      res.render("disconnect", { playerId: PLAYER.playerId });
-    } else {
+
 
 
     //ALL PLAYERS ARE READY AND HOST HAS STARTED GAME
@@ -52,7 +53,7 @@ const updateLobby = (req : express.Request, res : express.Response) => {
      
 
       
-    }
+    
   };
 
   export {updateLobby}

@@ -1,4 +1,4 @@
-div(class='page game-rules')
+div(class='page game-rules' hx-target='.content' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
  h2 Objective
  p Be the player with the most points at the end of the game by either guessing as close to the correct answer as possible or by betting on the closest answer in each round.
  h3 Round Phases
@@ -22,5 +22,4 @@ div(class='page game-rules')
   .
    Player who did not bet on the closest answer - Loses all points used on losing bets
 
- button(id='back-btn' class='menu-button' hx-target='.content' hx-get='/connect' hx-include="[name='playerId']") Back
- include ids.pug
+ button(id='back-btn' class='menu-button' hx-get=`/connect/${playerId}`) Back

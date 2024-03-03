@@ -4,7 +4,7 @@ import { gameStore, playerStore } from "../../server";
 import { debug } from "../../utils";
 
 const leaveGame = (req : express.Request, res : express.Response) => {
-    const GAME = gameStore.Games[Number(req.query.gameId)];
+    const GAME = gameStore.Games[Number(req.params.gameId)];
     const PLAYER = playerStore.Players[Number(req.query.playerId)];
 
     GAME.updateLobbyUI(PLAYER.playerId);
