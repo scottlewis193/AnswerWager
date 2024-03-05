@@ -23,7 +23,7 @@ else
      div(class='board-segment-answer')
     else
      div(class='board-segment')
-      a(class='odds-text') #{answerObj.odds}
+      a(class='odds-text') #{answerObj.odds}/1
       a(class='answer-text' name=`answer-${index+1}`) #{answerObj.answer}
       if player.wageredStatus
        //- no button

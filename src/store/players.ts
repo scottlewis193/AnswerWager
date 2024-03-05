@@ -44,7 +44,7 @@ class Player {
   exactCorrectAnswers: number;
   correctAnswers: number;
   mostPointsEarnedRound: number;
-  highestOddsWon: string;
+  highestOddsWon: number;
   updateRequired: boolean;
 
   constructor(playerId: number) {
@@ -59,7 +59,7 @@ class Player {
       (this.exactCorrectAnswers = 0),
       (this.correctAnswers = 0),
       (this.mostPointsEarnedRound = 0),
-      (this.highestOddsWon = ""),
+      (this.highestOddsWon = 0),
       (this.updateRequired = false);
   }
 
@@ -79,9 +79,44 @@ class Player {
       answers.map((answer) => Number(answer.answer)),
       correctAnswer
     );
+
+    var pointsEarnedRound: number = 0;
+    var pointsWagered: number = 0;
+
+    //if player wagered correct answer then add points
     for (const bet of this.bets) {
-      if (GAME?.processedAnswers) this.points += bet.amount;
+      if (Number(bet.answer) == closestAnswer) {
+        this.points = bet.amount * bet.odds;
+        pointsEarnedRound = bet.amount * bet.odds;
+
+        if (bet.odds > this.highestOddsWon) {
+          this.highestOddsWon = bet.odds;
+        }
+      }
+
+      pointsWagered += bet.amount;
     }
+
+    //if player submitted closest winning answer
+    if (this.answers[GAME.questionIndex].answer == closestAnswer) {
+      this.correctAnswers += 1;
+      this.points += 3;
+      pointsEarnedRound += 3;
+
+      if (this.answers[GAME.questionIndex].answer == correctAnswer) {
+        this.exactCorrectAnswers += 1;
+        this.points += 3;
+        pointsEarnedRound += 3;
+      }
+    }
+
+    if (pointsEarnedRound > this.mostPointsEarnedRound) {
+      this.mostPointsEarnedRound = pointsEarnedRound;
+    }
+
+    return `${this.playerName} - ${this.points} (${
+      pointsEarnedRound > 0 ? "+" + pointsEarnedRound : pointsEarnedRound
+    })`;
   }
 }
 

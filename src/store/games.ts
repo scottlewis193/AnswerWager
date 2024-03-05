@@ -127,6 +127,14 @@ class Game {
     );
   }
 
+  getAnswer(answer: number | string) {
+    const ANSWER = this.processedAnswers.find((a) => a.answer == answer);
+    if (ANSWER != undefined) {
+      return ANSWER;
+    }
+    return { answer: 0, odds: 2, wagered: false, correctAnswer: false };
+  }
+
   /**
    * Set boardAnswers array with the answers and determine if they are correct.
    * For each answer in the answers array, create a new BoardAnswer object with
@@ -148,7 +156,7 @@ class Game {
     for (let index: number = 0; index < Object.keys(answers).length; index++) {
       boardAnswers[index] = {
         answer: answers[index].answer,
-        odds: "0",
+        odds: 0,
         wagered: false,
         correctAnswer: answers[index].answer == closestAnswer,
       };
@@ -160,14 +168,14 @@ class Game {
     for (let index = 0; index < Object.keys(boardAnswers).length; index++) {
       if (index < MIDDLEANSWERINDEX) {
         const oddsnum = Math.abs(index - 2 - MIDDLEANSWERINDEX);
-        boardAnswers[index].odds = oddsnum + "/1";
+        boardAnswers[index].odds = oddsnum;
       }
       if (index == MIDDLEANSWERINDEX) {
-        boardAnswers[index].odds = "2/1";
+        boardAnswers[index].odds = 2;
       }
       if (index > MIDDLEANSWERINDEX) {
         const oddsnum = index + 2 - MIDDLEANSWERINDEX;
-        boardAnswers[index].odds = oddsnum + "/1";
+        boardAnswers[index].odds = oddsnum;
       }
     }
     this.hasProcessedAnswers = true;
@@ -228,6 +236,9 @@ class Game {
   }
 
   calculateScores() {
+    var scoresString = "";
+
+    //TODO
     for (const playerId of this.playerIds) {
       playerStore.Players[playerId].calculateScore();
     }

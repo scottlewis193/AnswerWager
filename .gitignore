@@ -4035,3 +4035,5 @@ build/handlers/games/get-submit-answer.js
 build/handlers/games/get-submit-answer.js.map
 build/handlers/games/put-start-game.js
 build/handlers/games/put-start-game.js.map
+build/handlers/games/get-revealed-status.js
+build/handlers/games/get-revealed-status.js.map
