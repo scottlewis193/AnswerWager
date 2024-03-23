@@ -10,3 +10,5 @@ const checkRevealedStatus = (req: express.Request, res: express.Response) => {
 
   res.render("score-board", {});
 };
+
+export { checkRevealedStatus };
