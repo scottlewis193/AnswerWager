@@ -281,6 +281,14 @@ body::-webkit-scrollbar-corner {
   }
 }
 
+.answer {
+  background-color: green;
+}
+
+.score-text {
+  font-weight: bold;
+}
+
 .scores {
   display: grid;
   width: 100%;

@@ -1,4 +1,4 @@
 .center 
  div(class='page score-board' hx-target='.content' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
-  each score-item in score-items
-   div(class='score-text' id='score-text') #{score-item}
+  each player in players
+   div(class='score-text' id='score-text') #{player.playerName} &nbsp; #{player.pointsEarnedRound}

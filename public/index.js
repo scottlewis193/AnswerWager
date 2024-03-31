@@ -55,14 +55,29 @@ function copyText(e) {
     });
 }
 
-function countdown() {
-  let counter = 30;
-  for (let i = 0; i < 30; i++) {
-    if (counter == 0) {
-      counter--;
-      document.getElementById("countdown").innerHTML = counter;
-      setTimeout(countdown, 1000);
-      break;
-    }
-  }
+var interval;
+let counter = 0;
+
+function startCountdown(seconds) {
+  interval = setInterval(countdown, 1000);
+  counter = seconds;
 }
+
+function stopCountdown() {
+  interval = clearInterval(interval);
+}
+
+function countdown() {
+  if (counter == 0) {
+    stopCountdown();
+    return;
+  }
+  document.getElementById("counter")?.innerText = counter;
+  counter--;
+}
+
+htmx.on("htmx:load", function (evt) {
+  if (evt.detail.elt.nextSibling?.id == "counter") {
+    startCountdown(30);
+  }
+});

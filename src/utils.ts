@@ -2,13 +2,12 @@
 import { gameStore, playerStore } from "./server.js";
 import WebSocket, { WebSocketServer } from "ws";
 import { BoardAnswer } from "./store/answers.js";
-import { default as csvtojson } from "csvtojson"
+import { default as csvtojson } from "csvtojson";
 
-let log : any[] = [];
-
+let log: any[] = [];
 
 const generateId = () => {
-  let Id : string = String(Math.floor(Math.random() * 10));
+  let Id: string = String(Math.floor(Math.random() * 10));
 
   for (let i = 0; i < 5; i++) {
     Id += String(Math.floor(Math.random() * 10));
@@ -17,14 +16,13 @@ const generateId = () => {
   return Number(Id);
 };
 
-
-
-
-const getMiddleIndex = (answers : BoardAnswer[]) => {
-  return Object.keys(answers).length !== 1 ? Math.floor((Object.keys(answers).length - 1) / 2) : 1;
+const getMiddleIndex = (answers: BoardAnswer[]) => {
+  return Object.keys(answers).length !== 1
+    ? Math.floor((Object.keys(answers).length - 1) / 2)
+    : 1;
 };
 
-const getHighestOdds = (answers : BoardAnswer[]) => {
+const getHighestOdds = (answers: BoardAnswer[]) => {
   return Object.keys(answers).length !== 1 ? getMiddleIndex(answers) + 3 : 2;
 };
 
@@ -33,44 +31,37 @@ const getCurrentTime = () => {
   return today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 };
 
-
-const CSVToJSON = (csv : string) => {
-  
-      try {
-          const jsonObject: any = csvtojson().fromFile(csv);
-          return jsonObject;
-      } catch (err) {
-          debug(err)
-      }
-  
+const CSVToJSON = (csv: string) => {
+  try {
+    const jsonObject: any = csvtojson().fromFile(csv);
+    return jsonObject;
+  } catch (err) {
+    debug(err);
+  }
 };
 
-
-
-const debug = (msg : any, ...optionalParams : any[]) => {
+const debug = (msg: any, ...optionalParams: any[]) => {
   if (log.includes(msg, ...optionalParams)) {
     return;
   }
-  log.push(`[${getCurrentTime()}] `+ msg, ...optionalParams);
+  log.push(`[${getCurrentTime()}] ` + msg, ...optionalParams);
   writeLog();
 };
 
 const writeLog = () => {
+  process.stdout.write("\u001b[3J\u001b[2J\u001b[1J");
+  console.clear();
 
-  // process.stdout.write("\u001b[3J\u001b[2J\u001b[1J");
-  // console.clear();
+  appendStatsToLog();
 
-  // appendStatsToLog();
-  
-  // for (const line of log) {
-  //   console.log(line);
-  // }
-}
+  for (const line of log) {
+    console.log(line);
+  }
+};
 
 const appendStatsToLog = () => {
- 
-  if (log.length != 0) log.splice(0,8);
-  let newLog : any[] = [];
+  if (log.length != 0) log.splice(0, 8);
+  let newLog: any[] = [];
   newLog.push("░█▀█░█▀█░█▀▀░█░█░█▀▀░█▀▄░░░█░█░█▀█░█▀▀░█▀▀░█▀▄");
   newLog.push("░█▀█░█░█░▀▀█░█▄█░█▀▀░█▀▄░░░█▄█░█▀█░█░█░█▀▀░█▀▄");
   newLog.push("░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░░░▀░▀░▀░▀░▀▀▀░▀▀▀░▀░▀");
@@ -83,14 +74,13 @@ const appendStatsToLog = () => {
   newLog.push("==========================");
   // if (Object.keys(aw.games).length !== 0)
   //   console.log(aw.games[Object.keys(aw.games)[0]].processedAnswers);
-    for (const line of log) {
-      newLog.push(line)
-    }
-    log = newLog;
-    
-  };
+  for (const line of log) {
+    newLog.push(line);
+  }
+  log = newLog;
+};
 
-const boolConv = (boolStr : string) => {
+const boolConv = (boolStr: string) => {
   if (boolStr === "true") {
     return true;
   }
@@ -110,7 +100,7 @@ const findClosestNumber = (numbers: number[], target: number) => {
   }
 
   return closestNumber;
-}
+};
 
 export {
   generateId,
@@ -123,5 +113,5 @@ export {
   debug,
   writeLog,
   appendStatsToLog,
-  findClosestNumber
+  findClosestNumber,
 };

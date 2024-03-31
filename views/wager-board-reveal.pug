@@ -1,0 +1,11 @@
+include scores.pug
+div(class='revealed-status' hx-target='.content' hx-trigger='every 30s' hx-get=`/games/${gameId}/scores` hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
+a(class='counter-text' id='counter')
+div(class="page wager-board" hx-target='.content' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
+ div(class=smallerCorrect ? 'board-segment answer' : 'board-segment')
+  a(class='odds-text') #{highestodds}/1
+  a(class='answer-text' name='answer-0' value='SMALLER') SMALLER
+ each answerObj, index in answers
+  div(class=answerObj.correctAnswer ? 'board-segment answer' : 'board-segment')
+   a(class='odds-text') #{answerObj.odds}/1
+   a(class='answer-text' name=`answer-${index+1}`) #{answerObj.answer}
