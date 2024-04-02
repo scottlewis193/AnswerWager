@@ -23,7 +23,7 @@ const getMiddleIndex = (answers: BoardAnswer[]) => {
 };
 
 const getHighestOdds = (answers: BoardAnswer[]) => {
-  return Object.keys(answers).length !== 1 ? getMiddleIndex(answers) + 3 : 3;
+  return Object.keys(answers).length !== 1 ? getMiddleIndex(answers) + 3 : 2;
 };
 
 const getCurrentTime = () => {

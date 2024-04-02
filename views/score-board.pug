@@ -3,5 +3,5 @@ div(class='scoreboard-shown' hx-target='.content' hx-trigger='every 10s' hx-get=
 .center 
     div(class='page score-board' hx-target='.content' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
         each player in players
-            h2(class='score-text' id='score-text') #{player.playerName} &nbsp; #{(player.pointsEarnedRound) ? '+' : '' } #{player.pointsEarnedRound}
+            h2(class='score-text' id='score-text') #{player.playerName} &nbsp; #{(player.pointsEarnedRound > -1) ? '+' : '' } #{player.pointsEarnedRound}
 a(class='counter-text' id='counter')

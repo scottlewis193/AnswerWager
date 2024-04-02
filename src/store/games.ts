@@ -146,7 +146,7 @@ class Game {
     const answers = this.GetAnswers();
 
     let boardAnswers: BoardAnswer[] = [];
-    const correctAnswer = Number(answers[this.questionIndex].answer);
+    const correctAnswer = Number(this.questions[this.questionIndex].answer);
     const closestAnswer = findClosestNumber(
       answers.map((answer) => Number(answer.answer)),
       correctAnswer
@@ -195,7 +195,7 @@ class Game {
     for (const playerId of this.playerIds) {
       const PLAYERANSWER: Answer = {
         playerId: playerId,
-        answer: playerStore.GetPlayer(playerId).answers[QUESTIONINDEX].answer,
+        answer: playerStore.GetPlayer(playerId).answer.answer,
         answerType: "",
       }; //aw.players[playerId].answers[QUESTIONINDEX].answer, answerType: '' };
 
@@ -239,6 +239,18 @@ class Game {
   calculateScores() {
     for (const playerId of this.playerIds) {
       playerStore.Players[playerId].calculateScore();
+    }
+  }
+  resetGameForRound() {
+    this.questionIndex += 1;
+    this.playersAnswered = false;
+    this.playersWagered = false;
+    this.hadProcessedBets = false;
+    this.hasProcessedAnswers = false;
+    this.processedAnswers = [];
+
+    for (const playerId of this.playerIds) {
+      playerStore.Players[playerId].resetPlayerForRound();
     }
   }
 }

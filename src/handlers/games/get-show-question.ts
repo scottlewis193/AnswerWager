@@ -7,11 +7,13 @@ const showQuestion = (req: express.Request, res: express.Response) => {
   const GAME = gameStore.Games[Number(req.params.gameId)];
   const PLAYERID = Number(req.query.playerId);
   const PLAYER = playerStore.Players[PLAYERID];
-  const QUESTIONINDEX = GAME.questionIndex;
 
-  GAME.questionIndex += 1;
+  //RESET FOR NEXT QUESTION
+  if (GAME.state !== "Question") {
+    GAME.resetGameForRound();
+  }
 
-  let questionObj = GAME.questions[QUESTIONINDEX];
+  let questionObj = GAME.questions[GAME.questionIndex];
   questionObj.gameId = GAMEID;
   questionObj.playerId = PLAYERID;
   questionObj.playerList = GAME.GetPlayerList();

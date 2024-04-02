@@ -37,7 +37,7 @@ class Player {
   playerName: string;
   readyStatus: boolean;
   answeredStatus: boolean;
-  answers: Answer[];
+  answer: Answer;
   wageredStatus: boolean;
   bets: Bet[];
   points: number;
@@ -53,7 +53,7 @@ class Player {
       (this.playerName = ""),
       (this.readyStatus = false),
       (this.answeredStatus = false),
-      (this.answers = []),
+      (this.answer = { playerId: 0, answer: 0, answerType: "" }),
       (this.wageredStatus = false),
       (this.bets = []),
       (this.points = 5),
@@ -87,7 +87,11 @@ class Player {
 
     //if player wagered correct answer then add points
     for (const bet of this.bets) {
-      if (Number(bet.answer) == closestAnswer) {
+      // -infinity represents SMALLER
+      if (
+        Number(bet.answer) == closestAnswer ||
+        (bet.answer == "SMALLER" && closestAnswer == -Infinity)
+      ) {
         this.points = bet.amount * bet.odds;
         this.pointsEarnedRound = bet.amount * bet.odds;
 
@@ -102,12 +106,15 @@ class Player {
     }
 
     //if player submitted closest winning answer
-    if (this.answers[GAME.questionIndex].answer == closestAnswer) {
+    if (
+      this.answer.answer == closestAnswer ||
+      (this.answer.answer == "SMALLER" && closestAnswer == -Infinity)
+    ) {
       this.correctAnswers += 1;
       this.points += 3;
       this.pointsEarnedRound += 3;
 
-      if (this.answers[GAME.questionIndex].answer == correctAnswer) {
+      if (this.answer.answer == correctAnswer) {
         this.exactCorrectAnswers += 1;
         this.points += 3;
         this.pointsEarnedRound += 3;
@@ -118,11 +125,24 @@ class Player {
       this.mostPointsEarnedRound = this.pointsEarnedRound;
     }
 
+    //if player has no points after wagering then set to 1
+    if (this.points == 0) {
+      this.points = 1;
+    }
+
     return `${this.playerName} - ${this.points} (${
       this.pointsEarnedRound > 0
         ? "+" + this.pointsEarnedRound
         : this.pointsEarnedRound
     })`;
+  }
+
+  resetPlayerForRound() {
+    this.bets = [];
+    this.wageredStatus = false;
+    this.answeredStatus = false;
+    this.answer = { playerId: 0, answer: 0, answerType: "" };
+    this.pointsEarnedRound = 0;
   }
 }
 
