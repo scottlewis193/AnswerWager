@@ -1,17 +1,16 @@
 doctype html 
 html(lang="en")
- head 
-  title Answer Wager
-  link(rel="stylesheet" href="index.css")
+  head 
+    title Answer Wager
+    link(rel="stylesheet" href="index.css")
 
 
 body
- div(class='connect' hx-on:htmx:ws-close='location.reload();' hx-ext='ws' ws-connect='/ws' hx-trigger='ws:message')  
-  div(class='content')
-   div(class='center')
-    include start-page.pug
- script(src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous")
- script(src="https://unpkg.com/htmx.org/dist/ext/ws.js")
- script(src="index.js")
- script(startUp()) 
-   
+  div(class='connect' hx-on:htmx:ws-close='location.reload();' hx-ext='ws' ws-connect='/ws' hx-trigger='ws:message')  
+    div(class='content')
+      div(class='center')
+        include start-page.pug
+  script(src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous")
+  script(src="https://unpkg.com/htmx.org/dist/ext/ws.js")
+  script(src="index.js")
+  script(startUp()) 

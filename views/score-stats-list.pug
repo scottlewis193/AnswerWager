@@ -1,0 +1,5 @@
+div(class='score-stats-list' id='score-stats-list-grid')
+    each player in playerList
+            div(class='grid-col' id='player-points') #{player.playerName}
+            div(class='grid-col' id='player-correct-answers') #{player.correctAnswers}
+            div(class='grid-col' id='player-exact-correct-answers') #{player.exactCorrectAnswers}

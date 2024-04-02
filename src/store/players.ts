@@ -94,6 +94,8 @@ class Player {
         if (bet.odds > this.highestOddsWon) {
           this.highestOddsWon = bet.odds;
         }
+      } else {
+        this.pointsEarnedRound -= bet.amount;
       }
 
       pointsWagered += bet.amount;

@@ -1,7 +1,6 @@
 .float
- .scores
-  each player in playerList
-   .score-box 
-    a(id='playerName' class='title') #{player.playerName}
-    a(id='playerScore' class='text') #{player.points}
-   
+    .scores
+        each player in playerList
+            .score-box 
+                a(id='playerName' class='title') #{player.playerName}
+                a(id='playerScore' class='text') #{player.points}

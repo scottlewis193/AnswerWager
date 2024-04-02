@@ -32,6 +32,8 @@ const checkWageredStatus = (req: express.Request, res: express.Response) => {
       })
     );
 
+    GAME.state = "AnswerReveal";
+
     console.log(answers);
     //rerender wager-board
     res.render("wager-board-reveal", {

@@ -165,12 +165,13 @@ class Game {
     //determine BoardAnswers.answer that is closest to correctAnswer withiut going over
 
     const MIDDLEANSWERINDEX = getMiddleIndex(boardAnswers);
-    for (let index = 0; index < Object.keys(boardAnswers).length; index++) {
+    const BORDERANSWERSCOUNT = Object.keys(boardAnswers).length;
+    for (let index = 0; index < BORDERANSWERSCOUNT; index++) {
       if (index < MIDDLEANSWERINDEX) {
         const oddsnum = Math.abs(index - 2 - MIDDLEANSWERINDEX);
         boardAnswers[index].odds = oddsnum;
       }
-      if (index == MIDDLEANSWERINDEX) {
+      if (index == MIDDLEANSWERINDEX || BORDERANSWERSCOUNT == 1) {
         boardAnswers[index].odds = 2;
       }
       if (index > MIDDLEANSWERINDEX) {
@@ -236,9 +237,6 @@ class Game {
   }
 
   calculateScores() {
-    var scoresString = "";
-
-    //TODO
     for (const playerId of this.playerIds) {
       playerStore.Players[playerId].calculateScore();
     }

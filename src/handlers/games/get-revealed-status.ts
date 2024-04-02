@@ -16,8 +16,11 @@ const checkRevealedStatus = (req: express.Request, res: express.Response) => {
       : 0
   );
 
+  GAME.state = "Scores";
+
   res.render("score-board", {
     players: PLAYERS,
+    playerList: GAME.GetPlayerList(),
     playerId: PLAYER.playerId,
     gameId: GAME.gameId,
   });

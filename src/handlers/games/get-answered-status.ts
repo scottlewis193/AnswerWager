@@ -17,6 +17,8 @@ const checkAnsweredStatus = (req: express.Request, res: express.Response) => {
 
     GAME.hasProcessedAnswers = true;
 
+    GAME.state = "Wagering";
+
     //render wager board
     res.render("wager-board", {
       playerBetAnswers: PLAYER.GetBetAnswers(),

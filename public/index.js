@@ -59,6 +59,7 @@ var interval;
 let counter = 0;
 
 function startCountdown(seconds) {
+  stopCountdown();
   interval = setInterval(countdown, 1000);
   counter = seconds;
 }
@@ -72,12 +73,14 @@ function countdown() {
     stopCountdown();
     return;
   }
-  document.getElementById("counter")?.innerText = counter;
+  var el = document.getElementById("counter");
+  if (!el) return;
+  el.innerText = counter;
   counter--;
 }
 
 htmx.on("htmx:load", function (evt) {
   if (evt.detail.elt.nextSibling?.id == "counter") {
-    startCountdown(30);
+    startCountdown(10);
   }
 });

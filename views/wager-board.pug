@@ -1,22 +1,22 @@
 include scores.pug
 div(class='wagered-status' hx-target='.content' hx-trigger='every 5s' hx-get=`/games/${gameId}/wageredcheck` hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
 div(class="page wager-board" hx-target='.content' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
- div(class='board-segment')
-  a(class='odds-text') #{highestodds}/1
-  a(class='answer-text' name='answer-0' value='SMALLER') SMALLER
-  if player.wageredStatus
-   //- no button
-  else if btnsDisabled || smallerWagered
-   button(class='segment-btn' disabled) Bet
-  else
-   button(class='segment-btn' id='segment-btn-smaller' hx-vals=`{"answer": "SMALLER"}` hx-get=`/games/${gameId}/submitbet` hx-prompt='Enter Amount:') Bet 
- each answerObj, index in answers
-   div(class='board-segment')
-    a(class='odds-text') #{answerObj.odds}/1
-    a(class='answer-text' name=`answer-${index+1}`) #{answerObj.answer}
+  div(class='board-segment')
+    a(class='odds-text') #{highestodds}/1
+    a(class='answer-text' name='answer-0' value='SMALLER') SMALLER
     if player.wageredStatus
-     //- no button
-    else if answerObj.wagered || btnsDisabled
-     button(class='segment-btn' disabled) Bet
+      //- no button
+    else if btnsDisabled || smallerWagered
+      button(class='segment-btn' disabled) Bet
     else
-     button(class=`segment-btn` id=`segment-btn-${index+1}` hx-vals=`{"answer": ${answerObj.answer}}` hx-get=`/games/${gameId}/submitbet` hx-prompt='Enter Amount:') Bet
+      button(class='segment-btn' id='segment-btn-smaller' hx-vals=`{"answer": "SMALLER"}` hx-get=`/games/${gameId}/submitbet` hx-prompt='Enter Amount:') Bet 
+  each answerObj, index in answers
+    div(class='board-segment')
+      a(class='odds-text') #{answerObj.odds}/1
+      a(class='answer-text' name=`answer-${index+1}`) #{answerObj.answer}
+      if player.wageredStatus
+        //- no button
+      else if answerObj.wagered || btnsDisabled
+        button(class='segment-btn' disabled) Bet
+      else
+        button(class=`segment-btn` id=`segment-btn-${index+1}` hx-vals=`{"answer": ${answerObj.answer}}` hx-get=`/games/${gameId}/submitbet` hx-prompt='Enter Amount:') Bet

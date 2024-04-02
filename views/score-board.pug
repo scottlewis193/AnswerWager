@@ -1,4 +1,7 @@
+include scores.pug
+div(class='scoreboard-shown' hx-target='.content' hx-trigger='every 10s' hx-get=`/games/${gameId}/showquestion` hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
 .center 
- div(class='page score-board' hx-target='.content' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
-  each player in players
-   div(class='score-text' id='score-text') #{player.playerName} &nbsp; #{player.pointsEarnedRound}
+    div(class='page score-board' hx-target='.content' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
+        each player in players
+            h2(class='score-text' id='score-text') #{player.playerName} &nbsp; #{(player.pointsEarnedRound) ? '+' : '' } #{player.pointsEarnedRound}
+a(class='counter-text' id='counter')

@@ -1,5 +1,5 @@
 if playersReady
- button(id='start-btn' class='menu-btn' hx-get=`/games/${gameId}/start` hx-vals=`{"playerId": "${playerId}"}`) Start
+    button(id='start-btn' class='menu-btn' hx-get=`/games/${gameId}/start` hx-vals=`{"playerId": "${playerId}"}`) Start
 else 
- button(id='start-btn' class='menu-btn' disabled) Start
+    button(id='start-btn' class='menu-btn' disabled) Start
 
