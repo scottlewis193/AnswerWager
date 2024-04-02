@@ -13,11 +13,6 @@ const showQuestion = (req: express.Request, res: express.Response) => {
     GAME.resetGameForRound();
   }
 
-  let questionObj = GAME.questions[GAME.questionIndex];
-  questionObj.gameId = GAMEID;
-  questionObj.playerId = PLAYERID;
-  questionObj.playerList = GAME.GetPlayerList();
-
   GAME.state = "Question";
 
   if (GAME.questionIndex > GAME.questions.length - 1) {
@@ -25,6 +20,11 @@ const showQuestion = (req: express.Request, res: express.Response) => {
   }
 
   if (GAME.state == "Question") {
+    let questionObj = GAME.questions[GAME.questionIndex];
+    questionObj.gameId = GAMEID;
+    questionObj.playerId = PLAYERID;
+    questionObj.playerList = GAME.GetPlayerList();
+
     res.render("question", questionObj);
   } else {
     //get player list objects and sort by points earned this round

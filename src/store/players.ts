@@ -84,6 +84,7 @@ class Player {
 
     this.pointsEarnedRound = 0;
     var pointsWagered: number = 0;
+    var hasWinningBet: boolean = false;
 
     //if player wagered correct answer then add points
     for (const bet of this.bets) {
@@ -94,15 +95,17 @@ class Player {
       ) {
         this.points = bet.amount * bet.odds;
         this.pointsEarnedRound = bet.amount * bet.odds;
+        hasWinningBet = true;
 
         if (bet.odds > this.highestOddsWon) {
           this.highestOddsWon = bet.odds;
         }
-      } else {
-        this.pointsEarnedRound -= bet.amount;
       }
-
       pointsWagered += bet.amount;
+    }
+
+    if (!hasWinningBet) {
+      this.pointsEarnedRound -= pointsWagered;
     }
 
     //if player submitted closest winning answer
