@@ -9,7 +9,7 @@ import path from "path";
 import { newPlayerStore } from "./store/players.js";
 import { newGameStore } from "./store/games.js";
 import { AWWebSocket } from "./store/store.js";
-import { connect } from "./handlers/connection/get-connect.js";
+import { connect } from "./handlers/connection/connect.js";
 import { disconnect } from "./handlers/connection/get-disconnect.js";
 
 import { fileURLToPath } from "url";

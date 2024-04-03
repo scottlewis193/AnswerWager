@@ -76,7 +76,7 @@ const submitBet = (req: express.Request, res: express.Response) => {
     player: PLAYER,
     playerId: PLAYER.playerId,
     gameId: GAME.gameId,
-    playerList: GAME.getPlayerList(),
+    players: GAME.getPlayers(),
     btnsDisabled: PLAYER.bets.length >= 2 || PLAYER.wageredStatus,
     smallerWagered: ANSWER == "SMALLER",
     revealAnswer: false,

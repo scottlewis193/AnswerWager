@@ -20,7 +20,7 @@ const joinGame = (req: express.Request, res: express.Response) => {
     gameId: GAME.gameId,
     playerName: PLAYER.playerName,
     isHost: false,
-    playerList: GAME.getPlayerList(),
+    players: GAME.getPlayers(),
   });
 };
 

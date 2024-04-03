@@ -14,7 +14,7 @@ const updateLobby = (req: express.Request, res: express.Response) => {
   }
   const QUESTIONINDEX = GAME.questionIndex;
 
-  var playerList: Player[] = GAME.getPlayerList();
+  var playerList: Player[] = GAME.getPlayers();
 
   //ALL PLAYERS ARE READY AND HOST HAS STARTED GAME
   if (GAME.getGameState() == "Question" && GAME.playersReady) {
@@ -37,7 +37,7 @@ const updateLobby = (req: express.Request, res: express.Response) => {
       gameId: GAME.gameId,
       playerName: PLAYER.playerName,
       isHost: GAME.isHost(PLAYER.playerId),
-      playerList: GAME.getPlayerList(),
+      players: GAME.getPlayers(),
       readyStatus: PLAYER.readyStatus,
       playersReady: GAME.playersReady,
     });

@@ -19,7 +19,9 @@ const startGame = (req: express.Request, res: express.Response) => {
 
   questionObj.gameId = GAME.gameId;
   questionObj.playerId = PLAYER.playerId;
-  questionObj.playerList = GAME.getPlayerList();
+  questionObj.players = GAME.getPlayers();
+
+  GAME.resetPlayersForGame();
 
   GAME.updateGameState();
 

@@ -1,5 +1,5 @@
 .center
-  div(class='page pre-game-lobby' id='pre-game-lobby' hx-target='.content' hx-trigger='load, every 5s' hx-vals=`{"playerId": "${playerId}"}` hx-get=`/games/${gameId}/updatelobby`)
+  div(class='page pre-game-lobby' id='pre-game-lobby' hx-target='.content' hx-trigger='load, every 1s' hx-vals=`{"playerId": "${playerId}"}` hx-get=`/games/${gameId}/updatelobby`)
     include player-list.pug
     include ready-btn.pug
     button(id='leave-btn' class='menu-btn' hx-get=`/games/${gameId}/leave`) Leave

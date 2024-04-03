@@ -23,12 +23,12 @@ const showQuestion = (req: express.Request, res: express.Response) => {
     let questionObj = GAME.questions[GAME.questionIndex];
     questionObj.gameId = GAMEID;
     questionObj.playerId = PLAYERID;
-    questionObj.playerList = GAME.getPlayerList();
+    questionObj.players = GAME.getPlayers();
 
     res.render("question", questionObj);
   } else {
     //get player list objects and sort by points earned this round
-    const PLAYERS = GAME.getPlayerList().sort((a, b) =>
+    const PLAYERS = GAME.getPlayers().sort((a, b) =>
       a.points > b.points ? 1 : b.points > a.points ? -1 : 0
     );
 

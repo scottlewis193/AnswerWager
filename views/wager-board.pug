@@ -1,5 +1,5 @@
 include scores.pug
-div(class='wagered-status' hx-target='.content' hx-trigger='every 5s' hx-get=`/games/${gameId}/wageredcheck` hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
+div(class='wagered-status' hx-target='.content' hx-trigger='every 1s' hx-get=`/games/${gameId}/wageredcheck` hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
 div(class="page wager-board" hx-target='.content' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
   div(class='board-segment')
     a(class='odds-text') #{highestodds}/1

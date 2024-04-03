@@ -22,7 +22,7 @@ const createGame = (req: express.Request, res: express.Response) => {
     gameId: NEWGAMEID,
     playerName: PLAYER.playerName,
     isHost: true,
-    playerList: GAME.getPlayerList(),
+    players: GAME.getPlayers(),
   });
 };
 

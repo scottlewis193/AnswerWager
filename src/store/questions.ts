@@ -7,7 +7,7 @@ interface Question {
   answer: string | number;
   gameId: number;
   playerId: number;
-  playerList: Player[]
+  players: Player[];
 }
 
-export { Question }
+export { Question };

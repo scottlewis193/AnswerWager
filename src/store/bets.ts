@@ -1,6 +1,6 @@
 interface Bet {
   playerId: number;
-  answer: string | number;
+  answer: string | number | Date;
   amount: number;
   odds: number;
 }

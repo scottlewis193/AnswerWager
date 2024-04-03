@@ -51,7 +51,8 @@ class Game {
   _state: number;
   hasProcessedAnswers: boolean;
   processedAnswers: BoardAnswer[];
-  hadProcessedBets: boolean;
+  hasProcessedBets: boolean;
+  hasCalculatedScores: boolean;
   questions: Question[];
   questionIndex: number;
 
@@ -65,7 +66,8 @@ class Game {
       (this._state = 0),
       (this.hasProcessedAnswers = false),
       (this.processedAnswers = []),
-      (this.hadProcessedBets = false),
+      (this.hasProcessedBets = false),
+      (this.hasCalculatedScores = false),
       (this.questions = []),
       (this.questionIndex = 0);
   }
@@ -74,7 +76,7 @@ class Game {
    * iterates over the player ids and returns an array of players
    * @returns array of players
    */
-  getPlayerList() {
+  getPlayers() {
     let playerList: Player[] = [];
 
     for (const playerId of this.playerIds) {
@@ -154,6 +156,10 @@ class Game {
    * answer.
    */
   processAnswers() {
+    if (this.hasProcessedAnswers) {
+      return;
+    }
+
     const answers = this.getAnswers();
 
     let boardAnswers: BoardAnswer[] = [];
@@ -248,20 +254,31 @@ class Game {
   }
 
   calculateScores() {
+    if (this.hasCalculatedScores) {
+      return;
+    }
     for (const playerId of this.playerIds) {
       PLAYERSTORE.Players[playerId].calculateScore();
     }
+    this.hasCalculatedScores = true;
   }
   resetGameForRound() {
     this.questionIndex += 1;
     this.playersAnswered = false;
     this.playersWagered = false;
-    this.hadProcessedBets = false;
+    this.hasProcessedBets = false;
     this.hasProcessedAnswers = false;
+    this.hasCalculatedScores = false;
     this.processedAnswers = [];
 
     for (const playerId of this.playerIds) {
       PLAYERSTORE.Players[playerId].resetPlayerForRound();
+    }
+  }
+
+  resetPlayersForGame() {
+    for (const playerId of this.playerIds) {
+      PLAYERSTORE.Players[playerId].resetPlayerForGame();
     }
   }
 }

@@ -27,7 +27,7 @@ const checkAnsweredStatus = (req: express.Request, res: express.Response) => {
       highestodds: getHighestOdds(GAME.processedAnswers),
       playerId: PLAYER.playerId,
       gameId: GAME.gameId,
-      playerList: GAME.getPlayerList(),
+      players: GAME.getPlayers(),
       btnsDisabled: false,
     });
 

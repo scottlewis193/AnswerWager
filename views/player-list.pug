@@ -1,5 +1,5 @@
 div(class='player-list' id='player-list-grid')
-    each player in playerList
+    each player in players
         if player.readyStatus
             div(class='grid-row' id='player-row-ready') #{player.playerName}
         else 

@@ -20,10 +20,4 @@ interface AWWebSocket extends WebSocket {
   id: number;
 }
 
-interface PlayerVars {
-  playerId?: number;
-  playerName?: string;
-  readyStatus?: boolean;
-}
-
-export { IPlayerStore, IGameStore, AWWebSocket, PlayerVars };
+export { IPlayerStore, IGameStore, AWWebSocket };

@@ -43,7 +43,7 @@ const checkWageredStatus = (req: express.Request, res: express.Response) => {
       player: PLAYER,
       playerId: PLAYER.playerId,
       gameId: GAME.gameId,
-      playerList: GAME.getPlayerList(),
+      players: GAME.getPlayers(),
       btnsDisabled: PLAYER.bets.length >= 2 || PLAYER.wageredStatus,
       smallerCorrect: answers.every((answer) => answer.correctAnswer === false), //if correct answer is smaller than all submitted answers
     });

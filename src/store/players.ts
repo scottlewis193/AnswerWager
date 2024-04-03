@@ -1,7 +1,7 @@
 import { IPlayerStore } from "./store";
 import { Answer } from "./answers";
 import { Bet } from "./bets";
-import { findClosestNumber } from "../utils";
+import { findClosestNumber, debug } from "../utils";
 import { GAMESTORE } from "../server";
 
 function newPlayerStore() {
@@ -14,7 +14,7 @@ class playerStore implements IPlayerStore {
   constructor() {
     this.Players = {};
   }
-  getPlayerList() {
+  getPlayers() {
     return this.Players;
   }
 
@@ -92,7 +92,7 @@ class Player {
         Number(bet.answer) == closestAnswer ||
         (bet.answer == "SMALLER" && closestAnswer == -Infinity)
       ) {
-        this.points = bet.amount * bet.odds;
+        this.points += bet.amount * bet.odds;
         this.pointsEarnedRound = bet.amount * bet.odds;
         hasWinningBet = true;
 
@@ -124,6 +124,8 @@ class Player {
       this.pointsEarnedRound -= pointsWagered;
     }
 
+    debug(this.pointsEarnedRound);
+
     //store most points earned in a round
     if (this.pointsEarnedRound > this.mostPointsEarnedRound) {
       this.mostPointsEarnedRound = this.pointsEarnedRound;
@@ -147,6 +149,16 @@ class Player {
     this.answeredStatus = false;
     this.answer = { playerId: 0, answer: 0, answerType: "" };
     this.pointsEarnedRound = 0;
+  }
+
+  resetPlayerForGame() {
+    this.resetPlayerForRound();
+    this.points = 5;
+    this.exactCorrectAnswers = 0;
+    this.correctAnswers = 0;
+    this.mostPointsEarnedRound = 0;
+    this.highestOddsWon = 0;
+    this.updateRequired = false;
   }
 }
 
