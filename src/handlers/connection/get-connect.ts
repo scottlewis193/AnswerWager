@@ -1,8 +1,8 @@
-import { playerStore } from "../../server";
+import { PLAYERSTORE } from "../../server";
 
-const connect = (socketid : number) => {
-    //create player
-    playerStore.CreatePlayer(socketid);
+const connect = (socketid: number) => {
+  //create player
+  PLAYERSTORE.createPlayer(socketid);
 };
 
-export { connect }
+export { connect };

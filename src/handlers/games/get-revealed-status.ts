@@ -1,14 +1,14 @@
 import express from "express";
-import { gameStore, playerStore } from "../../server";
+import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { debug } from "../../utils";
 
 const checkRevealedStatus = (req: express.Request, res: express.Response) => {
-  const GAME = gameStore.Games[Number(req.query.gameId)];
-  const PLAYER = playerStore.Players[Number(req.query.playerId)];
+  const GAME = GAMESTORE.Games[Number(req.query.gameId)];
+  const PLAYER = PLAYERSTORE.Players[Number(req.query.playerId)];
 
   GAME.calculateScores();
   //get player list objects and sort by points earned this round
-  const PLAYERS = GAME.GetPlayerList().sort((a, b) =>
+  const PLAYERS = GAME.getPlayerList().sort((a, b) =>
     a.pointsEarnedRound > b.pointsEarnedRound
       ? 1
       : b.pointsEarnedRound > a.pointsEarnedRound
@@ -16,11 +16,11 @@ const checkRevealedStatus = (req: express.Request, res: express.Response) => {
       : 0
   );
 
-  GAME.state = "Scores";
+  GAME.updateGameState();
 
   res.render("score-board", {
     players: PLAYERS,
-    playerList: GAME.GetPlayerList(),
+    playerList: GAME.getPlayerList(),
     playerId: PLAYER.playerId,
     gameId: GAME.gameId,
   });

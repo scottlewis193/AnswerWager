@@ -1,9 +1,9 @@
 import express from "express";
-import { gameStore, playerStore } from "../../server";
+import { GAMESTORE, PLAYERSTORE } from "../../server";
 
 const submitAnswer = (req: express.Request, res: express.Response) => {
-  const GAME = gameStore.Games[Number(req.params.gameId)];
-  const PLAYER = playerStore.Players[Number(req.query.playerId)];
+  const GAME = GAMESTORE.Games[Number(req.params.gameId)];
+  const PLAYER = PLAYERSTORE.Players[Number(req.query.playerId)];
   const QUESTIONINDEX = GAME.questionIndex;
   const SUBMITTEDANSWER = String(req.query.submittedAnswer);
   console.log(req.query);
@@ -15,7 +15,7 @@ const submitAnswer = (req: express.Request, res: express.Response) => {
     answerType: "",
   };
 
-  GAME.UpdateAnsweredStatus();
+  GAME.updateAnsweredStatus();
 
   res.sendStatus(204);
 };

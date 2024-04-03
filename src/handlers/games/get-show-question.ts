@@ -1,34 +1,34 @@
 import express from "express";
-import { gameStore, playerStore } from "../../server";
+import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { debug } from "../../utils";
 
 const showQuestion = (req: express.Request, res: express.Response) => {
   const GAMEID = Number(req.params.gameId);
-  const GAME = gameStore.Games[Number(req.params.gameId)];
+  const GAME = GAMESTORE.Games[Number(req.params.gameId)];
   const PLAYERID = Number(req.query.playerId);
-  const PLAYER = playerStore.Players[PLAYERID];
+  const PLAYER = PLAYERSTORE.Players[PLAYERID];
 
   //RESET FOR NEXT QUESTION
-  if (GAME.state !== "Question") {
+  if (GAME.getGameState() !== "Question") {
     GAME.resetGameForRound();
   }
 
-  GAME.state = "Question";
+  GAME.setGameState("Question");
 
   if (GAME.questionIndex > GAME.questions.length - 1) {
-    GAME.state = "FinalScores";
+    GAME.setGameState("FinalScores");
   }
 
-  if (GAME.state == "Question") {
+  if (GAME.getGameState() == "Question") {
     let questionObj = GAME.questions[GAME.questionIndex];
     questionObj.gameId = GAMEID;
     questionObj.playerId = PLAYERID;
-    questionObj.playerList = GAME.GetPlayerList();
+    questionObj.playerList = GAME.getPlayerList();
 
     res.render("question", questionObj);
   } else {
     //get player list objects and sort by points earned this round
-    const PLAYERS = GAME.GetPlayerList().sort((a, b) =>
+    const PLAYERS = GAME.getPlayerList().sort((a, b) =>
       a.points > b.points ? 1 : b.points > a.points ? -1 : 0
     );
 

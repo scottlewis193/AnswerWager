@@ -1,15 +1,15 @@
 import express from "express";
-import { gameStore, playerStore } from "../../server";
+import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { getHighestOdds, debug } from "../../utils";
 import { BoardAnswer } from "../../store/answers";
 
 const submitBet = (req: express.Request, res: express.Response) => {
-  const GAME = gameStore.Games[Number(req.params.gameId)];
-  const PLAYER = playerStore.Players[Number(req.query.playerId)];
+  const GAME = GAMESTORE.Games[Number(req.params.gameId)];
+  const PLAYER = PLAYERSTORE.Players[Number(req.query.playerId)];
   const BET = Number(req.get("HX-Prompt"));
   const ANSWER = String(req.query.answer);
 
-  const playerBetAnswers = PLAYER.GetBetAnswers();
+  const playerBetAnswers = PLAYER.getBetAnswers();
 
   //validation
   if (playerBetAnswers.includes(ANSWER)) {
@@ -76,7 +76,7 @@ const submitBet = (req: express.Request, res: express.Response) => {
     player: PLAYER,
     playerId: PLAYER.playerId,
     gameId: GAME.gameId,
-    playerList: GAME.GetPlayerList(),
+    playerList: GAME.getPlayerList(),
     btnsDisabled: PLAYER.bets.length >= 2 || PLAYER.wageredStatus,
     smallerWagered: ANSWER == "SMALLER",
     revealAnswer: false,

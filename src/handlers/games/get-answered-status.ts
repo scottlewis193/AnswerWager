@@ -1,33 +1,33 @@
 import express from "express";
-import { gameStore, playerStore } from "../../server";
+import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { BoardAnswer } from "../../store/answers";
 import { getHighestOdds, debug } from "../../utils";
 
 const checkAnsweredStatus = (req: express.Request, res: express.Response) => {
-  const GAME = gameStore.Games[Number(req.params.gameId)];
-  const PLAYER = playerStore.Players[Number(req.query.playerId)];
+  const GAME = GAMESTORE.Games[Number(req.params.gameId)];
+  const PLAYER = PLAYERSTORE.Players[Number(req.query.playerId)];
 
-  GAME.UpdateAnsweredStatus();
+  GAME.updateAnsweredStatus();
 
-  if (GAME.PlayersAnswered()) {
+  if (GAME.playersHaveAnswered()) {
     debug(
       `${GAME.gameId}: all players have answered question ${GAME.questionIndex}`
     );
-    GAME.ProcessAnswers();
+    GAME.processAnswers();
 
     GAME.hasProcessedAnswers = true;
 
-    GAME.state = "Wagering";
+    GAME.updateGameState();
 
     //render wager board
     res.render("wager-board", {
-      playerBetAnswers: PLAYER.GetBetAnswers(),
+      playerBetAnswers: PLAYER.getBetAnswers(),
       player: PLAYER,
       answers: GAME.processedAnswers,
       highestodds: getHighestOdds(GAME.processedAnswers),
       playerId: PLAYER.playerId,
       gameId: GAME.gameId,
-      playerList: GAME.GetPlayerList(),
+      playerList: GAME.getPlayerList(),
       btnsDisabled: false,
     });
 

@@ -1,5 +1,5 @@
 // import the necessary functions and objects
-import { gameStore, playerStore } from "./server.js";
+import { GAMESTORE, PLAYERSTORE } from "./server.js";
 import WebSocket, { WebSocketServer } from "ws";
 import { BoardAnswer } from "./store/answers.js";
 import { default as csvtojson } from "csvtojson";
@@ -67,10 +67,10 @@ const appendStatsToLog = () => {
   newLog.push("░▀░▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀░▀░░░▀░▀░▀░▀░▀▀▀░▀▀▀░▀░▀");
   newLog.push("server running at http://localhost:3000");
   newLog.push("");
-  newLog.push(`PLAYERS: ${Object.keys(playerStore.Players).length}`);
-  //newLog.push(playerStore.Players);
-  newLog.push(`GAMES: ${Object.keys(gameStore.Games).length}`);
-  //newLog.push(gameStore.Games);
+  newLog.push(`PLAYERS: ${Object.keys(PLAYERSTORE.Players).length}`);
+  //newLog.push(PLAYERSTORE.Players);
+  newLog.push(`GAMES: ${Object.keys(GAMESTORE.Games).length}`);
+  //newLog.push(GAMESTORE.Games);
   newLog.push("==========================");
   // if (Object.keys(aw.games).length !== 0)
   //   console.log(aw.games[Object.keys(aw.games)[0]].processedAnswers);

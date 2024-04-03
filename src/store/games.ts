@@ -1,23 +1,23 @@
 import { findClosestNumber, generateId } from "../utils";
-import { playerStore } from "../server";
+import { GAMESTATES, PLAYERSTORE } from "../server";
 import { IGameStore, IPlayerStore } from "./store";
 import { BoardAnswer, Answer } from "./answers";
 import { Question } from "./questions";
 import { getMiddleIndex } from "../utils";
 import { Player } from "./players";
 
-function NewGameStore() {
-  return new GameStore();
+function newGameStore() {
+  return new gameStore();
 }
 
-class GameStore implements IGameStore {
+class gameStore implements IGameStore {
   Games: Record<number, Game>;
 
   constructor() {
     this.Games = {};
   }
 
-  GetPlayersGame(playerId: number) {
+  getPlayersGame(playerId: number) {
     for (const gameId in this.Games) {
       if (this.Games[gameId].playerIds.includes(playerId)) {
         return this.Games[gameId];
@@ -26,17 +26,17 @@ class GameStore implements IGameStore {
     return new Game(0, 0);
   }
 
-  CreateGame(hostPlayerId: number) {
+  createGame(hostPlayerId: number) {
     const NEWGAMEID = generateId();
     this.Games[NEWGAMEID] = new Game(NEWGAMEID, hostPlayerId);
     return NEWGAMEID;
   }
 
-  DeleteGame(gameId: number) {
+  deleteGame(gameId: number) {
     delete this.Games[gameId];
   }
 
-  GetGame(gameId: number) {
+  getGame(gameId: number) {
     return this.Games[gameId];
   }
 }
@@ -48,7 +48,7 @@ class Game {
   playersReady: boolean;
   playersAnswered: boolean;
   playersWagered: boolean;
-  state: string;
+  _state: number;
   hasProcessedAnswers: boolean;
   processedAnswers: BoardAnswer[];
   hadProcessedBets: boolean;
@@ -62,7 +62,7 @@ class Game {
       (this.playersReady = false),
       (this.playersAnswered = false),
       (this.playersWagered = false),
-      (this.state = "preGameLobby"),
+      (this._state = 0),
       (this.hasProcessedAnswers = false),
       (this.processedAnswers = []),
       (this.hadProcessedBets = false),
@@ -74,11 +74,11 @@ class Game {
    * iterates over the player ids and returns an array of players
    * @returns array of players
    */
-  GetPlayerList() {
+  getPlayerList() {
     let playerList: Player[] = [];
 
     for (const playerId of this.playerIds) {
-      playerList.push(playerStore.GetPlayer(playerId));
+      playerList.push(PLAYERSTORE.getPlayer(playerId));
     }
     return playerList;
   }
@@ -87,15 +87,26 @@ class Game {
    * update the game's state
    * @param state "preGameLobby" | "Question"
    */
-  UpdateGameState(state: string) {
-    this.state = state;
+  updateGameState() {
+    this._state += 1;
+  }
+
+  getGameState() {
+    return GAMESTATES[this._state];
+  }
+
+  setGameState(state: string) {
+    const NEWSTATE = GAMESTATES.indexOf(state);
+    if (NEWSTATE >= 0) {
+      this._state = NEWSTATE;
+    }
   }
 
   /**
    * Update the game's `playersAnswered` flag to true if all players have answered
    * their question.
    */
-  PlayersAnswered() {
+  playersHaveAnswered() {
     return this.playersAnswered;
   }
 
@@ -103,27 +114,27 @@ class Game {
    * Update the game's `playersAnswered` flag to true if all players have answered
    * their question.
    */
-  UpdateAnsweredStatus() {
+  updateAnsweredStatus() {
     this.playersAnswered = this.playerIds.every(
-      (playerId) => playerStore.GetPlayer(playerId).answeredStatus
+      (playerId) => PLAYERSTORE.getPlayer(playerId).answeredStatus
     );
   }
   /**
    * Update the game's `playersReady' flag to true if all players are ready
    */
-  UpdateReadyStatus() {
+  updateReadyStatus() {
     //set playersReady to true if all players are ready
     this.playersReady = this.playerIds.every(
-      (playerId) => playerStore.GetPlayer(playerId).readyStatus
+      (playerId) => PLAYERSTORE.getPlayer(playerId).readyStatus
     );
   }
   /**
    * Update the game's `playersWagered' flag to true if all players have wagered
    */
-  UpdateWageredStatus() {
+  updateWageredStatus() {
     //set playersReady to true if all players are ready
     this.playersWagered = this.playerIds.every(
-      (playerId) => playerStore.GetPlayer(playerId).wageredStatus
+      (playerId) => PLAYERSTORE.getPlayer(playerId).wageredStatus
     );
   }
 
@@ -142,8 +153,8 @@ class Game {
    * is set to true if the answer is equal to the closest number to the correct
    * answer.
    */
-  ProcessAnswers() {
-    const answers = this.GetAnswers();
+  processAnswers() {
+    const answers = this.getAnswers();
 
     let boardAnswers: BoardAnswer[] = [];
     const correctAnswer = Number(this.questions[this.questionIndex].answer);
@@ -187,7 +198,7 @@ class Game {
    * iterates over the submitted answers, discards any duplicates and sorts the remaining answers from lowest to highest
    * @returns array of answers
    */
-  GetAnswers() {
+  getAnswers() {
     const QUESTIONINDEX = Number(this.questionIndex);
 
     let answers: Answer[] = [];
@@ -195,7 +206,7 @@ class Game {
     for (const playerId of this.playerIds) {
       const PLAYERANSWER: Answer = {
         playerId: playerId,
-        answer: playerStore.GetPlayer(playerId).answer.answer,
+        answer: PLAYERSTORE.getPlayer(playerId).answer.answer,
         answerType: "",
       }; //aw.players[playerId].answers[QUESTIONINDEX].answer, answerType: '' };
 
@@ -232,13 +243,13 @@ class Game {
       if (playerId == triggeredPlayerId) {
         continue;
       }
-      playerStore.GetPlayer(playerId).updateRequired = true;
+      PLAYERSTORE.getPlayer(playerId).updateRequired = true;
     }
   }
 
   calculateScores() {
     for (const playerId of this.playerIds) {
-      playerStore.Players[playerId].calculateScore();
+      PLAYERSTORE.Players[playerId].calculateScore();
     }
   }
   resetGameForRound() {
@@ -250,9 +261,9 @@ class Game {
     this.processedAnswers = [];
 
     for (const playerId of this.playerIds) {
-      playerStore.Players[playerId].resetPlayerForRound();
+      PLAYERSTORE.Players[playerId].resetPlayerForRound();
     }
   }
 }
 
-export { NewGameStore, GameStore, Game };
+export { newGameStore, Game };

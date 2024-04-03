@@ -1,14 +1,14 @@
 import express from "express";
-import { gameStore, playerStore } from "../../server";
+import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { debug } from "../../utils";
 import { BoardAnswer } from "../../store/answers";
 import { getHighestOdds } from "../../utils";
 
 const checkWageredStatus = (req: express.Request, res: express.Response) => {
-  const GAME = gameStore.Games[Number(req.params.gameId)];
-  const PLAYER = playerStore.Players[Number(req.query.playerId)];
+  const GAME = GAMESTORE.Games[Number(req.params.gameId)];
+  const PLAYER = PLAYERSTORE.Players[Number(req.query.playerId)];
 
-  GAME.UpdateWageredStatus();
+  GAME.updateWageredStatus();
 
   if (GAME.playersWagered) {
     debug(
@@ -18,7 +18,7 @@ const checkWageredStatus = (req: express.Request, res: express.Response) => {
     //determine which board segment to highlight
     //TODO
 
-    const playerBetAnswers = PLAYER.GetBetAnswers();
+    const playerBetAnswers = PLAYER.getBetAnswers();
 
     //create array of answers to show whether player has wagered so view can be modified appropriately
     const answers: BoardAnswer[] = [];
@@ -32,7 +32,7 @@ const checkWageredStatus = (req: express.Request, res: express.Response) => {
       })
     );
 
-    GAME.state = "AnswerReveal";
+    GAME.updateGameState();
 
     console.log(answers);
     //rerender wager-board
@@ -43,7 +43,7 @@ const checkWageredStatus = (req: express.Request, res: express.Response) => {
       player: PLAYER,
       playerId: PLAYER.playerId,
       gameId: GAME.gameId,
-      playerList: GAME.GetPlayerList(),
+      playerList: GAME.getPlayerList(),
       btnsDisabled: PLAYER.bets.length >= 2 || PLAYER.wageredStatus,
       smallerCorrect: answers.every((answer) => answer.correctAnswer === false), //if correct answer is smaller than all submitted answers
     });

@@ -1,33 +1,33 @@
 import { IPlayerStore } from "./store";
 import { Answer } from "./answers";
 import { Bet } from "./bets";
-import { gameStore, playerStore } from "../server";
 import { findClosestNumber } from "../utils";
+import { GAMESTORE } from "../server";
 
-function NewPlayerStore() {
-  return new PlayerStore();
+function newPlayerStore() {
+  return new playerStore();
 }
 
-class PlayerStore implements IPlayerStore {
+class playerStore implements IPlayerStore {
   Players: Record<number, Player>;
 
   constructor() {
     this.Players = {};
   }
-  GetPlayerList() {
+  getPlayerList() {
     return this.Players;
   }
 
-  CreatePlayer(playerId: number) {
+  createPlayer(playerId: number) {
     this.Players[playerId] = new Player(playerId);
   }
-  DeletePlayer(playerId: number) {
+  deletePlayer(playerId: number) {
     delete this.Players[playerId];
   }
-  GetPlayer(playerId: number) {
+  getPlayer(playerId: number) {
     return this.Players[playerId];
   }
-  UpdatePlayerName(playerId: number, playerName: string) {
+  updatePlayerName(playerId: number, playerName: string) {
     this.Players[playerId].playerName = playerName;
   }
 }
@@ -65,24 +65,23 @@ class Player {
       (this.updateRequired = false);
   }
 
-  UpdatePlayerName(playerName: string) {
+  updatePlayerName(playerName: string) {
     this.playerName = playerName;
   }
 
-  GetBetAnswers() {
+  getBetAnswers() {
     return this.bets.map((bet) => bet.answer);
   }
 
   calculateScore() {
-    const GAME = gameStore.GetPlayersGame(this.playerId);
-    const answers = GAME.GetAnswers();
+    const GAME = GAMESTORE.getPlayersGame(this.playerId);
+    const answers = GAME.getAnswers();
     const correctAnswer = Number(GAME.questions[GAME.questionIndex].answer);
     const closestAnswer = findClosestNumber(
       answers.map((answer) => Number(answer.answer)),
       correctAnswer
     );
 
-    this.pointsEarnedRound = 0;
     var pointsWagered: number = 0;
     var hasWinningBet: boolean = false;
 
@@ -104,15 +103,9 @@ class Player {
       pointsWagered += bet.amount;
     }
 
-    if (!hasWinningBet) {
-      this.pointsEarnedRound -= pointsWagered;
-    }
-
+    var hasSubmittedWinningAnswer: boolean = false;
     //if player submitted closest winning answer
-    if (
-      this.answer.answer == closestAnswer ||
-      (this.answer.answer == "SMALLER" && closestAnswer == -Infinity)
-    ) {
+    if (this.answer.answer == closestAnswer) {
       this.correctAnswers += 1;
       this.points += 3;
       this.pointsEarnedRound += 3;
@@ -122,8 +115,16 @@ class Player {
         this.points += 3;
         this.pointsEarnedRound += 3;
       }
+
+      hasSubmittedWinningAnswer = true;
     }
 
+    //if player did not bet on winning answer and did not submit winning answer then subtract points from points earned stat
+    if (!hasWinningBet && !hasSubmittedWinningAnswer) {
+      this.pointsEarnedRound -= pointsWagered;
+    }
+
+    //store most points earned in a round
     if (this.pointsEarnedRound > this.mostPointsEarnedRound) {
       this.mostPointsEarnedRound = this.pointsEarnedRound;
     }
@@ -149,4 +150,4 @@ class Player {
   }
 }
 
-export { NewPlayerStore, PlayerStore, IPlayerStore, Player };
+export { newPlayerStore, playerStore, IPlayerStore, Player };

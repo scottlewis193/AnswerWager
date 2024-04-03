@@ -5,36 +5,25 @@ import { Game } from "./games";
 import { Player } from "./players";
 
 interface IPlayerStore {
-    CreatePlayer: (playerId: number) => void;
-    DeletePlayer: (playerId: number) => void;
-    GetPlayer: (playerId: number) => Player;
-
+  createPlayer: (playerId: number) => void;
+  deletePlayer: (playerId: number) => void;
+  getPlayer: (playerId: number) => Player;
 }
 
 interface IGameStore {
-  CreateGame: (hostPlayerId: number) => void;
-  DeleteGame: (gameId: number) => void;
-  GetGame: (gameId: number) => Game;
+  createGame: (hostPlayerId: number) => void;
+  deleteGame: (gameId: number) => void;
+  getGame: (gameId: number) => Game;
 }
 
-
-
-
-interface AWWebSocket extends WebSocket  {
-    id: number;
+interface AWWebSocket extends WebSocket {
+  id: number;
 }
-
 
 interface PlayerVars {
-    playerId?: number;
-    playerName?: string;
-    readyStatus?: boolean;
+  playerId?: number;
+  playerName?: string;
+  readyStatus?: boolean;
 }
 
-export {
-    IPlayerStore,
-    IGameStore,
-    AWWebSocket,
-    PlayerVars
-}
-  
+export { IPlayerStore, IGameStore, AWWebSocket, PlayerVars };

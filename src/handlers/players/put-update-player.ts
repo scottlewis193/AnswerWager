@@ -1,54 +1,50 @@
 import express from "express";
 import { PlayerVars } from "../../store/store";
 import { boolConv } from "../../utils";
-import { playerStore, gameStore } from "../../server";
+import { PLAYERSTORE, GAMESTORE } from "../../server";
 import { wss } from "../../server";
 import { Game } from "../../store/games";
 
+const updatePlayer = (req: express.Request, res: express.Response) => {
+  var playerVars: PlayerVars = req.query;
+  playerVars.playerId = Number(req.query.playerId);
+  const PLAYER = PLAYERSTORE.Players[playerVars.playerId];
 
-const updatePlayer = (req : express.Request, res : express.Response) => {
-    var playerVars : PlayerVars = req.query;
-    playerVars.playerId = Number(req.query.playerId);
-    const PLAYER = playerStore.Players[playerVars.playerId];
+  PLAYER.updateRequired = true;
 
-    PLAYER.updateRequired = true;
+  //ready/unready btn
+  if (req.query.hasOwnProperty("readyStatus")) {
+    PLAYER.readyStatus = boolConv(String(req.query.readyStatus));
+    playerVars.readyStatus = boolConv(String(req.query.readyStatus));
 
-    //ready/unready btn
-    if (req.query.hasOwnProperty("readyStatus")) {
-      PLAYER.readyStatus = boolConv(
-        String(req.query.readyStatus)
-      );
-      playerVars.readyStatus = boolConv(String(req.query.readyStatus));
+    //find game that player is in
+    let GAME: Game;
+    for (var gameId in GAMESTORE.Games) {
+      for (var player in GAMESTORE.Games[gameId].playerIds) {
+        if (GAMESTORE.Games[gameId].playerIds[player] == playerVars.playerId) {
+          GAME = GAMESTORE.Games[gameId];
 
-      //find game that player is in
-      let GAME: Game;
-      for (var gameId in gameStore.Games) {
-        for (var player in gameStore.Games[gameId].playerIds) {
-          if (gameStore.Games[gameId].playerIds[player] == playerVars.playerId) {
-            GAME = gameStore.Games[gameId];
+          GAME.updateLobbyUI(PLAYER.playerId);
 
-            GAME.updateLobbyUI(PLAYER.playerId);
-            
-            //update ready status - update readyStatus if all players are ready
-            GAME.UpdateReadyStatus();
+          //update ready status - update readyStatus if all players are ready
+          GAME.updateReadyStatus();
 
-            //rerender pre-game-lobby
-            res.render("pre-game-lobby", {
-              playerId: PLAYER.playerId,
-              gameId: GAME.gameId,
-              playerName: PLAYER.playerName,
-              isHost: GAME.isHost(PLAYER.playerId),
-              readyStatus: PLAYER.readyStatus,
-              playerList: GAME.GetPlayerList(),
-              playersReady: GAME.playersReady,
-            });
+          //rerender pre-game-lobby
+          res.render("pre-game-lobby", {
+            playerId: PLAYER.playerId,
+            gameId: GAME.gameId,
+            playerName: PLAYER.playerName,
+            isHost: GAME.isHost(PLAYER.playerId),
+            readyStatus: PLAYER.readyStatus,
+            playerList: GAME.getPlayerList(),
+            playersReady: GAME.playersReady,
+          });
 
-            break;
-          }
+          break;
         }
       }
-   
     }
-  };
+  }
+};
 
-  export { updatePlayer }
+export { updatePlayer };

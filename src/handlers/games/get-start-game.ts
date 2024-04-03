@@ -1,11 +1,11 @@
 import express from "express";
-import { gameStore, playerStore, wss } from "../../server";
+import { GAMESTORE, PLAYERSTORE, wss } from "../../server";
 import { debug } from "../../utils";
 import pug from "pug";
 
 const startGame = (req: express.Request, res: express.Response) => {
-  const GAME = gameStore.Games[Number(req.params.gameId)];
-  const PLAYER = playerStore.Players[Number(req.query.playerId)];
+  const GAME = GAMESTORE.Games[Number(req.params.gameId)];
+  const PLAYER = PLAYERSTORE.Players[Number(req.query.playerId)];
   const QUESTIONINDEX = GAME.questionIndex;
 
   let questionObj = GAME.questions[QUESTIONINDEX];
@@ -19,9 +19,9 @@ const startGame = (req: express.Request, res: express.Response) => {
 
   questionObj.gameId = GAME.gameId;
   questionObj.playerId = PLAYER.playerId;
-  questionObj.playerList = GAME.GetPlayerList();
+  questionObj.playerList = GAME.getPlayerList();
 
-  GAME.state = "Question";
+  GAME.updateGameState();
 
   debug(
     `${PLAYER.playerName} (${PLAYER.playerId}): started game (${GAME.gameId})`
