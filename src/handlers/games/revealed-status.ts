@@ -9,9 +9,9 @@ const checkRevealedStatus = (req: express.Request, res: express.Response) => {
   GAME.calculateScores();
   //get player list objects and sort by points earned this round
   const PLAYERS = GAME.getPlayers().sort((a, b) =>
-    a.pointsEarnedRound > b.pointsEarnedRound
+    a.pointsEarnedRound < b.pointsEarnedRound
       ? 1
-      : b.pointsEarnedRound > a.pointsEarnedRound
+      : b.pointsEarnedRound < a.pointsEarnedRound
       ? -1
       : 0
   );

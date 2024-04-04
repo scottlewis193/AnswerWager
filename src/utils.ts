@@ -102,6 +102,18 @@ const findClosestNumber = (numbers: number[], target: number) => {
   return closestNumber;
 };
 
+const findClosestDate = (dates: Date[], target: Date) => {
+  let closestDate = new Date(0); // Initialize with a value that is less than any possible date in the array
+
+  for (const date of dates) {
+    if (date <= target && date > closestDate) {
+      closestDate = date;
+    }
+  }
+
+  return closestDate;
+};
+
 export {
   generateId,
   getCurrentTime,
@@ -114,4 +126,5 @@ export {
   writeLog,
   appendStatsToLog,
   findClosestNumber,
+  findClosestDate,
 };

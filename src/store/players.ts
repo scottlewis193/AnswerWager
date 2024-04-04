@@ -1,7 +1,7 @@
 import { IPlayerStore } from "./store";
 import { Answer } from "./answers";
 import { Bet } from "./bets";
-import { findClosestNumber, debug } from "../utils";
+import { findClosestNumber, findClosestDate, debug } from "../utils";
 import { GAMESTORE } from "../server";
 
 function newPlayerStore() {
@@ -76,10 +76,26 @@ class Player {
   calculateScore() {
     const GAME = GAMESTORE.getPlayersGame(this.playerId);
     const answers = GAME.getAnswers();
-    const correctAnswer = Number(GAME.questions[GAME.questionIndex].answer);
+
+    const correctAnswer =
+      GAME.questions[GAME.questionIndex].answerType == "number"
+        ? Number(GAME.questions[GAME.questionIndex].answer)
+        : new Date(GAME.questions[GAME.questionIndex].answer).getTime();
+
+    // const closestAnswer =
+    //   GAME.questions[GAME.questionIndex].answerType == "number"
+    //     ? findClosestNumber(
+    //         answers.map((answer) => Number(answer.answer)),
+    //         Number(correctAnswer)
+    //       )
+    //     : findClosestDate(
+    //         answers.map((answer) => new Date(answer.answer)),
+    //         new Date(correctAnswer)
+    //       );
+
     const closestAnswer = findClosestNumber(
       answers.map((answer) => Number(answer.answer)),
-      correctAnswer
+      Number(correctAnswer)
     );
 
     var pointsWagered: number = 0;
@@ -123,8 +139,6 @@ class Player {
     if (!hasWinningBet && !hasSubmittedWinningAnswer) {
       this.pointsEarnedRound -= pointsWagered;
     }
-
-    debug(this.pointsEarnedRound);
 
     //store most points earned in a round
     if (this.pointsEarnedRound > this.mostPointsEarnedRound) {

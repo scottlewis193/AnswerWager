@@ -38,7 +38,10 @@ const submitBet = (req: express.Request, res: express.Response) => {
     //add bet to player
     PLAYER.bets.push({
       playerId: PLAYER.playerId,
-      answer: ANSWER,
+      answer:
+        GAME.questions[GAME.questionIndex].answerType == "number"
+          ? ANSWER
+          : new Date(ANSWER).getTime(),
       amount: BET,
       odds: GAME.getAnswer(ANSWER).odds,
     });

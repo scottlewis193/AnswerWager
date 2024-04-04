@@ -1,4 +1,4 @@
-import { findClosestNumber, generateId } from "../utils";
+import { findClosestNumber, findClosestDate, generateId } from "../utils";
 import { GAMESTATES, PLAYERSTORE } from "../server";
 import { IGameStore, IPlayerStore } from "./store";
 import { BoardAnswer, Answer } from "./answers";
@@ -163,16 +163,36 @@ class Game {
     const answers = this.getAnswers();
 
     let boardAnswers: BoardAnswer[] = [];
+
+    // const correctAnswer =
+    //   this.questions[this.questionIndex].answerType == "number"
+    //     ? Number(this.questions[this.questionIndex].answer)
+    //     : new Date(this.questions[this.questionIndex].answer).getTime();
+
     const correctAnswer = Number(this.questions[this.questionIndex].answer);
     const closestAnswer = findClosestNumber(
       answers.map((answer) => Number(answer.answer)),
-      correctAnswer
+      Number(correctAnswer)
     );
+
+    // const closestAnswer =
+    //   this.questions[this.questionIndex].answerType == "number"
+    //     ? findClosestNumber(
+    //         answers.map((answer) => Number(answer.answer)),
+    //         Number(correctAnswer)
+    //       )
+    //     : findClosestDate(
+    //         answers.map((answer) => new Date(answer.answer)),
+    //         new Date(correctAnswer)
+    //       ).getDate();
 
     //set board answers and determine correct answer
     for (let index: number = 0; index < Object.keys(answers).length; index++) {
       boardAnswers[index] = {
-        answer: answers[index].answer,
+        answer:
+          this.questions[this.questionIndex].answerType == "number"
+            ? answers[index].answer
+            : new Date(answers[index].answer).toLocaleDateString("en-GB"),
         odds: 0,
         wagered: false,
         correctAnswer: answers[index].answer == closestAnswer,
@@ -227,10 +247,17 @@ class Game {
       answers.push(PLAYERANSWER);
     }
 
-    //sort from lowest to highest
-    answers = answers.sort((a, b) => {
-      return Number(a.answer) - Number(b.answer);
-    });
+    if (this.questions[QUESTIONINDEX].answerType == "number") {
+      //sort from lowest to highest
+      answers = answers.sort((a, b) => {
+        return Number(a.answer) - Number(b.answer);
+      });
+    } else {
+      //sort from earliest to latest
+      answers = answers.sort((a, b) => {
+        return new Date(a.answer).getDate() - new Date(b.answer).getDate();
+      });
+    }
 
     return answers;
   }

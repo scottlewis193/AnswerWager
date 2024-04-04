@@ -11,7 +11,10 @@ const submitAnswer = (req: express.Request, res: express.Response) => {
   PLAYER.answeredStatus = true;
   PLAYER.answer = {
     playerId: PLAYER.playerId,
-    answer: SUBMITTEDANSWER,
+    answer:
+      GAME.questions[GAME.questionIndex].answerType == "number"
+        ? SUBMITTEDANSWER
+        : new Date(SUBMITTEDANSWER).getTime(),
     answerType: "",
   };
 
