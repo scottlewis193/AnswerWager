@@ -1,6 +1,7 @@
 import express from "express";
 import { GAMESTORE } from "../../server";
 import { debug } from "../../utils";
+import { newViewData } from "../../store/viewdata";
 
 const checkReadyStatus = (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.params.gameId)];
@@ -11,10 +12,7 @@ const checkReadyStatus = (req: express.Request, res: express.Response) => {
 
   //if player is host then show start button
 
-  res.render("start-btn", {
-    gameId: GAME.gameId,
-    playersReady: GAME.playersReady,
-  });
+  res.render("start-btn", newViewData(PLAYERID, GAME.gameId));
 
   //if all players are ready and game has started then show question
   if (GAME.getGameState() == "Question" && GAME.playersReady) {
@@ -25,7 +23,7 @@ const checkReadyStatus = (req: express.Request, res: express.Response) => {
     questionObj.playerId = PLAYERID;
     //add HX-Retarget to question so replaces the contents of the center div
     res.set("HX-Retarget", ".content");
-    res.render("question", questionObj);
+    res.render("question", newViewData(PLAYERID, GAME.gameId));
     return;
   }
 

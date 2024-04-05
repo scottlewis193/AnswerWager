@@ -21,6 +21,7 @@ import { debug } from "./utils.js";
 import multer from "multer";
 
 import express from "express";
+import { newViewData } from "./store/viewdata";
 
 const router = express.Router();
 const upload = multer({ dest: "./uploads" }).single("file");
@@ -31,7 +32,7 @@ router.use((req: express.Request, res: express.Response, next: Function) => {
 });
 
 router.get("/", (req: express.Request, res: express.Response) => {
-  res.render("base");
+  res.render("base", newViewData(Number(req.query.playerId)));
 });
 
 router.get(

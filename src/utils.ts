@@ -22,10 +22,6 @@ const getMiddleIndex = (answers: BoardAnswer[]) => {
     : 1;
 };
 
-const getHighestOdds = (answers: BoardAnswer[]) => {
-  return Object.keys(answers).length !== 1 ? getMiddleIndex(answers) + 3 : 2;
-};
-
 const getCurrentTime = () => {
   const today = new Date();
   return today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -120,7 +116,6 @@ export {
   appendStatsToLog as drawDebug,
   boolConv,
   getMiddleIndex,
-  getHighestOdds,
   CSVToJSON,
   debug,
   writeLog,

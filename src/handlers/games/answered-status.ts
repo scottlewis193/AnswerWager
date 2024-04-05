@@ -1,7 +1,8 @@
 import express from "express";
 import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { BoardAnswer } from "../../store/answers";
-import { getHighestOdds, debug } from "../../utils";
+import { debug } from "../../utils";
+import { newViewData } from "../../store/viewdata";
 
 const checkAnsweredStatus = (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.params.gameId)];
@@ -20,16 +21,18 @@ const checkAnsweredStatus = (req: express.Request, res: express.Response) => {
     GAME.updateGameState();
 
     //render wager board
-    res.render("wager-board", {
-      playerBetAnswers: PLAYER.getBetAnswers(),
-      player: PLAYER,
-      answers: GAME.processedAnswers,
-      highestodds: getHighestOdds(GAME.processedAnswers),
-      playerId: PLAYER.playerId,
-      gameId: GAME.gameId,
-      players: GAME.getPlayers(),
-      btnsDisabled: false,
-    });
+    // res.render("wager-board", {
+    //   playerBetAnswers: PLAYER.getBetAnswers(),
+    //   player: PLAYER,
+    //   answers: GAME.processedAnswers,
+    //   highestodds: getHighestOdds(GAME.processedAnswers),
+    //   playerId: PLAYER.playerId,
+    //   gameId: GAME.gameId,
+    //   players: GAME.getPlayers(),
+    //   btnsDisabled: false,
+    // });
+
+    res.render("wager-board", newViewData(PLAYER.playerId, GAME.gameId));
 
     return;
   }

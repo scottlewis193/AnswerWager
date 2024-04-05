@@ -1,12 +1,12 @@
 .center
-  div(class='page pre-game-lobby' id='pre-game-lobby' hx-target='.content' hx-trigger='load, every 1s' hx-vals=`{"playerId": "${playerId}"}` hx-get=`/games/${gameId}/updatelobby`)
+  div(class='page pre-game-lobby' id='pre-game-lobby' hx-target='.content' hx-trigger='load, every 1s' hx-vals=`{"playerId": "${player.playerId}"}` hx-get=`/games/${game.gameId}/updatelobby`)
     include player-list.pug
     include ready-btn.pug
-    button(id='leave-btn' class='menu-btn' hx-get=`/games/${gameId}/leave`) Leave
-    if isHost   
+    button(id='leave-btn' class='menu-btn' hx-get=`/games/${game.gameId}/leave`) Leave
+    if player.isHostOfGame   
       include start-btn.pug
-      form(id='form' hx-encoding='multipart/form-data' hx-target='#form' hx-post=`/games/${gameId}/loadquestions`)
+      form(id='form' hx-encoding='multipart/form-data' hx-target='#form' hx-post=`/games/${game.gameId}/loadquestions`)
         label(class="button" for="upload") Upload File
         input(type='file' id='upload' name='file' accept='.csv' onchange="document.getElementById('form').requestSubmit();")   
     else
-    a(class='label' id='game-id-label' onclick=`copyText(this)`) Game ID: #{gameId}
+    a(class='label' id='game-id-label' onclick=`copyText(this)`) Game ID: #{game.gameId}

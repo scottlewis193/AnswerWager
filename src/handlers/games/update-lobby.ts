@@ -3,6 +3,7 @@ import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { Player } from "../../store/players";
 import { wss } from "../../server";
 import { debug } from "../../utils";
+import { newViewData } from "../../store/viewdata";
 
 const updateLobby = (req: express.Request, res: express.Response) => {
   const GAMEID = Number(req.params.gameId);
@@ -10,7 +11,9 @@ const updateLobby = (req: express.Request, res: express.Response) => {
   const PLAYER = PLAYERSTORE.Players[Number(req.query.playerId)];
 
   if (GAME == null) {
-    res.render("disconnect", { playerId: PLAYER.playerId });
+    //return res.sendStatus(204);
+    res.render("main-menu", newViewData(PLAYER.playerId));
+    return;
   }
   const QUESTIONINDEX = GAME.questionIndex;
 
@@ -25,24 +28,18 @@ const updateLobby = (req: express.Request, res: express.Response) => {
     questionObj.playerId = PLAYER.playerId;
     //add HX-Retarget to question so replaces the contents of the center div
     res.set("HX-Retarget", ".content");
-    res.render("question", questionObj);
+    res.render("question", newViewData(PLAYER.playerId, GAME.gameId));
     return;
   }
 
   //IF LOBBY REQUIRES UPDATE, RERENDER PRE-GAME LOBBY
   if (PLAYER.updateRequired) {
     PLAYER.updateRequired = false;
-    res.render("pre-game-lobby", {
-      playerId: PLAYER.playerId,
-      gameId: GAME.gameId,
-      playerName: PLAYER.playerName,
-      isHost: GAME.isHost(PLAYER.playerId),
-      players: GAME.getPlayers(),
-      readyStatus: PLAYER.readyStatus,
-      playersReady: GAME.playersReady,
-    });
+    res.render("pre-game-lobby", newViewData(PLAYER.playerId, GAME.gameId));
+    return;
   } else {
     res.sendStatus(204);
+    return;
   }
 };
 

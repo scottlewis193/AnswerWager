@@ -3,27 +3,9 @@ function startUp() {
     alert(evt.detail.value);
   });
   htmx.config.globalViewTransitions = true;
+  console.log("index.js loaded");
 }
 
-/* From Modernizr */
-// function whichTransitionEvent() {
-//   var t;
-//   var el = document.createElement("fakeelement");
-//   var transitions = {
-//     transition: "transitionend",
-//     OTransition: "oTransitionEnd",
-//     MozTransition: "transitionend",
-//     WebkitTransition: "webkitTransitionEnd",
-//   };
-
-//   for (t in transitions) {
-//     if (el.style[t] !== undefined) {
-//       return transitions[t];
-//     }
-//   }
-// }
-
-/* From Modernizr */
 function whichAnimationEvent() {
   var t;
   var el = document.createElement("fakeelement");

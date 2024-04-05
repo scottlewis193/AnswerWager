@@ -1,8 +1,8 @@
 include scores.pug
 .center
-    div(class='page question' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}` hx-target='.content')
+    div(class='page question' hx-vals=`{"gameId": "${game.gameId}","playerId": "${player.playerId}"}` hx-target='.content')
         img(class='question-img' id='question-img' src=`${imageURL}`)
-        h2(class='big-text' id='question-text') #{question}
-        div(class='answer-check' id='answer-check-id' hx-trigger='load, every 1s' hx-get=`/games/${gameId}/answercheck`)
+        h2(class='big-text' id='question-text') #{questions[game.questionIndex].question}
+        div(class='answer-check' id='answer-check-id' hx-trigger='load, every 1s' hx-get=`/games/${game.gameId}/answercheck`)
         input(class='menu-input' id='answer-input' name='submittedAnswer')
-        button(id='submit-btn' class='menu-button' onclick='this.setAttribute("disabled", "disabled")' hx-get=`/games/${gameId}/submitanswer` hx-include='[name="submittedAnswer"]' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`) Submit
+        button(id='submit-btn' class='menu-button' onclick='this.setAttribute("disabled", "disabled")' hx-get=`/games/${game.gameId}/submitanswer` hx-include='[name="submittedAnswer"]' hx-vals=`{"gameId": "${game.gameId}","playerId": "${player.playerId}"}`) Submit

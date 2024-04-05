@@ -51,10 +51,12 @@ class Game {
   _state: number;
   hasProcessedAnswers: boolean;
   processedAnswers: BoardAnswer[];
+  highestOdds: number;
   hasProcessedBets: boolean;
   hasCalculatedScores: boolean;
   questions: Question[];
   questionIndex: number;
+  revealAnswer: boolean;
 
   constructor(gameId: number, hostPlayerId: number) {
     (this.gameId = gameId),
@@ -66,10 +68,12 @@ class Game {
       (this._state = 0),
       (this.hasProcessedAnswers = false),
       (this.processedAnswers = []),
+      (this.highestOdds = 0),
       (this.hasProcessedBets = false),
       (this.hasCalculatedScores = false),
       (this.questions = []),
-      (this.questionIndex = 0);
+      (this.questionIndex = 0),
+      (this.revealAnswer = false);
   }
 
   /**
@@ -218,6 +222,7 @@ class Game {
     }
     this.hasProcessedAnswers = true;
     this.processedAnswers = boardAnswers;
+    this.highestOdds = this.getHighestOdds();
   }
 
   /**
@@ -278,6 +283,12 @@ class Game {
       }
       PLAYERSTORE.getPlayer(playerId).updateRequired = true;
     }
+  }
+
+  getHighestOdds() {
+    return Object.keys(this.processedAnswers).length !== 1
+      ? getMiddleIndex(this.processedAnswers) + 3
+      : 2;
   }
 
   calculateScores() {

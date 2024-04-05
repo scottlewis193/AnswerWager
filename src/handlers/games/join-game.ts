@@ -2,6 +2,7 @@ import express from "express";
 import { GAMESTORE, PLAYERSTORE, wss } from "../../server";
 import { debug } from "../../utils";
 import pug from "pug";
+import { newViewData } from "../../store/viewdata";
 
 const joinGame = (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.get("HX-Prompt"))];
@@ -15,13 +16,7 @@ const joinGame = (req: express.Request, res: express.Response) => {
   );
 
   //send game-lobby screen to client
-  res.render("pre-game-lobby", {
-    playerId: PLAYER.playerId,
-    gameId: GAME.gameId,
-    playerName: PLAYER.playerName,
-    isHost: false,
-    players: GAME.getPlayers(),
-  });
+  res.render("pre-game-lobby", newViewData(PLAYER.playerId, GAME.gameId));
 };
 
 export { joinGame };

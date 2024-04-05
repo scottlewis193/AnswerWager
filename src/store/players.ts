@@ -47,6 +47,8 @@ class Player {
   mostPointsEarnedRound: number;
   highestOddsWon: number;
   updateRequired: boolean;
+  smallerWagered: boolean;
+  isHostOfGame: () => boolean;
 
   constructor(playerId: number) {
     (this.playerId = playerId),
@@ -62,7 +64,14 @@ class Player {
       (this.correctAnswers = 0),
       (this.mostPointsEarnedRound = 0),
       (this.highestOddsWon = 0),
-      (this.updateRequired = false);
+      (this.updateRequired = false),
+      (this.smallerWagered = false),
+      (this.isHostOfGame = () => {
+        var isHost = GAMESTORE.getPlayersGame(this.playerId).isHost(
+          this.playerId
+        );
+        return isHost;
+      });
   }
 
   updatePlayerName(playerName: string) {
@@ -72,6 +81,8 @@ class Player {
   getBetAnswers() {
     return this.bets.map((bet) => bet.answer);
   }
+
+  hostOfGame() {}
 
   calculateScore() {
     const GAME = GAMESTORE.getPlayersGame(this.playerId);
@@ -163,6 +174,7 @@ class Player {
     this.answeredStatus = false;
     this.answer = { playerId: 0, answer: 0, answerType: "" };
     this.pointsEarnedRound = 0;
+    this.smallerWagered = false;
   }
 
   resetPlayerForGame() {

@@ -2,7 +2,7 @@ import express from "express";
 import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { debug } from "../../utils";
 import { BoardAnswer } from "../../store/answers";
-import { getHighestOdds } from "../../utils";
+import { newViewData } from "../../store/viewdata";
 
 const checkWageredStatus = (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.params.gameId)];
@@ -36,17 +36,19 @@ const checkWageredStatus = (req: express.Request, res: express.Response) => {
 
     console.log(answers);
     //rerender wager-board
-    res.render("wager-board-reveal", {
-      playerBetAnswers: playerBetAnswers,
-      answers: answers,
-      highestodds: getHighestOdds(GAME.processedAnswers),
-      player: PLAYER,
-      playerId: PLAYER.playerId,
-      gameId: GAME.gameId,
-      players: GAME.getPlayers(),
-      btnsDisabled: PLAYER.bets.length >= 2 || PLAYER.wageredStatus,
-      smallerCorrect: answers.every((answer) => answer.correctAnswer === false), //if correct answer is smaller than all submitted answers
-    });
+    // res.render("wager-board-reveal", {
+    //   playerBetAnswers: playerBetAnswers,
+    //   answers: answers,
+    //   //highestodds: getHighestOdds(GAME.processedAnswers),
+    //   player: PLAYER,
+    //   playerId: PLAYER.playerId,
+    //   gameId: GAME.gameId,
+    //   players: GAME.getPlayers(),
+    //   btnsDisabled: PLAYER.bets.length >= 2 || PLAYER.wageredStatus,
+    //   smallerCorrect: answers.every((answer) => answer.correctAnswer === false), //if correct answer is smaller than all submitted answers
+    // });
+
+    res.render("wager-board-reveal", newViewData(PLAYER.playerId, GAME.gameId));
     return;
   }
 

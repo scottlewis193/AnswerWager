@@ -1,7 +1,8 @@
 import express from "express";
 import { GAMESTORE, PLAYERSTORE } from "../../server";
-import { getHighestOdds, debug } from "../../utils";
+import { debug } from "../../utils";
 import { BoardAnswer } from "../../store/answers";
+import { newViewData } from "../../store/viewdata";
 
 const submitBet = (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.params.gameId)];
@@ -51,6 +52,10 @@ const submitBet = (req: express.Request, res: express.Response) => {
     if (PLAYER.points == 0) {
       PLAYER.wageredStatus = true;
     }
+
+    if (ANSWER == "SMALLER") {
+      PLAYER.smallerWagered = true;
+    }
   }
 
   //if player has submitted 2 bets
@@ -72,18 +77,35 @@ const submitBet = (req: express.Request, res: express.Response) => {
   );
 
   //rerender wager-board
-  res.render("wager-board", {
-    playerBetAnswers: playerBetAnswers,
-    answers: answers,
-    highestodds: getHighestOdds(GAME.processedAnswers),
-    player: PLAYER,
-    playerId: PLAYER.playerId,
-    gameId: GAME.gameId,
-    players: GAME.getPlayers(),
-    btnsDisabled: PLAYER.bets.length >= 2 || PLAYER.wageredStatus,
-    smallerWagered: ANSWER == "SMALLER",
-    revealAnswer: false,
-  });
+  // res.render("wager-board", {
+  //   playerBetAnswers: playerBetAnswers,
+  //   answers: answers,
+  //   highestodds: getHighestOdds(GAME.processedAnswers),
+  //   player: PLAYER,
+  //   playerId: PLAYER.playerId,
+  //   gameId: GAME.gameId,
+  //   players: GAME.getPlayers(),
+  //   btnsDisabled: PLAYER.bets.length >= 2 || PLAYER.wageredStatus,
+  //   smallerWagered: ANSWER == "SMALLER",
+  //   revealAnswer: false,
+  // });
+
+  res.render("wager-board", newViewData(PLAYER.playerId, GAME.gameId));
+
+  // res.render("wager-board", {
+  //   playerBetAnswers: playerBetAnswers,
+  //   answers: answers,
+  //   highestodds: getHighestOdds(GAME.processedAnswers),
+  //   player: PLAYER,
+  //   playerId: PLAYER.playerId,
+  //   gameId: GAME.gameId,
+  //   players: GAME.getPlayers(),
+  //   btnsDisabled: PLAYER.bets.length >= 2 || PLAYER.wageredStatus,
+  //   smallerWagered: ANSWER == "SMALLER",
+  //   revealAnswer: false,
+  // });
+
+  res.render("wager-board", newViewData(PLAYER.playerId, GAME.gameId));
 
   return;
 };

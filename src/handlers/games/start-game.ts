@@ -2,6 +2,7 @@ import express from "express";
 import { GAMESTORE, PLAYERSTORE, wss } from "../../server";
 import { debug } from "../../utils";
 import pug from "pug";
+import { newViewData } from "../../store/viewdata";
 
 const startGame = (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.params.gameId)];
@@ -28,7 +29,10 @@ const startGame = (req: express.Request, res: express.Response) => {
   debug(
     `${PLAYER.playerName} (${PLAYER.playerId}): started game (${GAME.gameId})`
   );
-  wss.emit("game_start", pug.render("question.pug", questionObj));
+  wss.emit(
+    "game_start",
+    pug.render("question", newViewData(PLAYER.playerId, GAME.gameId))
+  );
 
   res.sendStatus(204);
 };

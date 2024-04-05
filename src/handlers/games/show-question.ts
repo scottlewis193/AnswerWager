@@ -1,6 +1,7 @@
 import express from "express";
 import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { debug } from "../../utils";
+import { newViewData } from "../../store/viewdata";
 
 const showQuestion = (req: express.Request, res: express.Response) => {
   const GAMEID = Number(req.params.gameId);
@@ -25,18 +26,14 @@ const showQuestion = (req: express.Request, res: express.Response) => {
     questionObj.playerId = PLAYERID;
     questionObj.players = GAME.getPlayers();
 
-    res.render("question", questionObj);
+    res.render("question", newViewData(PLAYER.playerId, GAME.gameId));
   } else {
     //get player list objects and sort by points earned this round
     const PLAYERS = GAME.getPlayers().sort((a, b) =>
       a.points > b.points ? 1 : b.points > a.points ? -1 : 0
     );
 
-    res.render("final-score-board", {
-      players: PLAYERS,
-      playerId: PLAYER.playerId,
-      gameId: GAME.gameId,
-    });
+    res.render("final-score-board", newViewData(PLAYER.playerId, GAME.gameId));
   }
 };
 

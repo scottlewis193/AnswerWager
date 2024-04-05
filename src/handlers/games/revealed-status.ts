@@ -1,6 +1,7 @@
 import express from "express";
 import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { debug } from "../../utils";
+import { newViewData } from "../../store/viewdata";
 
 const checkRevealedStatus = (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.query.gameId)];
@@ -18,11 +19,7 @@ const checkRevealedStatus = (req: express.Request, res: express.Response) => {
 
   GAME.updateGameState();
 
-  res.render("score-board", {
-    players: PLAYERS,
-    playerId: PLAYER.playerId,
-    gameId: GAME.gameId,
-  });
+  res.render("score-board", newViewData(PLAYER.playerId, GAME.gameId));
 };
 
 export { checkRevealedStatus };

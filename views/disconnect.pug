@@ -1,3 +1,3 @@
 .center
-    div(class='page disconnect' hx-target='.content' hx-vals=`{"gameId": "${gameId}","playerId": "${playerId}"}`)
+    div(class='page disconnect' hx-target='.content' hx-vals=`{"gameId": "${game.gameId}","playerId": "${player.playerId}"}`)
         a(class='disconnected-placeholder' hx-trigger='every 0.5s' hx-target='.content' hx-get='/games/disconnect') Disconnected

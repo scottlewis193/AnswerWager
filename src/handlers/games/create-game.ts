@@ -1,6 +1,7 @@
 import express from "express";
 import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { debug } from "../../utils";
+import { newViewData } from "../../store/viewdata";
 
 const createGame = (req: express.Request, res: express.Response) => {
   const PLAYER = PLAYERSTORE.Players[Number(req.params.playerId)];
@@ -17,13 +18,7 @@ const createGame = (req: express.Request, res: express.Response) => {
   //res.send(`<div class='page pre-game-lobby' hx-target='.content' hx-trigger='load, every 5s' hx-vals='{"playerId": "10001"}' hx-get='/games/${NEWGAMEID}/updatelobby'></div>`);
 
   //send game-lobby screen to client
-  res.render("pre-game-lobby", {
-    playerId: PLAYER.playerId,
-    gameId: NEWGAMEID,
-    playerName: PLAYER.playerName,
-    isHost: true,
-    players: GAME.getPlayers(),
-  });
+  res.render("pre-game-lobby", newViewData(PLAYER.playerId, NEWGAMEID));
 };
 
 export { createGame };

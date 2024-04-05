@@ -3,6 +3,7 @@ import { boolConv } from "../../utils";
 import { PLAYERSTORE, GAMESTORE } from "../../server";
 import { wss } from "../../server";
 import { Game } from "../../store/games";
+import { newViewData } from "../../store/viewdata";
 
 const updatePlayer = (req: express.Request, res: express.Response) => {
   //var playerVars: PlayerVars = req.query;
@@ -28,15 +29,10 @@ const updatePlayer = (req: express.Request, res: express.Response) => {
           GAME.updateReadyStatus();
 
           //rerender pre-game-lobby
-          res.render("pre-game-lobby", {
-            playerId: PLAYER.playerId,
-            gameId: GAME.gameId,
-            playerName: PLAYER.playerName,
-            isHost: GAME.isHost(PLAYER.playerId),
-            readyStatus: PLAYER.readyStatus,
-            players: GAME.getPlayers(),
-            playersReady: GAME.playersReady,
-          });
+          res.render(
+            "pre-game-lobby",
+            newViewData(PLAYER.playerId, GAME.gameId)
+          );
 
           break;
         }

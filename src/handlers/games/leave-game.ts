@@ -1,6 +1,7 @@
 import express from "express";
 import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { debug } from "../../utils";
+import { newViewData } from "../../store/viewdata";
 
 const leaveGame = (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.params.gameId)];
@@ -21,10 +22,7 @@ const leaveGame = (req: express.Request, res: express.Response) => {
     `${GAME.gameId}: ${PLAYER.playerName} has left the game (${PLAYER.playerId})`
   );
 
-  res.render("main-menu", {
-    playerId: PLAYER.playerId,
-    playerName: PLAYER.playerName,
-  });
+  res.render("main-menu", newViewData(PLAYER.playerId));
 };
 
 export { leaveGame };
