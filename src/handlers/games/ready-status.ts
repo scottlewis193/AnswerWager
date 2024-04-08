@@ -23,12 +23,11 @@ const checkReadyStatus = (req: express.Request, res: express.Response) => {
     questionObj.playerId = PLAYERID;
     //add HX-Retarget to question so replaces the contents of the center div
     res.set("HX-Retarget", ".content");
-    res.render("question", newViewData(PLAYERID, GAME.gameId));
-    return;
+    return res.render("question", newViewData(PLAYERID, GAME.gameId));
   }
 
   //send empty response if all players aren't ready or game hasn't started
-  res.sendStatus(204);
+  return res.sendStatus(204);
 };
 
 export { checkReadyStatus };

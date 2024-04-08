@@ -2,4 +2,4 @@
     div(class='page score-board' hx-target='.content' hx-vals=`{"gameId": "${game.gameId}","playerId": "${player.playerId}"}`)
         each player in players
             h2(class='score-text' id='score-text') #{player.playerName} &nbsp; #{player.points}
-        button(id='leave-btn' class='menu-btn' hx-get=`/games/${game.gameId}/leave`) Leave
+        button(id='leave-btn' class='menu-btn' hx-put=`/games/${game.gameId}/leave`) Leave

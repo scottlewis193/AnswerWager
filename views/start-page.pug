@@ -1,3 +1,4 @@
-div(class='page start-page' id='start-page' name='start-page' hx-vals=`{"playerId": "${playerId}"}` hx-target='.content')     
+div(class='page start-page' id='start-page' name='start-page' hx-target='.content')     
+    //- input(id='id-input' class='menu-input' name='playerId' value=`${player.playerId}` placeholder='Enter Name')
     input(id='name-input' class='menu-input' name='playerName' value='' placeholder='Enter Name') 
-    button(id='connect' class='menu-button' hx-get='/connect') Confirm       
+    button(id='connect' class='menu-button' hx-post='/connect') Confirm       

@@ -63,7 +63,8 @@ h3 {
 }
 
 button,
-label[class="button"] {
+label[class="button"],
+input[type="submit"] {
   padding: max(1vw, 1.25vh);
   width: max(30vw, 37.5vh);
   height: max(5vw, 6.25vh);

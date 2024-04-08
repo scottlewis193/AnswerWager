@@ -1,4 +1,0 @@
-if player.readyStatus
-    button(id='unready-btn' class='menu-btn' hx-get=`/players/${player.playerId}/update` hx-vals='{"readyStatus": false}') Unready
-else
-    button(id='ready-btn' class='menu-btn' hx-get=`/players/${player.playerId}/update` hx-vals='{"readyStatus": true}') Ready

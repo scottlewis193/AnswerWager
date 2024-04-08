@@ -1,5 +1,0 @@
-if game.playersReady
-    button(id='start-btn' class='menu-btn' hx-get=`/games/${game.gameId}/start` hx-vals=`{"playerId": "${player.playerId}"}`) Start
-else 
-    button(id='start-btn' class='menu-btn' disabled) Start
-

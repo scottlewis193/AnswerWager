@@ -4,17 +4,17 @@ import { debug } from "../../utils.js";
 import { newViewData } from "../../store/viewdata.js";
 
 const connectRoute = (req: express.Request, res: express.Response) => {
-  const PLAYER = PLAYERSTORE.Players[Number(req.query.playerId)];
+  const PLAYER = PLAYERSTORE.Players[Number(req.body.playerId)];
 
-  //check if playerName exists in req.query and if so set it
-  if (req.query.hasOwnProperty("playerName"))
+  if (typeof req.body.playerName !== "undefined") {
     PLAYERSTORE.Players[PLAYER.playerId].playerName = String(
-      req.query.playerName
+      req.body.playerName
     );
+  }
 
   debug(`${PLAYER.playerName} (${PLAYER.playerId}): connected to server`);
 
-  res.render("main-menu", newViewData(PLAYER.playerId));
+  return res.render("main-menu", newViewData(PLAYER.playerId));
 };
 
 export { connectRoute };

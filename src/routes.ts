@@ -10,7 +10,7 @@ import { submitAnswer } from "./handlers/games/submit-answer";
 import { submitBet } from "./handlers/games/submit-bet";
 import { leaveGame } from "./handlers/games/leave-game";
 import { loadQuestions } from "./handlers/games/load-questions";
-import { getGameRules } from "./handlers/games/game-rules";
+import { getGameRules } from "./handlers/other/game-rules";
 import { updatePlayer } from "./handlers/players/update-player";
 import { checkWageredStatus } from "./handlers/games/wagered-status";
 import { startGame } from "./handlers/games/start-game";
@@ -22,6 +22,8 @@ import multer from "multer";
 
 import express from "express";
 import { newViewData } from "./store/viewdata";
+import { updatePlayerReadyStatus } from "./handlers/players/player-readystatus";
+import { PLAYERSTORE } from "./server";
 
 const router = express.Router();
 const upload = multer({ dest: "./uploads" }).single("file");
@@ -32,28 +34,31 @@ router.use((req: express.Request, res: express.Response, next: Function) => {
 });
 
 router.get("/", (req: express.Request, res: express.Response) => {
+  //const NEWID = PLAYERSTORE.getNextId();
+  //PLAYERSTORE.createPlayer(NEWID);
   res.render("base", newViewData(Number(req.query.playerId)));
 });
 
-router.get(
-  "/connect/:playerId",
-  (req: express.Request, res: express.Response) => {
-    connectRoute(req, res);
-  }
-);
+router.put("/connect", (req: express.Request, res: express.Response) => {
+  connectRoute(req, res);
+});
 
-router.get(
-  "/games/:playerId/create",
-  (req: express.Request, res: express.Response) => {
-    createGame(req, res);
-  }
-);
+router.post("/games", async (req: express.Request, res: express.Response) => {
+  createGame(req, res);
+});
 
-router.get("/games/join", (req: express.Request, res: express.Response) => {
+router.put("/games/join", (req: express.Request, res: express.Response) => {
   joinGame(req, res);
 });
 
-router.get(
+router.put(
+  "/games/:gameId/leave",
+  (req: express.Request, res: express.Response) => {
+    leaveGame(req, res);
+  }
+);
+
+router.put(
   "/games/:gameId/updatelobby",
   (req: express.Request, res: express.Response) => {
     updateLobby(req, res);
@@ -81,13 +86,6 @@ router.get(
 );
 
 router.get(
-  "/games/:gameId/leave",
-  (req: express.Request, res: express.Response) => {
-    leaveGame(req, res);
-  }
-);
-
-router.get(
   "/games/:gameId/submitanswer",
   (req: express.Request, res: express.Response) => {
     submitAnswer(req, res);
@@ -101,7 +99,7 @@ router.get(
   }
 );
 
-router.get(
+router.put(
   "/games/:gameId/start",
   (req: express.Request, res: express.Response) => {
     startGame(req, res);
@@ -150,11 +148,18 @@ router.get(
   }
 );
 
-router.get(
-  "/players/:playerId/update",
+router.put(
+  "/players/:playerId/readystatus",
   (req: express.Request, res: express.Response) => {
-    updatePlayer(req, res);
+    updatePlayerReadyStatus(req, res);
   }
 );
+
+// router.post(
+//   "/players/unready/:playerId/",
+//   (req: express.Request, res: express.Response) => {
+//     updatePlayer(req, res);
+//   }
+// );
 
 export default router;

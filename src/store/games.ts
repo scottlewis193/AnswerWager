@@ -91,7 +91,8 @@ class Game {
 
   /**
    * update the game's state
-   * @param state "preGameLobby" | "Question"
+   * @param state "preGameLobby" | "Question" | "Wagering" | "AnswerReveal" | "Scores" | "FinalScores"
+   *
    */
   updateGameState() {
     this._state += 1;
@@ -276,7 +277,7 @@ class Game {
     return playerId == this.hostPlayerId;
   }
 
-  updateLobbyUI(triggeredPlayerId: number) {
+  updateUI(triggeredPlayerId: number) {
     for (const playerId of this.playerIds) {
       if (playerId == triggeredPlayerId) {
         continue;

@@ -76,38 +76,7 @@ const submitBet = (req: express.Request, res: express.Response) => {
     })
   );
 
-  //rerender wager-board
-  // res.render("wager-board", {
-  //   playerBetAnswers: playerBetAnswers,
-  //   answers: answers,
-  //   highestodds: getHighestOdds(GAME.processedAnswers),
-  //   player: PLAYER,
-  //   playerId: PLAYER.playerId,
-  //   gameId: GAME.gameId,
-  //   players: GAME.getPlayers(),
-  //   btnsDisabled: PLAYER.bets.length >= 2 || PLAYER.wageredStatus,
-  //   smallerWagered: ANSWER == "SMALLER",
-  //   revealAnswer: false,
-  // });
-
-  res.render("wager-board", newViewData(PLAYER.playerId, GAME.gameId));
-
-  // res.render("wager-board", {
-  //   playerBetAnswers: playerBetAnswers,
-  //   answers: answers,
-  //   highestodds: getHighestOdds(GAME.processedAnswers),
-  //   player: PLAYER,
-  //   playerId: PLAYER.playerId,
-  //   gameId: GAME.gameId,
-  //   players: GAME.getPlayers(),
-  //   btnsDisabled: PLAYER.bets.length >= 2 || PLAYER.wageredStatus,
-  //   smallerWagered: ANSWER == "SMALLER",
-  //   revealAnswer: false,
-  // });
-
-  res.render("wager-board", newViewData(PLAYER.playerId, GAME.gameId));
-
-  return;
+  return res.render("wager-board", newViewData(PLAYER.playerId, GAME.gameId));
 };
 
 export { submitBet };

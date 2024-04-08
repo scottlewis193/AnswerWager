@@ -8,7 +8,7 @@ import { newViewData } from "../../store/viewdata";
 const updatePlayer = (req: express.Request, res: express.Response) => {
   //var playerVars: PlayerVars = req.query;
   //playerVars.playerId = Number(req.query.playerId);
-  const PLAYER = PLAYERSTORE.Players[Number(req.query.playerId)];
+  const PLAYER = PLAYERSTORE.Players[Number(req.params.playerId)];
 
   PLAYER.updateRequired = true;
 
@@ -23,7 +23,7 @@ const updatePlayer = (req: express.Request, res: express.Response) => {
         if (GAMESTORE.Games[gameId].playerIds[player] == PLAYER.playerId) {
           GAME = GAMESTORE.Games[gameId];
 
-          GAME.updateLobbyUI(PLAYER.playerId);
+          GAME.updateUI(PLAYER.playerId);
 
           //update ready status - update readyStatus if all players are ready
           GAME.updateReadyStatus();

@@ -5,9 +5,9 @@ import { newViewData } from "../../store/viewdata";
 
 const leaveGame = (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.params.gameId)];
-  const PLAYER = PLAYERSTORE.Players[Number(req.query.playerId)];
+  const PLAYER = PLAYERSTORE.Players[Number(req.body.playerId)];
 
-  GAME.updateLobbyUI(PLAYER.playerId);
+  GAME.updateUI(PLAYER.playerId);
 
   //remove player from array of playerids in game
   GAME.playerIds.splice(GAME.playerIds.indexOf(PLAYER.playerId), 1);

@@ -8,7 +8,7 @@ import { newViewData } from "../../store/viewdata";
 const updateLobby = (req: express.Request, res: express.Response) => {
   const GAMEID = Number(req.params.gameId);
   const GAME = GAMESTORE.Games[GAMEID];
-  const PLAYER = PLAYERSTORE.Players[Number(req.query.playerId)];
+  const PLAYER = PLAYERSTORE.Players[Number(req.body.playerId)];
 
   if (GAME == null) {
     //return res.sendStatus(204);

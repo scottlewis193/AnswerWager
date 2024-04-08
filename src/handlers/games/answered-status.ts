@@ -21,17 +21,6 @@ const checkAnsweredStatus = (req: express.Request, res: express.Response) => {
     GAME.updateGameState();
 
     //render wager board
-    // res.render("wager-board", {
-    //   playerBetAnswers: PLAYER.getBetAnswers(),
-    //   player: PLAYER,
-    //   answers: GAME.processedAnswers,
-    //   highestodds: getHighestOdds(GAME.processedAnswers),
-    //   playerId: PLAYER.playerId,
-    //   gameId: GAME.gameId,
-    //   players: GAME.getPlayers(),
-    //   btnsDisabled: false,
-    // });
-
     res.render("wager-board", newViewData(PLAYER.playerId, GAME.gameId));
 
     return;

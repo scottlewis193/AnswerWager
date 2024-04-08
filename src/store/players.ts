@@ -48,7 +48,6 @@ class Player {
   highestOddsWon: number;
   updateRequired: boolean;
   smallerWagered: boolean;
-  isHostOfGame: () => boolean;
 
   constructor(playerId: number) {
     (this.playerId = playerId),
@@ -65,13 +64,12 @@ class Player {
       (this.mostPointsEarnedRound = 0),
       (this.highestOddsWon = 0),
       (this.updateRequired = false),
-      (this.smallerWagered = false),
-      (this.isHostOfGame = () => {
-        var isHost = GAMESTORE.getPlayersGame(this.playerId).isHost(
-          this.playerId
-        );
-        return isHost;
-      });
+      (this.smallerWagered = false);
+  }
+
+  isHostOfGame() {
+    var isHost = GAMESTORE.getPlayersGame(this.playerId).isHost(this.playerId);
+    return isHost;
   }
 
   updatePlayerName(playerName: string) {
@@ -81,8 +79,6 @@ class Player {
   getBetAnswers() {
     return this.bets.map((bet) => bet.answer);
   }
-
-  hostOfGame() {}
 
   calculateScore() {
     const GAME = GAMESTORE.getPlayersGame(this.playerId);

@@ -1,0 +1,9 @@
+.center
+    form(hx-post='/games' class='page main-menu' id='main-menu' name='main-menu' hx-target='.content')
+        h1(class='title' id='game-title') Answer Wager
+        input(type='text' name='playerId' value=`${player.playerId}`)
+        //- button(id='join-game' class='menu-button' hx-put=`/games/${player.playerId}/join` hx-prompt='Enter Game ID: ') Join Game 
+        button(type='submit') Host Game
+        //- button(id='game-rules' class='menu-button' hx-get=`/game-rules/${player.playerId}`) Game Rules
+        
+

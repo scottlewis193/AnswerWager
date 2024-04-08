@@ -6,7 +6,7 @@ import { newViewData } from "../../store/viewdata";
 
 const startGame = (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.params.gameId)];
-  const PLAYER = PLAYERSTORE.Players[Number(req.query.playerId)];
+  const PLAYER = PLAYERSTORE.Players[Number(req.body.playerId)];
   const QUESTIONINDEX = GAME.questionIndex;
 
   let questionObj = GAME.questions[QUESTIONINDEX];
@@ -15,7 +15,7 @@ const startGame = (req: express.Request, res: express.Response) => {
     debug(
       `${PLAYER.playerName} (${PLAYER.playerId}): unable to start game (${GAME.gameId})`
     );
-    res.sendStatus(204);
+    return res.sendStatus(204);
   }
 
   questionObj.gameId = GAME.gameId;
@@ -29,12 +29,12 @@ const startGame = (req: express.Request, res: express.Response) => {
   debug(
     `${PLAYER.playerName} (${PLAYER.playerId}): started game (${GAME.gameId})`
   );
-  wss.emit(
-    "game_start",
-    pug.render("question", newViewData(PLAYER.playerId, GAME.gameId))
-  );
+  // wss.emit(
+  //   "game_start",
+  //   pug.render("question", newViewData(PLAYER.playerId, GAME.gameId))
+  // );
 
-  res.sendStatus(204);
+  return res.sendStatus(204);
 };
 
 export { startGame };

@@ -6,9 +6,9 @@ import { newViewData } from "../../store/viewdata";
 
 const joinGame = (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.get("HX-Prompt"))];
-  const PLAYER = PLAYERSTORE.Players[Number(req.query.playerId)];
+  const PLAYER = PLAYERSTORE.Players[Number(req.body.playerId)];
 
-  GAME.updateLobbyUI(PLAYER.playerId);
+  GAME.updateUI(PLAYER.playerId);
   GAME.playerIds.push(PLAYER.playerId);
 
   debug(
@@ -16,7 +16,10 @@ const joinGame = (req: express.Request, res: express.Response) => {
   );
 
   //send game-lobby screen to client
-  res.render("pre-game-lobby", newViewData(PLAYER.playerId, GAME.gameId));
+  return res.render(
+    "pre-game-lobby",
+    newViewData(PLAYER.playerId, GAME.gameId)
+  );
 };
 
 export { joinGame };
