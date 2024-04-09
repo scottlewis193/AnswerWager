@@ -1,8 +1,8 @@
 import { IPlayerStore } from "./store";
-import { Answer } from "./answers";
 import { Bet } from "./bets";
-import { findClosestNumber, findClosestDate, debug } from "../utils";
+import { findClosestNumber, findClosestDate, debug, boolConv } from "../utils";
 import { GAMESTORE } from "../server";
+import moment from "moment";
 
 function newPlayerStore() {
   return new playerStore();
@@ -32,13 +32,18 @@ class playerStore implements IPlayerStore {
   }
 }
 
-class Player {
+interface IPlayer {
+  [key: string]: string;
+}
+
+class Player implements IPlayer {
+  [k: string]: any;
   playerId: number;
   playerName: string;
-  readyStatus: boolean;
-  answeredStatus: boolean;
-  answer: Answer;
-  wageredStatus: boolean;
+  private _readyStatus: boolean;
+  private _answeredStatus: boolean;
+  private _wageredStatus: boolean;
+  answer: string;
   bets: Bet[];
   points: number;
   exactCorrectAnswers: number;
@@ -49,13 +54,52 @@ class Player {
   updateRequired: boolean;
   smallerWagered: boolean;
 
+  set readyStatus(readyStatus: boolean) {
+    this._readyStatus = readyStatus;
+
+    const GAME = GAMESTORE.getPlayersGame(this.playerId);
+    //trigger UI update for all others players
+    GAME.updateUI(this.playerId);
+    //update games ready status if all players are ready
+    GAME.updateReadyStatus();
+  }
+  get readyStatus() {
+    return this._readyStatus;
+  }
+
+  set answeredStatus(answeredStatus: boolean) {
+    this._answeredStatus = answeredStatus;
+
+    const GAME = GAMESTORE.getPlayersGame(this.playerId);
+    //trigger UI update for all others players
+    GAME.updateUI(this.playerId);
+    //update games answered status if all players have answered
+    GAME.updateAnsweredStatus();
+  }
+  get answeredStatus() {
+    return this._answeredStatus;
+  }
+
+  set wageredStatus(wageredStatus: boolean) {
+    this._wageredStatus = wageredStatus;
+
+    const GAME = GAMESTORE.getPlayersGame(this.playerId);
+    //trigger UI update for all others players
+    GAME.updateUI(this.playerId);
+    //update games wagered status if all players have wagered
+    GAME.updateWageredStatus();
+  }
+  get wageredStatus() {
+    return this._wageredStatus;
+  }
+
   constructor(playerId: number) {
     (this.playerId = playerId),
       (this.playerName = ""),
-      (this.readyStatus = false),
-      (this.answeredStatus = false),
-      (this.answer = { playerId: 0, answer: 0, answerType: "" }),
-      (this.wageredStatus = false),
+      (this._readyStatus = false),
+      (this._answeredStatus = false),
+      (this._wageredStatus = false),
+      (this.answer = ""),
       (this.bets = []),
       (this.points = 5),
       (this.pointsEarnedRound = 0),
@@ -72,6 +116,24 @@ class Player {
     return isHost;
   }
 
+  updatePlayerFromBody(body: any) {
+    for (let [k, v] of Object.entries(this)) {
+      const propName = k.replace("_", "");
+      if (typeof body[propName] !== "undefined" && propName != "playerId") {
+        //if (k.includes("_")) {
+        this[propName] =
+          body[propName] == "true" || body[propName] == "false"
+            ? boolConv(body[propName])
+            : body[propName];
+
+        console.log(this[propName]);
+        //} else {
+        // v = body[propName];
+        // }
+      }
+    }
+  }
+
   updatePlayerName(playerName: string) {
     this.playerName = playerName;
   }
@@ -84,24 +146,10 @@ class Player {
     const GAME = GAMESTORE.getPlayersGame(this.playerId);
     const answers = GAME.getAnswers();
 
-    const correctAnswer =
-      GAME.questions[GAME.questionIndex].answerType == "number"
-        ? Number(GAME.questions[GAME.questionIndex].answer)
-        : new Date(GAME.questions[GAME.questionIndex].answer).getTime();
-
-    // const closestAnswer =
-    //   GAME.questions[GAME.questionIndex].answerType == "number"
-    //     ? findClosestNumber(
-    //         answers.map((answer) => Number(answer.answer)),
-    //         Number(correctAnswer)
-    //       )
-    //     : findClosestDate(
-    //         answers.map((answer) => new Date(answer.answer)),
-    //         new Date(correctAnswer)
-    //       );
+    const correctAnswer = Number(GAME.questions[GAME.questionIndex].answer);
 
     const closestAnswer = findClosestNumber(
-      answers.map((answer) => Number(answer.answer)),
+      answers.map((answer) => Number(answer)),
       Number(correctAnswer)
     );
 
@@ -128,12 +176,12 @@ class Player {
 
     var hasSubmittedWinningAnswer: boolean = false;
     //if player submitted closest winning answer
-    if (this.answer.answer == closestAnswer) {
+    if (Number(this.answer) == closestAnswer) {
       this.correctAnswers += 1;
       this.points += 3;
       this.pointsEarnedRound += 3;
 
-      if (this.answer.answer == correctAnswer) {
+      if (Number(this.answer) == correctAnswer) {
         this.exactCorrectAnswers += 1;
         this.points += 3;
         this.pointsEarnedRound += 3;
@@ -168,7 +216,7 @@ class Player {
     this.bets = [];
     this.wageredStatus = false;
     this.answeredStatus = false;
-    this.answer = { playerId: 0, answer: 0, answerType: "" };
+    this.answer = "";
     this.pointsEarnedRound = 0;
     this.smallerWagered = false;
   }

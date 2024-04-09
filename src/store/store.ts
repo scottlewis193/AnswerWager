@@ -1,6 +1,5 @@
 import { WebSocket } from "ws";
 import { Question } from "./questions";
-import { Answer } from "./answers";
 import { Game } from "./games";
 import { Player } from "./players";
 

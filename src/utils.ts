@@ -110,6 +110,10 @@ const findClosestDate = (dates: Date[], target: Date) => {
   return closestDate;
 };
 
+function keys<T extends object>(obj: T) {
+  return Object.keys(obj) as Array<keyof T>;
+}
+
 export {
   generateId,
   getCurrentTime,
@@ -122,4 +126,5 @@ export {
   appendStatsToLog,
   findClosestNumber,
   findClosestDate,
+  keys,
 };

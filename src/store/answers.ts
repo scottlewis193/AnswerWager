@@ -1,14 +1,9 @@
-interface Answer {
-  playerId: number;
-  answer: string | number | Date;
-  answerType: string;
-}
-
 interface BoardAnswer {
   answer: string | number | Date;
+  displayedAnswer: string;
   odds: number;
   wagered: boolean;
   correctAnswer: boolean;
 }
 
-export { Answer, BoardAnswer };
+export { BoardAnswer };

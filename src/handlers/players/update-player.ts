@@ -1,44 +1,50 @@
 import express from "express";
-import { boolConv } from "../../utils";
+import { boolConv, keys } from "../../utils";
 import { PLAYERSTORE, GAMESTORE } from "../../server";
 import { wss } from "../../server";
 import { Game } from "../../store/games";
 import { newViewData } from "../../store/viewdata";
+import { Player } from "../../store/players";
+import moment from "moment";
 
 const updatePlayer = (req: express.Request, res: express.Response) => {
-  //var playerVars: PlayerVars = req.query;
-  //playerVars.playerId = Number(req.query.playerId);
   const PLAYER = PLAYERSTORE.Players[Number(req.params.playerId)];
+  const BODY = req.body;
+  const GAME = GAMESTORE.getPlayersGame(PLAYER.playerId);
 
-  PLAYER.updateRequired = true;
+  //make sure playerId is not updated
+  delete BODY.playerId;
 
-  //ready/unready btn
-  if (req.query.hasOwnProperty("readyStatus")) {
-    PLAYER.readyStatus = boolConv(String(req.query.readyStatus));
+  //trigger UI update for every player in game
+  GAME.updateUI(PLAYER.playerId);
 
-    //find game that player is in
-    let GAME: Game;
-    for (var gameId in GAMESTORE.Games) {
-      for (var player in GAMESTORE.Games[gameId].playerIds) {
-        if (GAMESTORE.Games[gameId].playerIds[player] == PLAYER.playerId) {
-          GAME = GAMESTORE.Games[gameId];
+  if (BODY.hasOwnProperty("readyStatus")) {
+    //update player object using body
+    PLAYER.updatePlayerFromBody(BODY);
 
-          GAME.updateUI(PLAYER.playerId);
+    //rerender pre-game-lobby
+    return res.render(
+      "pre-game-lobby",
+      newViewData(PLAYER.playerId, GAME.gameId)
+    );
+  } else if (BODY.hasOwnProperty("answeredStatus")) {
+    //makes sure submitted is in correct format
+    BODY.answer =
+      GAME.questions[GAME.questionIndex].answerType == "number"
+        ? Number(BODY.answer)
+        : moment(BODY.answer, "DD-MM-YYYY").toDate().getTime();
 
-          //update ready status - update readyStatus if all players are ready
-          GAME.updateReadyStatus();
+    //update player object using body
+    PLAYER.updatePlayerFromBody(BODY);
 
-          //rerender pre-game-lobby
-          res.render(
-            "pre-game-lobby",
-            newViewData(PLAYER.playerId, GAME.gameId)
-          );
-
-          break;
-        }
-      }
-    }
+    //render question screen
+    return res.render("question", newViewData(PLAYER.playerId, GAME.gameId));
+  } else if (BODY.hasOwnProperty("wageredStatus")) {
+    //render wager board
+    return res.render("wager-board", newViewData(PLAYER.playerId, GAME.gameId));
   }
+
+  return res.sendStatus(204);
 };
 
 export { updatePlayer };

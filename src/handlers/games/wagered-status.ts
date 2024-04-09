@@ -3,6 +3,7 @@ import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { debug } from "../../utils";
 import { BoardAnswer } from "../../store/answers";
 import { newViewData } from "../../store/viewdata";
+import moment from "moment";
 
 const checkWageredStatus = (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.params.gameId)];
@@ -26,13 +27,14 @@ const checkWageredStatus = (req: express.Request, res: express.Response) => {
     GAME.processedAnswers.forEach((answer) =>
       answers.push({
         answer: answer.answer,
+        displayedAnswer: answer.displayedAnswer,
         odds: answer.odds,
         wagered: playerBetAnswers.includes(answer.answer),
         correctAnswer: answer.correctAnswer,
       })
     );
 
-    GAME.updateGameState();
+    GAME.setGameState("AnswerReveal");
 
     console.log(answers);
     //rerender wager-board

@@ -1,10 +1,11 @@
 import { findClosestNumber, findClosestDate, generateId } from "../utils";
 import { GAMESTATES, PLAYERSTORE } from "../server";
 import { IGameStore, IPlayerStore } from "./store";
-import { BoardAnswer, Answer } from "./answers";
+import { BoardAnswer } from "./answers";
 import { Question } from "./questions";
 import { getMiddleIndex } from "../utils";
 import { Player } from "./players";
+import moment from "moment";
 
 function newGameStore() {
   return new gameStore();
@@ -101,7 +102,11 @@ class Game {
   getGameState() {
     return GAMESTATES[this._state];
   }
-
+  /**
+   * update the game's state
+   * @param state "preGameLobby" | "Question" | "Wagering" | "AnswerReveal" | "Scores" | "FinalScores"
+   *
+   */
   setGameState(state: string) {
     const NEWSTATE = GAMESTATES.indexOf(state);
     if (NEWSTATE >= 0) {
@@ -175,32 +180,23 @@ class Game {
     //     : new Date(this.questions[this.questionIndex].answer).getTime();
 
     const correctAnswer = Number(this.questions[this.questionIndex].answer);
+
     const closestAnswer = findClosestNumber(
-      answers.map((answer) => Number(answer.answer)),
+      answers.map((answer) => Number(answer)),
       Number(correctAnswer)
     );
 
-    // const closestAnswer =
-    //   this.questions[this.questionIndex].answerType == "number"
-    //     ? findClosestNumber(
-    //         answers.map((answer) => Number(answer.answer)),
-    //         Number(correctAnswer)
-    //       )
-    //     : findClosestDate(
-    //         answers.map((answer) => new Date(answer.answer)),
-    //         new Date(correctAnswer)
-    //       ).getDate();
-
     //set board answers and determine correct answer
-    for (let index: number = 0; index < Object.keys(answers).length; index++) {
+    for (let index: number = 0; index < answers.length; index++) {
       boardAnswers[index] = {
-        answer:
+        answer: answers[index],
+        displayedAnswer:
           this.questions[this.questionIndex].answerType == "number"
-            ? answers[index].answer
-            : new Date(answers[index].answer).toLocaleDateString("en-GB"),
+            ? String(answers[index])
+            : moment(answers[index], "x").toDate().toLocaleDateString("en-GB"),
         odds: 0,
         wagered: false,
-        correctAnswer: answers[index].answer == closestAnswer,
+        correctAnswer: Number(answers[index]) == closestAnswer,
       };
     }
 
@@ -233,18 +229,16 @@ class Game {
   getAnswers() {
     const QUESTIONINDEX = Number(this.questionIndex);
 
-    let answers: Answer[] = [];
+    let answers: string[] = [];
 
     for (const playerId of this.playerIds) {
-      const PLAYERANSWER: Answer = {
-        playerId: playerId,
-        answer: PLAYERSTORE.getPlayer(playerId).answer.answer,
-        answerType: "",
-      }; //aw.players[playerId].answers[QUESTIONINDEX].answer, answerType: '' };
+      const PLAYERANSWER = PLAYERSTORE.getPlayer(playerId).answer;
+
+      //aw.players[playerId].answers[QUESTIONINDEX].answer, answerType: '' };
 
       //if answer already exists, skip over it - to avoid duplicates
 
-      let answersAry = Object.values(answers);
+      let answersAry = answers;
       if (answersAry.includes(PLAYERANSWER)) {
         continue;
       }
@@ -253,17 +247,10 @@ class Game {
       answers.push(PLAYERANSWER);
     }
 
-    if (this.questions[QUESTIONINDEX].answerType == "number") {
-      //sort from lowest to highest
-      answers = answers.sort((a, b) => {
-        return Number(a.answer) - Number(b.answer);
-      });
-    } else {
-      //sort from earliest to latest
-      answers = answers.sort((a, b) => {
-        return new Date(a.answer).getDate() - new Date(b.answer).getDate();
-      });
-    }
+    //sort from lowest to highest
+    answers = answers.sort((a, b) => {
+      return Number(a) - Number(b);
+    });
 
     return answers;
   }

@@ -13,10 +13,11 @@ div(class="page wager-board" hx-target='.content' hx-vals=`{"gameId": "${game.ga
   each answerObj, index in answers
     div(class='board-segment')
       a(class='odds-text') #{answerObj.odds}/1
-      a(class='answer-text' name=`answer-${index+1}`) #{answerObj.answer}
+      a(class='answer-text' name=`answer-${index+1}`) #{answerObj.displayedAnswer}
       if player.wageredStatus
         //- no button
       else if answerObj.wagered || player.wageredStatus
         button(class='segment-btn' disabled) Bet
       else
         button(class=`segment-btn` id=`segment-btn-${index+1}` hx-vals=`{"answer": "${answerObj.answer}"}` hx-get=`/games/${game.gameId}/submitbet` hx-prompt='Enter Amount:') Bet
+  button(class='segment-btn' id='finish-btn' hx-put=`/players/${player.playerId}` hx-vals=`{"wageredStatus: true}`)

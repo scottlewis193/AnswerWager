@@ -7,5 +7,5 @@ div(class="page wager-board" hx-target='.content' hx-vals=`{"gameId": "${game.ga
     each answerObj, index in answers
         div(class=answerObj.correctAnswer ? 'board-segment answer' : 'board-segment')
             a(class='odds-text') #{answerObj.odds}/1
-            a(class='answer-text' name=`answer-${index+1}`) #{answerObj.answer}
+            a(class='answer-text' name=`answer-${index+1}`) #{answerObj.displayedAnswer}
 a(class='counter-text' id='counter')

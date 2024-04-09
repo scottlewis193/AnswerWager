@@ -17,9 +17,9 @@ const checkRevealedStatus = (req: express.Request, res: express.Response) => {
       : 0
   );
 
-  GAME.updateGameState();
+  GAME.setGameState("Scores");
 
-  res.render("score-board", newViewData(PLAYER.playerId, GAME.gameId));
+  return res.render("score-board", newViewData(PLAYER.playerId, GAME.gameId));
 };
 
 export { checkRevealedStatus };

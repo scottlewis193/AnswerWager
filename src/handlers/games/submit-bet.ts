@@ -3,6 +3,7 @@ import { GAMESTORE, PLAYERSTORE } from "../../server";
 import { debug } from "../../utils";
 import { BoardAnswer } from "../../store/answers";
 import { newViewData } from "../../store/viewdata";
+import moment from "moment";
 
 const submitBet = (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.params.gameId)];
@@ -39,10 +40,7 @@ const submitBet = (req: express.Request, res: express.Response) => {
     //add bet to player
     PLAYER.bets.push({
       playerId: PLAYER.playerId,
-      answer:
-        GAME.questions[GAME.questionIndex].answerType == "number"
-          ? ANSWER
-          : new Date(ANSWER).getTime(),
+      answer: ANSWER,
       amount: BET,
       odds: GAME.getAnswer(ANSWER).odds,
     });
@@ -70,6 +68,7 @@ const submitBet = (req: express.Request, res: express.Response) => {
   GAME.processedAnswers.forEach((answer) =>
     answers.push({
       answer: answer.answer,
+      displayedAnswer: answer.displayedAnswer,
       odds: answer.odds,
       wagered: playerBetAnswers.includes(answer.answer),
       correctAnswer: false,

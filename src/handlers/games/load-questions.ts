@@ -2,7 +2,7 @@ import express from "express";
 import { GAMESTORE } from "../../server";
 import { CSVToJSON } from "../../utils";
 import { Question } from "../../store/questions";
-import { Answer } from "../../store/answers";
+import moment from "moment";
 
 const loadQuestions = async (req: express.Request, res: express.Response) => {
   const GAME = GAMESTORE.Games[Number(req.params.gameId)];
@@ -13,7 +13,9 @@ const loadQuestions = async (req: express.Request, res: express.Response) => {
   //convert answers that are dates to milliseconds
   GAME.questions.forEach((question: Question) => {
     if (question.answerType == "date") {
-      question.answer = new Date(question.answer).getTime();
+      question.answer = moment(question.answer, "DD-MM-YYYY")
+        .toDate()
+        .getTime();
     }
   });
 

@@ -155,6 +155,13 @@ router.put(
   }
 );
 
+router.put(
+  "/players/:playerId",
+  (req: express.Request, res: express.Response) => {
+    updatePlayer(req, res);
+  }
+);
+
 // router.post(
 //   "/players/unready/:playerId/",
 //   (req: express.Request, res: express.Response) => {

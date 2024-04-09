@@ -24,7 +24,7 @@ const startGame = (req: express.Request, res: express.Response) => {
 
   GAME.resetPlayersForGame();
 
-  GAME.updateGameState();
+  GAME.setGameState("Question");
 
   debug(
     `${PLAYER.playerName} (${PLAYER.playerId}): started game (${GAME.gameId})`
