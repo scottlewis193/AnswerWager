@@ -15,6 +15,8 @@ const updateGame = (req: express.Request, res: express.Response) => {
   if (GAME.isHost(PLAYER.playerId)) {
     if (BODY.hasOwnProperty("state")) {
       handleStateChange(PLAYER, BODY, GAME, res);
+    } else {
+      GAME.updateGameFromBody(BODY);
     }
 
     GAME.updateUI();
