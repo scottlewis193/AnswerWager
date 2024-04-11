@@ -40,9 +40,6 @@ class Player implements IPlayer {
   [k: string]: any;
   playerId: number;
   playerName: string;
-  private _readyStatus: boolean;
-  private _answeredStatus: boolean;
-  private _wageredStatus: boolean;
   answer: string;
   bets: Bet[];
   points: number;
@@ -53,6 +50,11 @@ class Player implements IPlayer {
   highestOddsWon: number;
   updateRequired: boolean;
   smallerWagered: boolean;
+
+  //privates
+  private _readyStatus: boolean;
+  private _answeredStatus: boolean;
+  private _wageredStatus: boolean;
 
   set readyStatus(readyStatus: boolean) {
     this._readyStatus = readyStatus;
@@ -71,8 +73,6 @@ class Player implements IPlayer {
     this._answeredStatus = answeredStatus;
 
     const GAME = GAMESTORE.getPlayersGame(this.playerId);
-    //trigger UI update for all others players
-    GAME.updateUI(this.playerId);
     //update games answered status if all players have answered
     GAME.updateAnsweredStatus();
   }
@@ -84,8 +84,6 @@ class Player implements IPlayer {
     this._wageredStatus = wageredStatus;
 
     const GAME = GAMESTORE.getPlayersGame(this.playerId);
-    //trigger UI update for all others players
-    GAME.updateUI(this.playerId);
     //update games wagered status if all players have wagered
     GAME.updateWageredStatus();
   }
@@ -117,19 +115,12 @@ class Player implements IPlayer {
   }
 
   updatePlayerFromBody(body: any) {
-    for (let [k, v] of Object.entries(this)) {
-      const propName = k.replace("_", "");
-      if (typeof body[propName] !== "undefined" && propName != "playerId") {
-        //if (k.includes("_")) {
+    for (let propName of Object.keys(body)) {
+      if (this[propName] !== "undefined" && propName != "playerId") {
         this[propName] =
           body[propName] == "true" || body[propName] == "false"
             ? boolConv(body[propName])
             : body[propName];
-
-        console.log(this[propName]);
-        //} else {
-        // v = body[propName];
-        // }
       }
     }
   }

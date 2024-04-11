@@ -65,7 +65,10 @@ const appendStatsToLog = () => {
   newLog.push("");
   newLog.push(`PLAYERS: ${Object.keys(PLAYERSTORE.Players).length}`);
   //newLog.push(PLAYERSTORE.Players);
-  newLog.push(`GAMES: ${Object.keys(GAMESTORE.Games).length}`);
+  newLog.push(
+    `GAMES: ${Object.keys(GAMESTORE.Games).length}` +
+      ` ${GAMESTORE.getGameByIndex(0)?.getGameStateStr()} `
+  );
   //newLog.push(GAMESTORE.Games);
   newLog.push("==========================");
   // if (Object.keys(aw.games).length !== 0)

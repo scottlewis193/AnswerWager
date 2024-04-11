@@ -1,5 +1,6 @@
+div(class='uistate' hx-target='.content' hx-trigger='every 0.5s throttle:0.5s' hx-vals=`{"playerId": "${player.playerId}"}` hx-put=`/games/${game.gameId}/uistate`)
 include scores.pug
-div(class='scoreboard-shown' hx-target='.content' hx-trigger='every 10s' hx-get=`/games/${game.gameId}/showquestion` hx-vals=`{"gameId": "${game.gameId}","playerId": "${player.playerId}"}`)
+div(class='scoreboard-shown' hx-target='.content' hx-trigger='every 10s' hx-put=`/games/${game.gameId}` hx-vals=`{"gameId": "${game.gameId}","playerId": "${player.playerId}","roundEnd": "true"}`)
 .center 
     div(class='page score-board' hx-target='.content' hx-vals=`{"gameId": "${game.gameId}","playerId": "${player.playerId}"}`)
         each player in players

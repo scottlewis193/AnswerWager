@@ -57,7 +57,8 @@ wss.on("connection", function connection(ws: AWWebSocket) {
   ws.id = utils.generateId();
   connect(ws.id);
 
-  ws.send(`<form class='page start-page' id='start-page' name='start-page' hx-vals='{"playerId": "${ws.id}"}' hx-include='[name="playerName"]' hx-target='.content'>
+  ws.send(`
+  <form class='page start-page' id='start-page' name='start-page' hx-vals='{"playerId": "${ws.id}"}' hx-include='[name="playerName"]' hx-target='.content'>
   <input id='name-input' class='menu-input' name='playerName' value='' placeholder='Enter Name'>
   <button hx-put='/connect'>Confirm</button></form>`);
 
@@ -73,17 +74,5 @@ server.listen(3000, function listening() {
   fs.rmSync("./uploads", { recursive: true });
   fs.mkdirSync("./uploads", { recursive: true });
 });
-
-// app.get("/", (req, res) => {
-//   res.render("base", newViewData(Number(req.query.playerId)));
-// });
-
-// app.get("/connect/:playerId", (req: express.Request, res: express.Response) => {
-//   connectRoute(req, res);
-// });
-
-// app.post("/games", async (req: express.Request, res: express.Response) => {
-//   createGame(req, res);
-// });
 
 export { GAMESTORE, PLAYERSTORE, GAMESTATES, app, wss };

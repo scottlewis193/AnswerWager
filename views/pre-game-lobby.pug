@@ -1,10 +1,11 @@
+div(class='uistate' hx-target='.content' hx-trigger='every 0.5s throttle:0.5s' hx-vals=`{"playerId": "${player.playerId}"}` hx-put=`/games/${game.gameId}/uistate`)
 .center
-  div(class='page pre-game-lobby' id='pre-game-lobby' hx-target='.content' hx-trigger='load, every 0.5s throttle:0.5s' hx-vals=`{"playerId": "${player.playerId}"}` hx-put=`/games/${game.gameId}/updatelobby`)
+  div(class='page pre-game-lobby' id='pre-game-lobby' hx-target='.content')
     include player-list.pug
     button(id='ready-btn' class='menu-btn' hx-put=`/players/${player.playerId}` hx-vals=`{"readyStatus": ${!player.readyStatus}}`) #{player.readyStatus ? 'Unready' : 'Ready'}
     button(id='leave-btn' class='menu-btn' hx-put=`/games/${game.gameId}/leave`) Leave
     if player.isHostOfGame()
-      button(id='start-btn' class='menu-btn' hx-put=`/games/${game.gameId}/start` hx-vals=`{"playerId": "${player.playerId}"}` disabled=!game.playersReady ) Start
+      button(id='start-btn' class='menu-btn' hx-put=`/games/${game.gameId}` hx-vals=`{"playerId": "${player.playerId}","state": "Question"}` disabled=!game.playersReady ) Start
       form(id='form' hx-encoding='multipart/form-data' hx-target='#form' hx-post=`/games/${game.gameId}/loadquestions`)
         label(class="button" for="upload") Upload File
         input(type='file' id='upload' name='file' accept='.csv' onchange="document.getElementById('form').requestSubmit();")   

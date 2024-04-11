@@ -1,5 +1,5 @@
+div(class='uistate' hx-target='.content' hx-trigger='every 0.5s throttle:0.5s' hx-vals=`{"playerId": "${player.playerId}"}` hx-put=`/games/${game.gameId}/uistate`)
 include scores.pug
-div(class='wagered-status' hx-target='.content' hx-trigger='every 1s' hx-get=`/games/${game.gameId}/wageredcheck` hx-vals=`{"gameId": "${game.gameId}","playerId": "${player.playerId}"}`)
 div(class="page wager-board" hx-target='.content' hx-vals=`{"gameId": "${game.gameId}","playerId": "${player.playerId}"}`)
   div(class='board-segment')
     a(class='odds-text') #{game.highestOdds}/1
@@ -9,7 +9,7 @@ div(class="page wager-board" hx-target='.content' hx-vals=`{"gameId": "${game.ga
     else if player.wageredStatus || player.smallerWagered
       button(class='segment-btn' disabled) Bet
     else
-      button(class='segment-btn' id='segment-btn-smaller' hx-vals=`{"answer": "SMALLER"}` hx-get=`/games/${game.gameId}/submitbet` hx-prompt='Enter Amount:') Bet 
+      button(class='segment-btn' id='segment-btn-smaller' hx-vals=`{"answer": "SMALLER"}` hx-put=`/players/${player.playerId}` hx-prompt='Enter Amount:') Bet 
   each answerObj, index in answers
     div(class='board-segment')
       a(class='odds-text') #{answerObj.odds}/1
@@ -19,5 +19,7 @@ div(class="page wager-board" hx-target='.content' hx-vals=`{"gameId": "${game.ga
       else if answerObj.wagered || player.wageredStatus
         button(class='segment-btn' disabled) Bet
       else
-        button(class=`segment-btn` id=`segment-btn-${index+1}` hx-vals=`{"answer": "${answerObj.answer}"}` hx-get=`/games/${game.gameId}/submitbet` hx-prompt='Enter Amount:') Bet
-  button(class='segment-btn' id='finish-btn' hx-put=`/players/${player.playerId}` hx-vals=`{"wageredStatus: true}`)
+        button(class=`segment-btn` id=`segment-btn-${index+1}` hx-vals=`{"answer": "${answerObj.answer}"}` hx-put=`/players/${player.playerId}` hx-prompt='Enter Amount:') Bet
+div(class='finish-btn-container')
+  if !player.wageredStatus
+    button(class='segment-btn' id='finish-btn' hx-target='.content' hx-put=`/players/${player.playerId}` hx-vals=`{"wageredStatus": true}`) Finish

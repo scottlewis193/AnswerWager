@@ -1,5 +1,7 @@
-div(class='score-stats-list' id='score-stats-list-grid')
-    each player in playerList
-            div(class='grid-col' id='player-points') #{player.playerName}
+.center
+    div(class='score-stats-list' id='score-stats-list-grid' hx-target='.content')
+        each player in players
+            div(class='grid-col' id='player-name') #{player.playerName}
+            div(class='grid-col' id='player-points') #{player.playerPoints}
             div(class='grid-col' id='player-correct-answers') #{player.correctAnswers}
             div(class='grid-col' id='player-exact-correct-answers') #{player.exactCorrectAnswers}

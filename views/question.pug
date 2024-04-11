@@ -1,8 +1,8 @@
+div(class='uistate' hx-target='.content' hx-trigger='every 0.5s throttle:0.5s' hx-vals=`{"playerId": "${player.playerId}"}` hx-put=`/games/${game.gameId}/uistate`)
 include scores.pug
 .center
-    div(class='page question' hx-vals=`{"gameId": "${game.gameId}","playerId": "${player.playerId}"}` hx-target='.content')
+    div(class='page question' id='question' hx-target='.content')
         img(class='question-img' id='question-img' src=`${questions[game.questionIndex].imageURL}`)
         h2(class='big-text' id='question-text') #{questions[game.questionIndex].question}
-        div(class='answer-check' id='answer-check-id' hx-trigger='load, every 1s' hx-get=`/games/${game.gameId}/answercheck`)
         input(class='menu-input' id='answer-input' name='answer')
         button(id='submit-btn' class='menu-button' hx-put=`/players/${player.playerId}` hx-include='[name="answer"]' hx-vals=`{"answeredStatus": ${!player.answeredStatus}}` disabled=player.answeredStatus) Submit

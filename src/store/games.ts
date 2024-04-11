@@ -1,4 +1,10 @@
-import { findClosestNumber, findClosestDate, generateId } from "../utils";
+import {
+  findClosestNumber,
+  findClosestDate,
+  generateId,
+  boolConv,
+  debug,
+} from "../utils";
 import { GAMESTATES, PLAYERSTORE } from "../server";
 import { IGameStore, IPlayerStore } from "./store";
 import { BoardAnswer } from "./answers";
@@ -40,16 +46,21 @@ class gameStore implements IGameStore {
   getGame(gameId: number) {
     return this.Games[gameId];
   }
+
+  getGameByIndex(index: number) {
+    return Object.values(this.Games)[index];
+  }
 }
 
-class Game {
+interface IGame {
+  [key: string]: string;
+}
+
+class Game implements IGame {
+  [k: string]: any;
   gameId: number;
   hostPlayerId: number;
   playerIds: number[];
-  playersReady: boolean;
-  playersAnswered: boolean;
-  playersWagered: boolean;
-  _state: number;
   hasProcessedAnswers: boolean;
   processedAnswers: BoardAnswer[];
   highestOdds: number;
@@ -57,24 +68,119 @@ class Game {
   hasCalculatedScores: boolean;
   questions: Question[];
   questionIndex: number;
-  revealAnswer: boolean;
 
+  //privates
+  private _playersReady: boolean;
+  private _playersAnswered: boolean;
+  private _playersWagered: boolean;
+  private _revealedAnswer: boolean;
+  private _roundEnd: boolean;
+  private _state: number;
+
+  get roundEnd() {
+    return this._roundEnd;
+  }
+
+  set roundEnd(roundEnd: boolean) {
+    if (roundEnd && this._roundEnd !== roundEnd) {
+      this._roundEnd = roundEnd;
+      this.resetGameForRound();
+
+      //IF END OF GAME, SET FINAL SCORES STATE
+      if (this.questionIndex > this.questions.length - 1) {
+        this.setGameStateFromStr("FinalScores");
+      } else {
+        //IF NOT END OF GAME, SET QUESTION STATE
+        this.setGameStateFromStr("Question");
+      }
+    } else {
+      this._roundEnd = roundEnd;
+    }
+  }
+
+  get state() {
+    return this._state;
+  }
+
+  set state(state: number) {
+    const NEWSTATE = GAMESTATES[state];
+    if (NEWSTATE !== undefined) {
+      this._state = state;
+    }
+  }
+
+  get playersAnswered() {
+    return this._playersAnswered;
+  }
+
+  set playersAnswered(playersAnswered: boolean) {
+    if (playersAnswered && this._playersAnswered !== playersAnswered) {
+      this.processAnswers();
+      this.setGameStateFromStr("Wagering");
+      debug(
+        `${this.gameId}: all players have answered question ${this.questionIndex}`
+      );
+      this.updateUI();
+    }
+    this._playersAnswered = playersAnswered;
+  }
+
+  get playersWagered() {
+    return this._playersWagered;
+  }
+
+  set playersWagered(playersWagered: boolean) {
+    if (playersWagered && this._playersWagered !== playersWagered) {
+      this.calculateScores();
+      this.setGameStateFromStr("AnswerReveal");
+      debug(
+        `${this.gameId}: all players have finished wagering (${this.questionIndex})`
+      );
+      this.updateUI();
+    }
+    this._playersWagered = playersWagered;
+  }
+
+  get playersReady() {
+    return this._playersReady;
+  }
+
+  set playersReady(playersReady: boolean) {
+    if (playersReady && this._playersReady !== playersReady) {
+      this.updateUI(this.hostPlayerId);
+    }
+    this._playersReady = playersReady;
+  }
+
+  get revealedAnswer() {
+    return this._revealedAnswer;
+  }
+
+  set revealedAnswer(revealedAnswer: boolean) {
+    if (revealedAnswer && this._revealedAnswer !== revealedAnswer) {
+      this.setGameStateFromStr("Scores");
+      this.updateUI(this.hostPlayerId);
+    }
+
+    this._revealedAnswer = revealedAnswer;
+  }
   constructor(gameId: number, hostPlayerId: number) {
     (this.gameId = gameId),
       (this.hostPlayerId = hostPlayerId),
       (this.playerIds = [hostPlayerId]),
-      (this.playersReady = false),
-      (this.playersAnswered = false),
-      (this.playersWagered = false),
+      (this._playersReady = false),
+      (this._playersAnswered = false),
+      (this._playersWagered = false),
       (this._state = 0),
       (this.hasProcessedAnswers = false),
       (this.processedAnswers = []),
       (this.highestOdds = 0),
       (this.hasProcessedBets = false),
       (this.hasCalculatedScores = false),
+      (this._roundEnd = false),
       (this.questions = []),
       (this.questionIndex = 0),
-      (this.revealAnswer = false);
+      (this._revealedAnswer = false);
   }
 
   /**
@@ -96,21 +202,36 @@ class Game {
    *
    */
   updateGameState() {
-    this._state += 1;
+    this.state += 1;
   }
 
-  getGameState() {
-    return GAMESTATES[this._state];
+  getGameStateStr() {
+    return GAMESTATES[this.state];
   }
   /**
    * update the game's state
    * @param state "preGameLobby" | "Question" | "Wagering" | "AnswerReveal" | "Scores" | "FinalScores"
    *
    */
-  setGameState(state: string) {
+  setGameStateFromStr(state: string) {
     const NEWSTATE = GAMESTATES.indexOf(state);
     if (NEWSTATE >= 0) {
-      this._state = NEWSTATE;
+      this.state = NEWSTATE;
+    }
+  }
+
+  updateGameFromBody(body: any) {
+    for (let propName of Object.keys(body)) {
+      if (this[propName] !== "undefined" && propName != "playerId") {
+        if (propName == "state") {
+          this.setGameStateFromStr(body[propName]);
+        } else {
+          this[propName] =
+            body[propName] == "true" || body[propName] == "false"
+              ? boolConv(body[propName])
+              : body[propName];
+        }
+      }
     }
   }
 
@@ -264,7 +385,7 @@ class Game {
     return playerId == this.hostPlayerId;
   }
 
-  updateUI(triggeredPlayerId: number) {
+  updateUI(triggeredPlayerId: number = 0) {
     for (const playerId of this.playerIds) {
       if (playerId == triggeredPlayerId) {
         continue;
@@ -289,12 +410,17 @@ class Game {
     this.hasCalculatedScores = true;
   }
   resetGameForRound() {
+    //we set the privates heres to stop it from triggering the setters
+    this._playersAnswered = false;
+    this._playersWagered = false;
+    this._revealedAnswer = false;
+    this._roundEnd = false;
+
     this.questionIndex += 1;
-    this.playersAnswered = false;
-    this.playersWagered = false;
     this.hasProcessedBets = false;
     this.hasProcessedAnswers = false;
     this.hasCalculatedScores = false;
+
     this.processedAnswers = [];
 
     for (const playerId of this.playerIds) {

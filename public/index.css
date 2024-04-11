@@ -163,6 +163,23 @@ body::-webkit-scrollbar-corner {
   animation-direction: reverse;
 }
 
+.score-stats-list {
+  display: grid;
+  grid-auto-flow: row;
+  row-gap: 0px;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+
+  border-spacing: 0;
+  width: max(30vw, 37.5vh);
+  text-align: center;
+
+  .grid-col {
+    padding: max(1vw, 1.25vh);
+    border: max(0.1vw, 0.125vh) solid var(--Surface0);
+    text-transform: uppercase;
+  }
+}
+
 .player-list {
   display: grid;
   grid-auto-flow: row;
@@ -247,6 +264,17 @@ body::-webkit-scrollbar-corner {
 .question-img {
   max-width: max(20vw, 27.5vh);
   height: auto;
+}
+
+.finish-btn-container {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-items: center;
+  .segment-btn {
+    width: 80%;
+  }
 }
 
 .wager-board {
