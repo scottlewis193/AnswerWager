@@ -11,6 +11,7 @@ import { newGameStore } from "./store/games.js";
 import { AWWebSocket } from "./store/store.js";
 import { connect } from "./handlers/connection/connect.js";
 import { disconnect } from "./handlers/connection/get-disconnect.js";
+import { config } from "dotenv";
 
 import { fileURLToPath } from "url";
 
@@ -52,6 +53,9 @@ const GAMESTATES = [
   "Scores",
   "FinalScores",
 ];
+
+//load env variables
+config({ path: join(__dirname, "..", ".env") });
 
 wss.on("connection", function connection(ws: AWWebSocket) {
   ws.id = utils.generateId();

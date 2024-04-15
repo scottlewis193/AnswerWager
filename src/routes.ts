@@ -1,5 +1,4 @@
 import { connectRoute } from "./handlers/connection/connect-route";
-import { disconnectHostLeaves } from "./handlers/connection/disconnect-host-leaves";
 import { createGame } from "./handlers/games/create-game";
 import { updateGameUIState } from "./handlers/games/update-game-ui-state";
 import { joinGame } from "./handlers/games/join-game";
@@ -17,6 +16,7 @@ import express from "express";
 import { newViewData } from "./store/viewdata";
 import { PLAYERSTORE } from "./server";
 import { updateGame } from "./handlers/games/update-game";
+import { generateQuestions } from "./handlers/games/generate-questions";
 
 const router = express.Router();
 const upload = multer({ dest: "./uploads" }).single("file");
@@ -75,10 +75,10 @@ router.post(
   }
 );
 
-router.get(
-  "/games/:gameId/disconnect",
-  (req: express.Request, res: express.Response) => {
-    disconnectHostLeaves(req, res);
+router.post(
+  "/games/:gameId/generatequestions",
+  function (req: express.Request, res: express.Response) {
+    generateQuestions(req, res);
   }
 );
 

@@ -55,8 +55,9 @@ const updateGameUIState = (req: express.Request, res: express.Response) => {
       default:
         return res.sendStatus(204);
     }
+  } else {
+    return res.sendStatus(204);
   }
-  return res.sendStatus(204);
 };
 
 export { updateGameUIState };

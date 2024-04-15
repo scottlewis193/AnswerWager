@@ -52,7 +52,7 @@ const handleSubmitAnswer = (
   BODY.answer =
     GAME.questions[GAME.questionIndex].answerType == "number"
       ? Number(BODY.answer)
-      : moment(BODY.answer, "DD-MM-YYYY").toDate().getTime();
+      : moment(BODY.answer, "YYYY-MM-DD").toDate().getTime();
   PLAYER.updatePlayerFromBody(BODY);
   return res.render("question", newViewData(PLAYER.playerId, GAME.gameId));
 };

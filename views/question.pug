@@ -4,5 +4,8 @@ include scores.pug
     div(class='page question' id='question' hx-target='.content')
         img(class='question-img' id='question-img' src=`${questions[game.questionIndex].imageURL}`)
         h2(class='big-text' id='question-text') #{questions[game.questionIndex].question}
-        input(class='menu-input' id='answer-input' name='answer')
+        if questions[game.questionIndex].answerType == 'date'
+            include date-picker.pug
+        else
+            input(class='menu-input' id='answer-input' name='answer')
         button(id='submit-btn' class='menu-button' hx-put=`/players/${player.playerId}` hx-include='[name="answer"]' hx-vals=`{"answeredStatus": ${!player.answeredStatus}}` disabled=player.answeredStatus) Submit

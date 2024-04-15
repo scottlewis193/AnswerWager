@@ -1,6 +1,5 @@
 import { PLAYERSTORE, GAMESTORE } from "../../server";
 import { debug } from "../../utils";
-import { BoardAnswer } from "../../store/answers";
 
 const disconnect = (socketid: number) => {
   const PLAYER = PLAYERSTORE.Players[socketid];
